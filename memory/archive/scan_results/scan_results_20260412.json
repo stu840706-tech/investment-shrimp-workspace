@@ -1,0 +1,8600 @@
+{
+  "results": {
+    "月營收異常": [
+      {
+        "code": "1229",
+        "name": "聯華",
+        "industry": "食品工業",
+        "source": "TWSE",
+        "revenue": 932321.0,
+        "yoy_pct": 21.3,
+        "mom_pct": 35.6,
+        "detail": "雙增 | YoY:21% MoM:36%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1235",
+        "name": "興泰",
+        "industry": "食品工業",
+        "source": "TWSE",
+        "revenue": 27060.0,
+        "yoy_pct": 49.8,
+        "mom_pct": 70.7,
+        "detail": "雙增 | YoY:50% MoM:71%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1303",
+        "name": "南亞",
+        "industry": "塑膠工業",
+        "source": "TWSE",
+        "revenue": 27167406.0,
+        "yoy_pct": 18.1,
+        "mom_pct": 46.4,
+        "detail": "雙增 | YoY:18% MoM:46%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1305",
+        "name": "華夏",
+        "industry": "塑膠工業",
+        "source": "TWSE",
+        "revenue": 1082256.0,
+        "yoy_pct": 29.4,
+        "mom_pct": 37.8,
+        "detail": "雙增 | YoY:29% MoM:38%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1310",
+        "name": "台苯",
+        "industry": "塑膠工業",
+        "source": "TWSE",
+        "revenue": 854539.0,
+        "yoy_pct": 22.8,
+        "mom_pct": 36.9,
+        "detail": "雙增 | YoY:23% MoM:37%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1312",
+        "name": "國喬",
+        "industry": "塑膠工業",
+        "source": "TWSE",
+        "revenue": 3110910.0,
+        "yoy_pct": 17.5,
+        "mom_pct": 50.1,
+        "detail": "雙增 | YoY:18% MoM:50%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1313",
+        "name": "聯成",
+        "industry": "塑膠工業",
+        "source": "TWSE",
+        "revenue": 6489125.0,
+        "yoy_pct": 10.7,
+        "mom_pct": 152.9,
+        "detail": "雙增 | YoY:11% MoM:153%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1316",
+        "name": "上曜",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 655761.0,
+        "yoy_pct": 111.2,
+        "mom_pct": 26.0,
+        "detail": "雙增 | YoY:111% MoM:26%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1326",
+        "name": "台化",
+        "industry": "塑膠工業",
+        "source": "TWSE",
+        "revenue": 33728547.0,
+        "yoy_pct": 21.6,
+        "mom_pct": 46.8,
+        "detail": "雙增 | YoY:22% MoM:47%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1337",
+        "name": "再生-KY",
+        "industry": "塑膠工業",
+        "source": "TWSE",
+        "revenue": 61900.0,
+        "yoy_pct": 35.5,
+        "mom_pct": 71.0,
+        "detail": "雙增 | YoY:36% MoM:71%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1341",
+        "name": "富林-KY",
+        "industry": "塑膠工業",
+        "source": "TWSE",
+        "revenue": 308343.0,
+        "yoy_pct": 14.8,
+        "mom_pct": 149.5,
+        "detail": "雙增 | YoY:15% MoM:149%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1342",
+        "name": "八貫",
+        "industry": "其他",
+        "source": "TWSE",
+        "revenue": 370828.0,
+        "yoy_pct": 31.7,
+        "mom_pct": 51.4,
+        "detail": "雙增 | YoY:32% MoM:51%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1410",
+        "name": "南染",
+        "industry": "紡織纖維",
+        "source": "TWSE",
+        "revenue": 23195.0,
+        "yoy_pct": 21.5,
+        "mom_pct": 80.0,
+        "detail": "雙增 | YoY:22% MoM:80%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1419",
+        "name": "新紡",
+        "industry": "紡織纖維",
+        "source": "TWSE",
+        "revenue": 563421.0,
+        "yoy_pct": 42.3,
+        "mom_pct": 48.4,
+        "detail": "雙增 | YoY:42% MoM:48%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1438",
+        "name": "三地開發",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 197558.0,
+        "yoy_pct": 81874.3,
+        "mom_pct": 17321.3,
+        "detail": "雙增 | YoY:81874% MoM:17321%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1444",
+        "name": "力麗",
+        "industry": "紡織纖維",
+        "source": "TWSE",
+        "revenue": 950193.0,
+        "yoy_pct": 32.5,
+        "mom_pct": 42.8,
+        "detail": "雙增 | YoY:33% MoM:43%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1447",
+        "name": "力鵬",
+        "industry": "紡織纖維",
+        "source": "TWSE",
+        "revenue": 3871493.0,
+        "yoy_pct": 35.6,
+        "mom_pct": 124.7,
+        "detail": "雙增 | YoY:36% MoM:125%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1451",
+        "name": "年興",
+        "industry": "紡織纖維",
+        "source": "TWSE",
+        "revenue": 518409.0,
+        "yoy_pct": 14.2,
+        "mom_pct": 12.9,
+        "detail": "雙增 | YoY:14% MoM:13%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1452",
+        "name": "宏益",
+        "industry": "紡織纖維",
+        "source": "TWSE",
+        "revenue": 161166.0,
+        "yoy_pct": 40.4,
+        "mom_pct": 114.2,
+        "detail": "雙增 | YoY:40% MoM:114%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1465",
+        "name": "偉全",
+        "industry": "紡織纖維",
+        "source": "TWSE",
+        "revenue": 34511.0,
+        "yoy_pct": 37.8,
+        "mom_pct": 70.7,
+        "detail": "雙增 | YoY:38% MoM:71%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1467",
+        "name": "南緯",
+        "industry": "紡織纖維",
+        "source": "TWSE",
+        "revenue": 462982.0,
+        "yoy_pct": 15.4,
+        "mom_pct": 23.9,
+        "detail": "雙增 | YoY:15% MoM:24%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1474",
+        "name": "弘裕",
+        "industry": "紡織纖維",
+        "source": "TWSE",
+        "revenue": 302809.0,
+        "yoy_pct": 11.0,
+        "mom_pct": 103.5,
+        "detail": "雙增 | YoY:11% MoM:104%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1475",
+        "name": "業旺",
+        "industry": "紡織纖維",
+        "source": "TWSE",
+        "revenue": 130790.0,
+        "yoy_pct": 19.9,
+        "mom_pct": 48.7,
+        "detail": "雙增 | YoY:20% MoM:49%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1503",
+        "name": "士電",
+        "industry": "電機機械",
+        "source": "TWSE",
+        "revenue": 4230241.0,
+        "yoy_pct": 35.3,
+        "mom_pct": 48.7,
+        "detail": "雙增 | YoY:35% MoM:49%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1521",
+        "name": "大億",
+        "industry": "汽車工業",
+        "source": "TWSE",
+        "revenue": 349115.0,
+        "yoy_pct": 11.1,
+        "mom_pct": 22.5,
+        "detail": "雙增 | YoY:11% MoM:23%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1522",
+        "name": "堤維西",
+        "industry": "汽車工業",
+        "source": "TWSE",
+        "revenue": 2494987.0,
+        "yoy_pct": 46.7,
+        "mom_pct": 31.3,
+        "detail": "雙增 | YoY:47% MoM:31%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1528",
+        "name": "恩德",
+        "industry": "電機機械",
+        "source": "TWSE",
+        "revenue": 277042.0,
+        "yoy_pct": 30.9,
+        "mom_pct": 25.6,
+        "detail": "雙增 | YoY:31% MoM:26%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1532",
+        "name": "勤美",
+        "industry": "電機機械",
+        "source": "TWSE",
+        "revenue": 1237316.0,
+        "yoy_pct": 14.1,
+        "mom_pct": 27.1,
+        "detail": "雙增 | YoY:14% MoM:27%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1568",
+        "name": "倉佑",
+        "industry": "汽車工業",
+        "source": "TWSE",
+        "revenue": 109977.0,
+        "yoy_pct": 27.0,
+        "mom_pct": 64.4,
+        "detail": "雙增 | YoY:27% MoM:64%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1583",
+        "name": "程泰",
+        "industry": "電機機械",
+        "source": "TWSE",
+        "revenue": 414405.0,
+        "yoy_pct": 44.3,
+        "mom_pct": 101.3,
+        "detail": "雙增 | YoY:44% MoM:101%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1590",
+        "name": "亞德客-KY",
+        "industry": "電機機械",
+        "source": "TWSE",
+        "revenue": 4139710.0,
+        "yoy_pct": 18.1,
+        "mom_pct": 90.6,
+        "detail": "雙增 | YoY:18% MoM:91%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1597",
+        "name": "直得",
+        "industry": "電機機械",
+        "source": "TWSE",
+        "revenue": 120499.0,
+        "yoy_pct": 38.5,
+        "mom_pct": 13.4,
+        "detail": "雙增 | YoY:39% MoM:13%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1598",
+        "name": "岱宇",
+        "industry": "運動休閒",
+        "source": "TWSE",
+        "revenue": 673288.0,
+        "yoy_pct": 16.8,
+        "mom_pct": 38.2,
+        "detail": "雙增 | YoY:17% MoM:38%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1608",
+        "name": "華榮",
+        "industry": "電器電纜",
+        "source": "TWSE",
+        "revenue": 1288123.0,
+        "yoy_pct": 14.1,
+        "mom_pct": 31.0,
+        "detail": "雙增 | YoY:14% MoM:31%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1609",
+        "name": "大亞",
+        "industry": "電器電纜",
+        "source": "TWSE",
+        "revenue": 3088815.0,
+        "yoy_pct": 20.0,
+        "mom_pct": 35.2,
+        "detail": "雙增 | YoY:20% MoM:35%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1617",
+        "name": "榮星",
+        "industry": "電器電纜",
+        "source": "TWSE",
+        "revenue": 402765.0,
+        "yoy_pct": 45.5,
+        "mom_pct": 115.2,
+        "detail": "雙增 | YoY:45% MoM:115%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1711",
+        "name": "永光",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 837200.0,
+        "yoy_pct": 28.2,
+        "mom_pct": 73.0,
+        "detail": "雙增 | YoY:28% MoM:73%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1713",
+        "name": "國化",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 53239.0,
+        "yoy_pct": 23.3,
+        "mom_pct": 86.5,
+        "detail": "雙增 | YoY:23% MoM:86%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1714",
+        "name": "和桐",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 2799580.0,
+        "yoy_pct": 43.0,
+        "mom_pct": 51.4,
+        "detail": "雙增 | YoY:43% MoM:51%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1722",
+        "name": "台肥",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 1373996.0,
+        "yoy_pct": 18.9,
+        "mom_pct": 43.1,
+        "detail": "雙增 | YoY:19% MoM:43%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1723",
+        "name": "中碳",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 528456.0,
+        "yoy_pct": 13.8,
+        "mom_pct": 27.6,
+        "detail": "雙增 | YoY:14% MoM:28%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1725",
+        "name": "元禎",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 957345.0,
+        "yoy_pct": 22.7,
+        "mom_pct": 96.3,
+        "detail": "雙增 | YoY:23% MoM:96%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1726",
+        "name": "永記",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 1037376.0,
+        "yoy_pct": 15.1,
+        "mom_pct": 60.1,
+        "detail": "雙增 | YoY:15% MoM:60%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1727",
+        "name": "中華化",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 231340.0,
+        "yoy_pct": 53.2,
+        "mom_pct": 36.7,
+        "detail": "雙增 | YoY:53% MoM:37%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1732",
+        "name": "毛寶",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 59677.0,
+        "yoy_pct": 21.1,
+        "mom_pct": 23.8,
+        "detail": "雙增 | YoY:21% MoM:24%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1735",
+        "name": "日勝化",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 262636.0,
+        "yoy_pct": 11.4,
+        "mom_pct": 130.2,
+        "detail": "雙增 | YoY:11% MoM:130%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1736",
+        "name": "喬山",
+        "industry": "運動休閒",
+        "source": "TWSE",
+        "revenue": 4267265.0,
+        "yoy_pct": 11.5,
+        "mom_pct": 18.2,
+        "detail": "雙增 | YoY:12% MoM:18%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1737",
+        "name": "臺鹽",
+        "industry": "食品工業",
+        "source": "TWSE",
+        "revenue": 297553.0,
+        "yoy_pct": 19.3,
+        "mom_pct": 38.5,
+        "detail": "雙增 | YoY:19% MoM:39%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1762",
+        "name": "中化生",
+        "industry": "生技醫療業",
+        "source": "TWSE",
+        "revenue": 131435.0,
+        "yoy_pct": 108.9,
+        "mom_pct": 27.8,
+        "detail": "雙增 | YoY:109% MoM:28%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1773",
+        "name": "勝一",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 1122280.0,
+        "yoy_pct": 17.1,
+        "mom_pct": 24.3,
+        "detail": "雙增 | YoY:17% MoM:24%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1776",
+        "name": "展宇",
+        "industry": "化學工業",
+        "source": "TWSE",
+        "revenue": 128484.0,
+        "yoy_pct": 17.8,
+        "mom_pct": 130.9,
+        "detail": "雙增 | YoY:18% MoM:131%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1795",
+        "name": "美時",
+        "industry": "生技醫療業",
+        "source": "TWSE",
+        "revenue": 4354277.0,
+        "yoy_pct": 173.6,
+        "mom_pct": 94.5,
+        "detail": "雙增 | YoY:174% MoM:95%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1802",
+        "name": "台玻",
+        "industry": "玻璃陶瓷",
+        "source": "TWSE",
+        "revenue": 4138404.0,
+        "yoy_pct": 16.4,
+        "mom_pct": 69.8,
+        "detail": "雙增 | YoY:16% MoM:70%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1805",
+        "name": "寶徠",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 103470.0,
+        "yoy_pct": 67527.5,
+        "mom_pct": 94826.6,
+        "detail": "雙增 | YoY:67527% MoM:94827%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1808",
+        "name": "潤隆",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 2201874.0,
+        "yoy_pct": 68260.0,
+        "mom_pct": 33.2,
+        "detail": "雙增 | YoY:68260% MoM:33%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1904",
+        "name": "正隆",
+        "industry": "造紙工業",
+        "source": "TWSE",
+        "revenue": 4148502.0,
+        "yoy_pct": 10.3,
+        "mom_pct": 60.3,
+        "detail": "雙增 | YoY:10% MoM:60%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1906",
+        "name": "寶隆",
+        "industry": "造紙工業",
+        "source": "TWSE",
+        "revenue": 357786.0,
+        "yoy_pct": 50.1,
+        "mom_pct": 93.8,
+        "detail": "雙增 | YoY:50% MoM:94%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2010",
+        "name": "春源",
+        "industry": "鋼鐵工業",
+        "source": "TWSE",
+        "revenue": 2377195.0,
+        "yoy_pct": 15.8,
+        "mom_pct": 22.7,
+        "detail": "雙增 | YoY:16% MoM:23%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2022",
+        "name": "聚亨",
+        "industry": "鋼鐵工業",
+        "source": "TWSE",
+        "revenue": 1239005.0,
+        "yoy_pct": 52.5,
+        "mom_pct": 16.4,
+        "detail": "雙增 | YoY:52% MoM:16%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2025",
+        "name": "千興",
+        "industry": "鋼鐵工業",
+        "source": "TWSE",
+        "revenue": 162182.0,
+        "yoy_pct": 127.2,
+        "mom_pct": 216.7,
+        "detail": "雙增 | YoY:127% MoM:217%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2027",
+        "name": "大成鋼",
+        "industry": "鋼鐵工業",
+        "source": "TWSE",
+        "revenue": 11376755.0,
+        "yoy_pct": 25.1,
+        "mom_pct": 14.0,
+        "detail": "雙增 | YoY:25% MoM:14%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2028",
+        "name": "威致",
+        "industry": "鋼鐵工業",
+        "source": "TWSE",
+        "revenue": 997107.0,
+        "yoy_pct": 15.8,
+        "mom_pct": 106.0,
+        "detail": "雙增 | YoY:16% MoM:106%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2033",
+        "name": "佳大",
+        "industry": "鋼鐵工業",
+        "source": "TWSE",
+        "revenue": 67672.0,
+        "yoy_pct": 22.5,
+        "mom_pct": 81.4,
+        "detail": "雙增 | YoY:23% MoM:81%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2049",
+        "name": "上銀",
+        "industry": "電機機械",
+        "source": "TWSE",
+        "revenue": 2357195.0,
+        "yoy_pct": 17.4,
+        "mom_pct": 25.9,
+        "detail": "雙增 | YoY:17% MoM:26%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2062",
+        "name": "橋椿",
+        "industry": "居家生活",
+        "source": "TWSE",
+        "revenue": 674472.0,
+        "yoy_pct": 20.2,
+        "mom_pct": 75.6,
+        "detail": "雙增 | YoY:20% MoM:76%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2101",
+        "name": "南港",
+        "industry": "橡膠工業",
+        "source": "TWSE",
+        "revenue": 4305990.0,
+        "yoy_pct": 438.1,
+        "mom_pct": 753.6,
+        "detail": "雙增 | YoY:438% MoM:754%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2108",
+        "name": "南帝",
+        "industry": "橡膠工業",
+        "source": "TWSE",
+        "revenue": 981324.0,
+        "yoy_pct": 23.8,
+        "mom_pct": 31.7,
+        "detail": "雙增 | YoY:24% MoM:32%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2211",
+        "name": "長榮鋼",
+        "industry": "鋼鐵工業",
+        "source": "TWSE",
+        "revenue": 1333276.0,
+        "yoy_pct": 15.7,
+        "mom_pct": 34.0,
+        "detail": "雙增 | YoY:16% MoM:34%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2236",
+        "name": "百達-KY",
+        "industry": "汽車工業",
+        "source": "TWSE",
+        "revenue": 958419.0,
+        "yoy_pct": 68.6,
+        "mom_pct": 18.4,
+        "detail": "雙增 | YoY:69% MoM:18%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2248",
+        "name": "華勝-KY",
+        "industry": "汽車工業",
+        "source": "TWSE",
+        "revenue": 256118.0,
+        "yoy_pct": 64.5,
+        "mom_pct": 78.1,
+        "detail": "雙增 | YoY:64% MoM:78%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2301",
+        "name": "光寶科",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 16483767.0,
+        "yoy_pct": 23.4,
+        "mom_pct": 28.7,
+        "detail": "雙增 | YoY:23% MoM:29%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2308",
+        "name": "台達電",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 59779988.0,
+        "yoy_pct": 37.6,
+        "mom_pct": 19.8,
+        "detail": "雙增 | YoY:38% MoM:20%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2313",
+        "name": "華通",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 6943219.0,
+        "yoy_pct": 11.1,
+        "mom_pct": 33.5,
+        "detail": "雙增 | YoY:11% MoM:33%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2314",
+        "name": "台揚",
+        "industry": "通信網路業",
+        "source": "TWSE",
+        "revenue": 158726.0,
+        "yoy_pct": 98.1,
+        "mom_pct": 106.5,
+        "detail": "雙增 | YoY:98% MoM:107%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2316",
+        "name": "楠梓電",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 403900.0,
+        "yoy_pct": 16.5,
+        "mom_pct": 68.9,
+        "detail": "雙增 | YoY:16% MoM:69%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2317",
+        "name": "鴻海",
+        "industry": "其他電子業",
+        "source": "TWSE",
+        "revenue": 803737716.0,
+        "yoy_pct": 45.6,
+        "mom_pct": 34.9,
+        "detail": "雙增 | YoY:46% MoM:35%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2321",
+        "name": "東訊",
+        "industry": "通信網路業",
+        "source": "TWSE",
+        "revenue": 68358.0,
+        "yoy_pct": 12.9,
+        "mom_pct": 45.3,
+        "detail": "雙增 | YoY:13% MoM:45%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2324",
+        "name": "仁寶",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 89197731.0,
+        "yoy_pct": 17.0,
+        "mom_pct": 69.1,
+        "detail": "雙增 | YoY:17% MoM:69%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2327",
+        "name": "國巨*",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 13630196.0,
+        "yoy_pct": 22.8,
+        "mom_pct": 18.5,
+        "detail": "雙增 | YoY:23% MoM:18%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2329",
+        "name": "華泰",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 1764467.0,
+        "yoy_pct": 10.1,
+        "mom_pct": 24.5,
+        "detail": "雙增 | YoY:10% MoM:24%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2330",
+        "name": "台積電",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 415191699.0,
+        "yoy_pct": 45.2,
+        "mom_pct": 30.7,
+        "detail": "雙增 | YoY:45% MoM:31%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2331",
+        "name": "精英",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 1815423.0,
+        "yoy_pct": 30.8,
+        "mom_pct": 26.4,
+        "detail": "雙增 | YoY:31% MoM:26%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2337",
+        "name": "旺宏",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 4421909.0,
+        "yoy_pct": 96.5,
+        "mom_pct": 45.9,
+        "detail": "雙增 | YoY:96% MoM:46%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2344",
+        "name": "華邦電",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 14501399.0,
+        "yoy_pct": 91.5,
+        "mom_pct": 21.1,
+        "detail": "雙增 | YoY:91% MoM:21%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2347",
+        "name": "聯強",
+        "industry": "電子通路業",
+        "source": "TWSE",
+        "revenue": 56059078.0,
+        "yoy_pct": 64.4,
+        "mom_pct": 88.6,
+        "detail": "雙增 | YoY:64% MoM:89%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2351",
+        "name": "順德",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 1057713.0,
+        "yoy_pct": 13.2,
+        "mom_pct": 29.8,
+        "detail": "雙增 | YoY:13% MoM:30%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2352",
+        "name": "佳世達",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 19508490.0,
+        "yoy_pct": 10.4,
+        "mom_pct": 35.5,
+        "detail": "雙增 | YoY:10% MoM:36%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2356",
+        "name": "英業達",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 87563474.0,
+        "yoy_pct": 47.1,
+        "mom_pct": 71.9,
+        "detail": "雙增 | YoY:47% MoM:72%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2357",
+        "name": "華碩",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 86083764.0,
+        "yoy_pct": 33.8,
+        "mom_pct": 58.4,
+        "detail": "雙增 | YoY:34% MoM:58%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2360",
+        "name": "致茂",
+        "industry": "其他電子業",
+        "source": "TWSE",
+        "revenue": 4366231.0,
+        "yoy_pct": 63.5,
+        "mom_pct": 19.1,
+        "detail": "雙增 | YoY:63% MoM:19%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2368",
+        "name": "金像電",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 7384878.0,
+        "yoy_pct": 63.1,
+        "mom_pct": 24.3,
+        "detail": "雙增 | YoY:63% MoM:24%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2369",
+        "name": "菱生",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 595752.0,
+        "yoy_pct": 33.4,
+        "mom_pct": 19.3,
+        "detail": "雙增 | YoY:33% MoM:19%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2374",
+        "name": "佳能",
+        "industry": "光電業",
+        "source": "TWSE",
+        "revenue": 918553.0,
+        "yoy_pct": 92.2,
+        "mom_pct": 38.4,
+        "detail": "雙增 | YoY:92% MoM:38%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2376",
+        "name": "技嘉",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 39028800.0,
+        "yoy_pct": 74.8,
+        "mom_pct": 18.6,
+        "detail": "雙增 | YoY:75% MoM:19%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2380",
+        "name": "虹光",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 313065.0,
+        "yoy_pct": 13.3,
+        "mom_pct": 86.9,
+        "detail": "雙增 | YoY:13% MoM:87%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2382",
+        "name": "廣達",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 362803048.0,
+        "yoy_pct": 88.4,
+        "mom_pct": 68.3,
+        "detail": "雙增 | YoY:88% MoM:68%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2383",
+        "name": "台光電",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 12010861.0,
+        "yoy_pct": 56.6,
+        "mom_pct": 17.8,
+        "detail": "雙增 | YoY:57% MoM:18%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2387",
+        "name": "精元",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 1707044.0,
+        "yoy_pct": 12.8,
+        "mom_pct": 67.4,
+        "detail": "雙增 | YoY:13% MoM:67%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2388",
+        "name": "威盛",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 1128407.0,
+        "yoy_pct": 69.4,
+        "mom_pct": 89.2,
+        "detail": "雙增 | YoY:69% MoM:89%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2395",
+        "name": "研華",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 7698968.0,
+        "yoy_pct": 21.8,
+        "mom_pct": 36.8,
+        "detail": "雙增 | YoY:22% MoM:37%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2397",
+        "name": "友通",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 1143374.0,
+        "yoy_pct": 29.1,
+        "mom_pct": 44.1,
+        "detail": "雙增 | YoY:29% MoM:44%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2401",
+        "name": "凌陽",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 724523.0,
+        "yoy_pct": 22.1,
+        "mom_pct": 55.7,
+        "detail": "雙增 | YoY:22% MoM:56%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2402",
+        "name": "毅嘉",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 1016239.0,
+        "yoy_pct": 13.5,
+        "mom_pct": 22.6,
+        "detail": "雙增 | YoY:13% MoM:23%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2404",
+        "name": "漢唐",
+        "industry": "其他電子業",
+        "source": "TWSE",
+        "revenue": 7692593.0,
+        "yoy_pct": 100.6,
+        "mom_pct": 17.1,
+        "detail": "雙增 | YoY:101% MoM:17%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2406",
+        "name": "國碩",
+        "industry": "光電業",
+        "source": "TWSE",
+        "revenue": 993720.0,
+        "yoy_pct": 160.1,
+        "mom_pct": 22.5,
+        "detail": "雙增 | YoY:160% MoM:23%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2408",
+        "name": "南亞科",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 18169760.0,
+        "yoy_pct": 560.0,
+        "mom_pct": 16.4,
+        "detail": "雙增 | YoY:560% MoM:16%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2413",
+        "name": "環科",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 317887.0,
+        "yoy_pct": 17.6,
+        "mom_pct": 52.1,
+        "detail": "雙增 | YoY:18% MoM:52%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2414",
+        "name": "精技",
+        "industry": "電子通路業",
+        "source": "TWSE",
+        "revenue": 3294780.0,
+        "yoy_pct": 47.3,
+        "mom_pct": 74.2,
+        "detail": "雙增 | YoY:47% MoM:74%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2417",
+        "name": "圓剛",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 393898.0,
+        "yoy_pct": 33.0,
+        "mom_pct": 56.3,
+        "detail": "雙增 | YoY:33% MoM:56%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2419",
+        "name": "仲琦",
+        "industry": "通信網路業",
+        "source": "TWSE",
+        "revenue": 1007693.0,
+        "yoy_pct": 55.0,
+        "mom_pct": 100.6,
+        "detail": "雙增 | YoY:55% MoM:101%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2421",
+        "name": "建準",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 1917719.0,
+        "yoy_pct": 22.5,
+        "mom_pct": 44.9,
+        "detail": "雙增 | YoY:22% MoM:45%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2423",
+        "name": "固緯",
+        "industry": "其他電子業",
+        "source": "TWSE",
+        "revenue": 368687.0,
+        "yoy_pct": 34.8,
+        "mom_pct": 67.0,
+        "detail": "雙增 | YoY:35% MoM:67%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2425",
+        "name": "承啟",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 1539516.0,
+        "yoy_pct": 61.2,
+        "mom_pct": 65.0,
+        "detail": "雙增 | YoY:61% MoM:65%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2428",
+        "name": "興勤",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 798392.0,
+        "yoy_pct": 11.3,
+        "mom_pct": 76.9,
+        "detail": "雙增 | YoY:11% MoM:77%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2429",
+        "name": "銘旺科",
+        "industry": "光電業",
+        "source": "TWSE",
+        "revenue": 46071.0,
+        "yoy_pct": 30.0,
+        "mom_pct": 211.9,
+        "detail": "雙增 | YoY:30% MoM:212%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2432",
+        "name": "倚天酷碁-創",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 420623.0,
+        "yoy_pct": 29.2,
+        "mom_pct": 64.1,
+        "detail": "雙增 | YoY:29% MoM:64%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2436",
+        "name": "偉詮電",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 351534.0,
+        "yoy_pct": 25.8,
+        "mom_pct": 24.8,
+        "detail": "雙增 | YoY:26% MoM:25%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2438",
+        "name": "翔耀",
+        "industry": "光電業",
+        "source": "TWSE",
+        "revenue": 54549.0,
+        "yoy_pct": 41.3,
+        "mom_pct": 52.4,
+        "detail": "雙增 | YoY:41% MoM:52%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2439",
+        "name": "美律",
+        "industry": "通信網路業",
+        "source": "TWSE",
+        "revenue": 3908500.0,
+        "yoy_pct": 24.0,
+        "mom_pct": 24.3,
+        "detail": "雙增 | YoY:24% MoM:24%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2440",
+        "name": "太空梭",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 436121.0,
+        "yoy_pct": 14.6,
+        "mom_pct": 168.3,
+        "detail": "雙增 | YoY:15% MoM:168%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2441",
+        "name": "超豐",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 1649046.0,
+        "yoy_pct": 14.3,
+        "mom_pct": 12.1,
+        "detail": "雙增 | YoY:14% MoM:12%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2442",
+        "name": "新美齊",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 1647587.0,
+        "yoy_pct": 610.9,
+        "mom_pct": 13.2,
+        "detail": "雙增 | YoY:611% MoM:13%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2449",
+        "name": "京元電子",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 3597874.0,
+        "yoy_pct": 36.1,
+        "mom_pct": 11.6,
+        "detail": "雙增 | YoY:36% MoM:12%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2450",
+        "name": "神腦",
+        "industry": "通信網路業",
+        "source": "TWSE",
+        "revenue": 3289861.0,
+        "yoy_pct": 31.4,
+        "mom_pct": 39.8,
+        "detail": "雙增 | YoY:31% MoM:40%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2451",
+        "name": "創見",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 5683818.0,
+        "yoy_pct": 380.6,
+        "mom_pct": 78.5,
+        "detail": "雙增 | YoY:381% MoM:78%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2454",
+        "name": "聯發科",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 63219184.0,
+        "yoy_pct": 12.9,
+        "mom_pct": 62.3,
+        "detail": "雙增 | YoY:13% MoM:62%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2458",
+        "name": "義隆",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 1223041.0,
+        "yoy_pct": 19.8,
+        "mom_pct": 31.0,
+        "detail": "雙增 | YoY:20% MoM:31%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2460",
+        "name": "建通",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 456969.0,
+        "yoy_pct": 42.9,
+        "mom_pct": 99.5,
+        "detail": "雙增 | YoY:43% MoM:99%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2465",
+        "name": "麗臺",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 624910.0,
+        "yoy_pct": 83.1,
+        "mom_pct": 30.8,
+        "detail": "雙增 | YoY:83% MoM:31%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2467",
+        "name": "志聖",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 893498.0,
+        "yoy_pct": 77.6,
+        "mom_pct": 138.7,
+        "detail": "雙增 | YoY:78% MoM:139%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2476",
+        "name": "鉅祥",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 840594.0,
+        "yoy_pct": 42.0,
+        "mom_pct": 42.6,
+        "detail": "雙增 | YoY:42% MoM:43%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2478",
+        "name": "大毅",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 561148.0,
+        "yoy_pct": 13.5,
+        "mom_pct": 59.9,
+        "detail": "雙增 | YoY:14% MoM:60%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2481",
+        "name": "強茂",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 1242276.0,
+        "yoy_pct": 19.1,
+        "mom_pct": 32.8,
+        "detail": "雙增 | YoY:19% MoM:33%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2483",
+        "name": "百容",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 174999.0,
+        "yoy_pct": 17.8,
+        "mom_pct": 39.9,
+        "detail": "雙增 | YoY:18% MoM:40%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2485",
+        "name": "兆赫",
+        "industry": "通信網路業",
+        "source": "TWSE",
+        "revenue": 413129.0,
+        "yoy_pct": 200.1,
+        "mom_pct": 63.7,
+        "detail": "雙增 | YoY:200% MoM:64%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2486",
+        "name": "一詮",
+        "industry": "光電業",
+        "source": "TWSE",
+        "revenue": 614726.0,
+        "yoy_pct": 19.5,
+        "mom_pct": 37.5,
+        "detail": "雙增 | YoY:19% MoM:38%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2489",
+        "name": "瑞軒",
+        "industry": "光電業",
+        "source": "TWSE",
+        "revenue": 2355352.0,
+        "yoy_pct": 11.2,
+        "mom_pct": 44.0,
+        "detail": "雙增 | YoY:11% MoM:44%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2492",
+        "name": "華新科",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 3403151.0,
+        "yoy_pct": 11.1,
+        "mom_pct": 27.3,
+        "detail": "雙增 | YoY:11% MoM:27%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2495",
+        "name": "普安",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 146573.0,
+        "yoy_pct": 61.0,
+        "mom_pct": 49.7,
+        "detail": "雙增 | YoY:61% MoM:50%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2501",
+        "name": "國建",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 4524900.0,
+        "yoy_pct": 286.2,
+        "mom_pct": 31.9,
+        "detail": "雙增 | YoY:286% MoM:32%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2506",
+        "name": "太設",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 192170.0,
+        "yoy_pct": 115.3,
+        "mom_pct": 190.5,
+        "detail": "雙增 | YoY:115% MoM:190%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2511",
+        "name": "太子",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 1086528.0,
+        "yoy_pct": 90.4,
+        "mom_pct": 79.8,
+        "detail": "雙增 | YoY:90% MoM:80%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2515",
+        "name": "中工",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 1947354.0,
+        "yoy_pct": 30.2,
+        "mom_pct": 26.8,
+        "detail": "雙增 | YoY:30% MoM:27%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2527",
+        "name": "宏璟",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 4526413.0,
+        "yoy_pct": 3888.2,
+        "mom_pct": 14994.1,
+        "detail": "雙增 | YoY:3888% MoM:14994%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2530",
+        "name": "華建",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 150655.0,
+        "yoy_pct": 1040.7,
+        "mom_pct": 17920.9,
+        "detail": "雙增 | YoY:1041% MoM:17921%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2535",
+        "name": "達欣工",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 3118623.0,
+        "yoy_pct": 24.7,
+        "mom_pct": 121.9,
+        "detail": "雙增 | YoY:25% MoM:122%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2537",
+        "name": "聯上發",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 301990.0,
+        "yoy_pct": 60177.4,
+        "mom_pct": 16.5,
+        "detail": "雙增 | YoY:60177% MoM:16%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2538",
+        "name": "基泰",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 31859.0,
+        "yoy_pct": 61.1,
+        "mom_pct": 52.3,
+        "detail": "雙增 | YoY:61% MoM:52%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2542",
+        "name": "興富發",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 7193130.0,
+        "yoy_pct": 1537.7,
+        "mom_pct": 69.7,
+        "detail": "雙增 | YoY:1538% MoM:70%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2543",
+        "name": "皇昌",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 1188640.0,
+        "yoy_pct": 20.4,
+        "mom_pct": 77.2,
+        "detail": "雙增 | YoY:20% MoM:77%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2545",
+        "name": "皇翔",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 1153426.0,
+        "yoy_pct": 95.5,
+        "mom_pct": 57.6,
+        "detail": "雙增 | YoY:96% MoM:58%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2547",
+        "name": "日勝生",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 694835.0,
+        "yoy_pct": 51.4,
+        "mom_pct": 50.5,
+        "detail": "雙增 | YoY:51% MoM:50%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2548",
+        "name": "華固",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "revenue": 1965711.0,
+        "yoy_pct": 81838.8,
+        "mom_pct": 72.8,
+        "detail": "雙增 | YoY:81839% MoM:73%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2605",
+        "name": "新興",
+        "industry": "航運業",
+        "source": "TWSE",
+        "revenue": 529767.0,
+        "yoy_pct": 34.7,
+        "mom_pct": 21.4,
+        "detail": "雙增 | YoY:35% MoM:21%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2606",
+        "name": "裕民",
+        "industry": "航運業",
+        "source": "TWSE",
+        "revenue": 1467421.0,
+        "yoy_pct": 17.7,
+        "mom_pct": 29.0,
+        "detail": "雙增 | YoY:18% MoM:29%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2610",
+        "name": "華航",
+        "industry": "航運業",
+        "source": "TWSE",
+        "revenue": 20785205.0,
+        "yoy_pct": 20.0,
+        "mom_pct": 13.1,
+        "detail": "雙增 | YoY:20% MoM:13%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2611",
+        "name": "志信",
+        "industry": "航運業",
+        "source": "TWSE",
+        "revenue": 220495.0,
+        "yoy_pct": 307.7,
+        "mom_pct": 184.4,
+        "detail": "雙增 | YoY:308% MoM:184%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2616",
+        "name": "山隆",
+        "industry": "油電燃氣業",
+        "source": "TWSE",
+        "revenue": 770562.0,
+        "yoy_pct": 11.5,
+        "mom_pct": 45.6,
+        "detail": "雙增 | YoY:12% MoM:46%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2617",
+        "name": "台航",
+        "industry": "航運業",
+        "source": "TWSE",
+        "revenue": 406479.0,
+        "yoy_pct": 11.9,
+        "mom_pct": 23.6,
+        "detail": "雙增 | YoY:12% MoM:24%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2618",
+        "name": "長榮航",
+        "industry": "航運業",
+        "source": "TWSE",
+        "revenue": 21587609.0,
+        "yoy_pct": 18.5,
+        "mom_pct": 13.6,
+        "detail": "雙增 | YoY:18% MoM:14%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2637",
+        "name": "慧洋-KY",
+        "industry": "航運業",
+        "source": "TWSE",
+        "revenue": 1723874.0,
+        "yoy_pct": 34.9,
+        "mom_pct": 35.6,
+        "detail": "雙增 | YoY:35% MoM:36%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2645",
+        "name": "長榮航太",
+        "industry": "航運業",
+        "source": "TWSE",
+        "revenue": 1697939.0,
+        "yoy_pct": 12.2,
+        "mom_pct": 28.4,
+        "detail": "雙增 | YoY:12% MoM:28%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2801",
+        "name": "彰銀",
+        "industry": "金融保險業",
+        "source": "TWSE",
+        "revenue": 4394752.0,
+        "yoy_pct": 23.7,
+        "mom_pct": 17.1,
+        "detail": "雙增 | YoY:24% MoM:17%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2884",
+        "name": "玉山金",
+        "industry": "金融保險業",
+        "source": "TWSE",
+        "revenue": 8441262.0,
+        "yoy_pct": 10.2,
+        "mom_pct": 12.9,
+        "detail": "雙增 | YoY:10% MoM:13%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2890",
+        "name": "永豐金",
+        "industry": "金融保險業",
+        "source": "TWSE",
+        "revenue": 8362826.0,
+        "yoy_pct": 50.7,
+        "mom_pct": 19.1,
+        "detail": "雙增 | YoY:51% MoM:19%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2897",
+        "name": "王道銀行",
+        "industry": "金融保險業",
+        "source": "TWSE",
+        "revenue": 965665.0,
+        "yoy_pct": 38.2,
+        "mom_pct": 18.5,
+        "detail": "雙增 | YoY:38% MoM:19%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3002",
+        "name": "歐格",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 70495.0,
+        "yoy_pct": 15.5,
+        "mom_pct": 60.4,
+        "detail": "雙增 | YoY:16% MoM:60%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3003",
+        "name": "健和興",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 471149.0,
+        "yoy_pct": 25.6,
+        "mom_pct": 42.6,
+        "detail": "雙增 | YoY:26% MoM:43%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3004",
+        "name": "豐達科",
+        "industry": "鋼鐵工業",
+        "source": "TWSE",
+        "revenue": 452769.0,
+        "yoy_pct": 31.2,
+        "mom_pct": 25.1,
+        "detail": "雙增 | YoY:31% MoM:25%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3006",
+        "name": "晶豪科",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 3025805.0,
+        "yoy_pct": 188.1,
+        "mom_pct": 44.4,
+        "detail": "雙增 | YoY:188% MoM:44%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3008",
+        "name": "大立光",
+        "industry": "光電業",
+        "source": "TWSE",
+        "revenue": 5419732.0,
+        "yoy_pct": 10.8,
+        "mom_pct": 17.5,
+        "detail": "雙增 | YoY:11% MoM:17%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3010",
+        "name": "華立",
+        "industry": "電子通路業",
+        "source": "TWSE",
+        "revenue": 7615816.0,
+        "yoy_pct": 23.7,
+        "mom_pct": 14.9,
+        "detail": "雙增 | YoY:24% MoM:15%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3013",
+        "name": "晟銘電",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 1177608.0,
+        "yoy_pct": 40.8,
+        "mom_pct": 128.1,
+        "detail": "雙增 | YoY:41% MoM:128%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3016",
+        "name": "嘉晶",
+        "industry": "半導體業",
+        "source": "TWSE",
+        "revenue": 379287.0,
+        "yoy_pct": 20.3,
+        "mom_pct": 13.6,
+        "detail": "雙增 | YoY:20% MoM:14%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3017",
+        "name": "奇鋐",
+        "industry": "電腦及週邊設備業",
+        "source": "TWSE",
+        "revenue": 18017169.0,
+        "yoy_pct": 111.7,
+        "mom_pct": 28.5,
+        "detail": "雙增 | YoY:112% MoM:29%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3019",
+        "name": "亞光",
+        "industry": "光電業",
+        "source": "TWSE",
+        "revenue": 2226321.0,
+        "yoy_pct": 12.3,
+        "mom_pct": 30.2,
+        "detail": "雙增 | YoY:12% MoM:30%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3021",
+        "name": "鴻名",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 249976.0,
+        "yoy_pct": 34.7,
+        "mom_pct": 28.2,
+        "detail": "雙增 | YoY:35% MoM:28%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3025",
+        "name": "星通",
+        "industry": "通信網路業",
+        "source": "TWSE",
+        "revenue": 46161.0,
+        "yoy_pct": 85.8,
+        "mom_pct": 29.6,
+        "detail": "雙增 | YoY:86% MoM:30%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3028",
+        "name": "增你強",
+        "industry": "電子通路業",
+        "source": "TWSE",
+        "revenue": 7514995.0,
+        "yoy_pct": 125.2,
+        "mom_pct": 96.3,
+        "detail": "雙增 | YoY:125% MoM:96%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3029",
+        "name": "零壹",
+        "industry": "資訊服務業",
+        "source": "TWSE",
+        "revenue": 2317450.0,
+        "yoy_pct": 26.0,
+        "mom_pct": 33.0,
+        "detail": "雙增 | YoY:26% MoM:33%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3031",
+        "name": "佰鴻",
+        "industry": "光電業",
+        "source": "TWSE",
+        "revenue": 121481.0,
+        "yoy_pct": 22.7,
+        "mom_pct": 119.5,
+        "detail": "雙增 | YoY:23% MoM:119%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3033",
+        "name": "威健",
+        "industry": "電子通路業",
+        "source": "TWSE",
+        "revenue": 12744358.0,
+        "yoy_pct": 12.6,
+        "mom_pct": 99.8,
+        "detail": "雙增 | YoY:13% MoM:100%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3036",
+        "name": "文曄",
+        "industry": "電子通路業",
+        "source": "TWSE",
+        "revenue": 194101276.0,
+        "yoy_pct": 118.9,
+        "mom_pct": 85.9,
+        "detail": "雙增 | YoY:119% MoM:86%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3037",
+        "name": "欣興",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 13079019.0,
+        "yoy_pct": 23.3,
+        "mom_pct": 12.7,
+        "detail": "雙增 | YoY:23% MoM:13%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3044",
+        "name": "健鼎",
+        "industry": "電子零組件業",
+        "source": "TWSE",
+        "revenue": 7317712.0,
+        "yoy_pct": 24.4,
+        "mom_pct": 24.1,
+        "detail": "雙增 | YoY:24% MoM:24%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "3048",
+        "name": "益登",
+        "industry": "電子通路業",
+        "source": "TWSE",
+        "revenue": 12463552.0,
+        "yoy_pct": 26.7,
+        "mom_pct": 30.0,
+        "detail": "雙增 | YoY:27% MoM:30%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1569",
+        "name": "濱川",
+        "industry": "電腦及週邊設備業",
+        "source": "Tpex",
+        "revenue": 373329.0,
+        "yoy_pct": 11.4,
+        "mom_pct": 95.3,
+        "detail": "雙增 | YoY:11% MoM:95%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1570",
+        "name": "力肯",
+        "industry": "電機機械",
+        "source": "Tpex",
+        "revenue": 52171.0,
+        "yoy_pct": 40.0,
+        "mom_pct": 132.3,
+        "detail": "雙增 | YoY:40% MoM:132%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1591",
+        "name": "駿吉-KY",
+        "industry": "電機機械",
+        "source": "Tpex",
+        "revenue": 50028.0,
+        "yoy_pct": 2218.3,
+        "mom_pct": 30.6,
+        "detail": "雙增 | YoY:2218% MoM:31%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1599",
+        "name": "宏佳騰",
+        "industry": "電機機械",
+        "source": "Tpex",
+        "revenue": 246130.0,
+        "yoy_pct": 24.9,
+        "mom_pct": 38.3,
+        "detail": "雙增 | YoY:25% MoM:38%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1784",
+        "name": "訊聯",
+        "industry": "生技醫療業",
+        "source": "Tpex",
+        "revenue": 127172.0,
+        "yoy_pct": 14.7,
+        "mom_pct": 57.6,
+        "detail": "雙增 | YoY:15% MoM:58%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1785",
+        "name": "光洋科",
+        "industry": "其他電子業",
+        "source": "Tpex",
+        "revenue": 5956286.0,
+        "yoy_pct": 95.6,
+        "mom_pct": 51.2,
+        "detail": "雙增 | YoY:96% MoM:51%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "1799",
+        "name": "易威",
+        "industry": "生技醫療業",
+        "source": "Tpex",
+        "revenue": 100120.0,
+        "yoy_pct": 30.6,
+        "mom_pct": 69.3,
+        "detail": "雙增 | YoY:31% MoM:69%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2064",
+        "name": "晉椿",
+        "industry": "鋼鐵工業",
+        "source": "Tpex",
+        "revenue": 172401.0,
+        "yoy_pct": 23.7,
+        "mom_pct": 42.6,
+        "detail": "雙增 | YoY:24% MoM:43%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2070",
+        "name": "精湛",
+        "industry": "電機機械",
+        "source": "Tpex",
+        "revenue": 75686.0,
+        "yoy_pct": 22.8,
+        "mom_pct": 108.6,
+        "detail": "雙增 | YoY:23% MoM:109%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2641",
+        "name": "正德",
+        "industry": "航運業",
+        "source": "Tpex",
+        "revenue": 205976.0,
+        "yoy_pct": 11.4,
+        "mom_pct": 12.3,
+        "detail": "雙增 | YoY:11% MoM:12%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2755",
+        "name": "揚秦",
+        "industry": "觀光餐旅",
+        "source": "Tpex",
+        "revenue": 280921.0,
+        "yoy_pct": 17.9,
+        "mom_pct": 12.6,
+        "detail": "雙增 | YoY:18% MoM:13%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2756",
+        "name": "聯發國際",
+        "industry": "觀光餐旅",
+        "source": "Tpex",
+        "revenue": 114278.0,
+        "yoy_pct": 49.2,
+        "mom_pct": 26.0,
+        "detail": "雙增 | YoY:49% MoM:26%",
+        "flags": [
+          "雙增"
+        ]
+      },
+      {
+        "code": "2949",
+        "name": "欣新網",
+        "industry": "數位雲端",
+        "source": "Tpex",
+        "revenue": 583898.0,
+        "yoy_pct": 32.8,
+        "mom_pct": 52.0,
+        "detail": "雙增 | YoY:33% MoM:52%",
+        "flags": [
+          "雙增"
+        ]
+      }
+    ],
+    "重大訊息": [
+      {
+        "code": "6126",
+        "name": "信音",
+        "title": "代子公司信音電子(中國)股份有限公司公告董事會決議通過\r\n2025年度利潤分配預案的議案",
+        "level": "mid",
+        "flags": [
+          "[正現金股利]"
+        ],
+        "date": "1150411",
+        "source": "Tpex",
+        "detail": "[正現金股利]"
+      }
+    ],
+    "三大法人": [
+      {
+        "code": "1104",
+        "name": "環泥",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1232",
+        "name": "大統益",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1414",
+        "name": "東和",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1416",
+        "name": "廣豐",
+        "type": "內部人警示",
+        "detail": "董監事持股減少9.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1441",
+        "name": "大東",
+        "type": "內部人警示",
+        "detail": "董監事持股減少31.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1444",
+        "name": "力麗",
+        "type": "內部人警示",
+        "detail": "董監事持股減少13.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1464",
+        "name": "得力",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1470",
+        "name": "大統新創",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1525",
+        "name": "江申",
+        "type": "內部人警示",
+        "detail": "董監事持股減少25.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1528",
+        "name": "恩德",
+        "type": "內部人警示",
+        "detail": "董監事持股減少36.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1537",
+        "name": "廣隆",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1538",
+        "name": "正峰",
+        "type": "內部人警示",
+        "detail": "董監事持股減少40.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1597",
+        "name": "直得",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1603",
+        "name": "華電",
+        "type": "內部人警示",
+        "detail": "董監事持股減少18.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1616",
+        "name": "億泰",
+        "type": "內部人警示",
+        "detail": "董監事持股減少18.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1731",
+        "name": "美吾華",
+        "type": "內部人警示",
+        "detail": "董監事持股減少9.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1752",
+        "name": "南光",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1760",
+        "name": "寶齡富錦",
+        "type": "內部人警示",
+        "detail": "董監事持股減少20.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2006",
+        "name": "東和鋼鐵",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2007",
+        "name": "燁興",
+        "type": "內部人警示",
+        "detail": "董監事持股減少12.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2010",
+        "name": "春源",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2017",
+        "name": "官田鋼",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2032",
+        "name": "新鋼",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2069",
+        "name": "運錩",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2101",
+        "name": "南港",
+        "type": "內部人警示",
+        "detail": "董監事持股減少12.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2102",
+        "name": "泰豐",
+        "type": "內部人警示",
+        "detail": "董監事持股減少12.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2233",
+        "name": "宇隆",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2308",
+        "name": "台達電",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2314",
+        "name": "台揚",
+        "type": "內部人警示",
+        "detail": "董監事持股減少57.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2332",
+        "name": "友訊",
+        "type": "內部人警示",
+        "detail": "董監事持股減少17.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2338",
+        "name": "光罩",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2355",
+        "name": "敬鵬",
+        "type": "內部人警示",
+        "detail": "董監事持股減少15.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2360",
+        "name": "致茂",
+        "type": "內部人警示",
+        "detail": "董監事持股減少9.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2363",
+        "name": "矽統",
+        "type": "內部人警示",
+        "detail": "董監事持股減少34.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2373",
+        "name": "震旦行",
+        "type": "內部人警示",
+        "detail": "董監事持股減少19.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2380",
+        "name": "虹光",
+        "type": "內部人警示",
+        "detail": "董監事持股減少13.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2429",
+        "name": "銘旺科",
+        "type": "內部人警示",
+        "detail": "董監事持股減少14.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2460",
+        "name": "建通",
+        "type": "內部人警示",
+        "detail": "董監事持股減少27.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2461",
+        "name": "光群雷",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2466",
+        "name": "冠西電",
+        "type": "內部人警示",
+        "detail": "董監事持股減少33.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2489",
+        "name": "瑞軒",
+        "type": "內部人警示",
+        "detail": "董監事持股減少17.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2492",
+        "name": "華新科",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2501",
+        "name": "國建",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2535",
+        "name": "達欣工",
+        "type": "內部人警示",
+        "detail": "董監事持股減少19.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2607",
+        "name": "榮運",
+        "type": "內部人警示",
+        "detail": "董監事持股減少50.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2614",
+        "name": "東森",
+        "type": "內部人警示",
+        "detail": "董監事持股減少31.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2618",
+        "name": "長榮航",
+        "type": "內部人警示",
+        "detail": "董監事持股減少18.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2832",
+        "name": "台產",
+        "type": "內部人警示",
+        "detail": "董監事持股減少30.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2838",
+        "name": "聯邦銀",
+        "type": "內部人警示",
+        "detail": "董監事持股減少14.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2851",
+        "name": "中再保",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2911",
+        "name": "麗嬰房",
+        "type": "內部人警示",
+        "detail": "董監事持股減少46.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2929",
+        "name": "淘帝-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3003",
+        "name": "健和興",
+        "type": "內部人警示",
+        "detail": "董監事持股減少18.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3005",
+        "name": "神基",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3013",
+        "name": "晟銘電",
+        "type": "內部人警示",
+        "detail": "董監事持股減少16.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3014",
+        "name": "聯陽",
+        "type": "內部人警示",
+        "detail": "董監事持股減少17.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3017",
+        "name": "奇鋐",
+        "type": "內部人警示",
+        "detail": "董監事持股減少15.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3022",
+        "name": "威強電",
+        "type": "內部人警示",
+        "detail": "董監事持股減少15.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3028",
+        "name": "增你強",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3033",
+        "name": "威健",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3035",
+        "name": "智原",
+        "type": "內部人警示",
+        "detail": "董監事持股減少15.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3043",
+        "name": "科風",
+        "type": "內部人警示",
+        "detail": "董監事持股減少20.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3051",
+        "name": "力特",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3057",
+        "name": "喬鼎",
+        "type": "內部人警示",
+        "detail": "董監事持股減少34.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3060",
+        "name": "銘異",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3149",
+        "name": "正達",
+        "type": "內部人警示",
+        "detail": "董監事持股減少51.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3164",
+        "name": "景岳",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3321",
+        "name": "同泰",
+        "type": "內部人警示",
+        "detail": "董監事持股減少27.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3346",
+        "name": "麗清",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3356",
+        "name": "奇偶",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3376",
+        "name": "新日興",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3494",
+        "name": "誠研",
+        "type": "內部人警示",
+        "detail": "董監事持股減少55.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3528",
+        "name": "安馳",
+        "type": "內部人警示",
+        "detail": "董監事持股減少20.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3535",
+        "name": "晶彩科",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3576",
+        "name": "聯合再生",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3593",
+        "name": "力銘",
+        "type": "內部人警示",
+        "detail": "董監事持股減少31.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3702",
+        "name": "大聯大",
+        "type": "內部人警示",
+        "detail": "董監事持股減少9.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4164",
+        "name": "承業醫",
+        "type": "內部人警示",
+        "detail": "董監事持股減少23.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4414",
+        "name": "如興",
+        "type": "內部人警示",
+        "detail": "董監事持股減少73.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4426",
+        "name": "利勤",
+        "type": "內部人警示",
+        "detail": "董監事持股減少20.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4551",
+        "name": "智伸科",
+        "type": "內部人警示",
+        "detail": "董監事持股減少12.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4552",
+        "name": "力達-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少24.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4562",
+        "name": "穎漢",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4583",
+        "name": "台灣精銳",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4590",
+        "name": "富田-創",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4766",
+        "name": "南寶",
+        "type": "內部人警示",
+        "detail": "董監事持股減少16.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4927",
+        "name": "泰鼎-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少21.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5007",
+        "name": "三星",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5471",
+        "name": "松翰",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5515",
+        "name": "建國",
+        "type": "內部人警示",
+        "detail": "董監事持股減少17.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5521",
+        "name": "工信",
+        "type": "內部人警示",
+        "detail": "董監事持股減少20.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5907",
+        "name": "大洋-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少49.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6152",
+        "name": "百一",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6215",
+        "name": "和椿",
+        "type": "內部人警示",
+        "detail": "董監事持股減少12.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6409",
+        "name": "旭隼",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6426",
+        "name": "統新",
+        "type": "內部人警示",
+        "detail": "董監事持股減少25.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6431",
+        "name": "光麗-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少100.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6451",
+        "name": "訊芯-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少20.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6477",
+        "name": "安集",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6515",
+        "name": "穎崴",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6525",
+        "name": "捷敏-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少9.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6533",
+        "name": "晶心科",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6558",
+        "name": "興能高",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6668",
+        "name": "中揚光",
+        "type": "內部人警示",
+        "detail": "董監事持股減少33.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6754",
+        "name": "匯僑設計",
+        "type": "內部人警示",
+        "detail": "董監事持股減少12.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6781",
+        "name": "AES-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少24.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6933",
+        "name": "AMAX-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6949",
+        "name": "沛爾生醫-創",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6994",
+        "name": "富威電力",
+        "type": "內部人警示",
+        "detail": "董監事持股減少17.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "7732",
+        "name": "金興精密",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "7823",
+        "name": "奧義賽博-KY創",
+        "type": "內部人警示",
+        "detail": "董監事持股減少19.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8016",
+        "name": "矽創",
+        "type": "內部人警示",
+        "detail": "董監事持股減少14.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8103",
+        "name": "瀚荃",
+        "type": "內部人警示",
+        "detail": "董監事持股減少25.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8110",
+        "name": "華東",
+        "type": "內部人警示",
+        "detail": "董監事持股減少22.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8112",
+        "name": "至上",
+        "type": "內部人警示",
+        "detail": "董監事持股減少17.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8222",
+        "name": "寶一",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8249",
+        "name": "菱光",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8429",
+        "name": "金麗-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少16.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8464",
+        "name": "億豐",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8467",
+        "name": "波力-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8473",
+        "name": "山林水",
+        "type": "內部人警示",
+        "detail": "董監事持股減少26.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "9906",
+        "name": "欣巴巴",
+        "type": "內部人警示",
+        "detail": "董監事持股減少21.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "9908",
+        "name": "大台北",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "9919",
+        "name": "康那香",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "9924",
+        "name": "福興",
+        "type": "內部人警示",
+        "detail": "董監事持股減少20.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "9927",
+        "name": "泰銘",
+        "type": "內部人警示",
+        "detail": "董監事持股減少26.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "9939",
+        "name": "宏全",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1742",
+        "name": "台蠟",
+        "type": "內部人警示",
+        "detail": "董監事持股減少9.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "1784",
+        "name": "訊聯",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2073",
+        "name": "雄順",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "2745",
+        "name": "五福",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3078",
+        "name": "僑威",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3081",
+        "name": "聯亞",
+        "type": "內部人警示",
+        "detail": "董監事持股減少44.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3093",
+        "name": "港建*",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3128",
+        "name": "昇銳",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3163",
+        "name": "波若威",
+        "type": "內部人警示",
+        "detail": "董監事持股減少15.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3171",
+        "name": "炎洲流通",
+        "type": "內部人警示",
+        "detail": "董監事持股減少50.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3217",
+        "name": "優群",
+        "type": "內部人警示",
+        "detail": "董監事持股減少13.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3228",
+        "name": "金麗科",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3252",
+        "name": "海灣",
+        "type": "內部人警示",
+        "detail": "董監事持股減少33.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3264",
+        "name": "欣銓",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3290",
+        "name": "東浦",
+        "type": "內部人警示",
+        "detail": "董監事持股減少31.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3294",
+        "name": "英濟",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3303",
+        "name": "岱稜",
+        "type": "內部人警示",
+        "detail": "董監事持股減少14.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3323",
+        "name": "加百裕",
+        "type": "內部人警示",
+        "detail": "董監事持股減少16.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3324",
+        "name": "雙鴻",
+        "type": "內部人警示",
+        "detail": "董監事持股減少25.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3339",
+        "name": "泰谷",
+        "type": "內部人警示",
+        "detail": "董監事持股減少16.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3357",
+        "name": "臺慶科",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3455",
+        "name": "由田",
+        "type": "內部人警示",
+        "detail": "董監事持股減少17.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3466",
+        "name": "德晉",
+        "type": "內部人警示",
+        "detail": "董監事持股減少32.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3479",
+        "name": "安勤",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3490",
+        "name": "單井",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3577",
+        "name": "泓格",
+        "type": "內部人警示",
+        "detail": "董監事持股減少18.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3597",
+        "name": "映興",
+        "type": "內部人警示",
+        "detail": "董監事持股減少30.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3615",
+        "name": "安可",
+        "type": "內部人警示",
+        "detail": "董監事持股減少46.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3623",
+        "name": "富晶通",
+        "type": "內部人警示",
+        "detail": "董監事持股減少14.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "3680",
+        "name": "家登",
+        "type": "內部人警示",
+        "detail": "董監事持股減少9.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4127",
+        "name": "天良",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4174",
+        "name": "浩鼎",
+        "type": "內部人警示",
+        "detail": "董監事持股減少50.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4413",
+        "name": "飛寶企業",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4530",
+        "name": "宏易",
+        "type": "內部人警示",
+        "detail": "董監事持股減少54.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4549",
+        "name": "桓達",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4558",
+        "name": "寶緯",
+        "type": "內部人警示",
+        "detail": "董監事持股減少18.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4563",
+        "name": "百德",
+        "type": "內部人警示",
+        "detail": "董監事持股減少20.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4744",
+        "name": "皇將",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4806",
+        "name": "桂田文創",
+        "type": "內部人警示",
+        "detail": "董監事持股減少50.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4908",
+        "name": "前鼎",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4909",
+        "name": "新復興",
+        "type": "內部人警示",
+        "detail": "董監事持股減少6.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4924",
+        "name": "欣厚-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少27.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4950",
+        "name": "金耘國際",
+        "type": "內部人警示",
+        "detail": "董監事持股減少60.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "4979",
+        "name": "華星光",
+        "type": "內部人警示",
+        "detail": "董監事持股減少22.9%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5011",
+        "name": "久陽",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5301",
+        "name": "寶得利",
+        "type": "內部人警示",
+        "detail": "董監事持股減少53.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5348",
+        "name": "正能量智能",
+        "type": "內部人警示",
+        "detail": "董監事持股減少31.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5371",
+        "name": "中光電",
+        "type": "內部人警示",
+        "detail": "董監事持股減少12.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5432",
+        "name": "新門",
+        "type": "內部人警示",
+        "detail": "董監事持股減少26.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5457",
+        "name": "宣德",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5520",
+        "name": "力泰",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5536",
+        "name": "聖暉*",
+        "type": "內部人警示",
+        "detail": "董監事持股減少16.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5878",
+        "name": "台名",
+        "type": "內部人警示",
+        "detail": "董監事持股減少19.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "5904",
+        "name": "寶雅",
+        "type": "內部人警示",
+        "detail": "董監事持股減少14.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6134",
+        "name": "萬旭",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6160",
+        "name": "欣技",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6161",
+        "name": "捷波",
+        "type": "內部人警示",
+        "detail": "董監事持股減少25.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6167",
+        "name": "久正",
+        "type": "內部人警示",
+        "detail": "董監事持股減少9.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6173",
+        "name": "信昌電",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6175",
+        "name": "立敦",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6194",
+        "name": "育富",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6195",
+        "name": "詩肯",
+        "type": "內部人警示",
+        "detail": "董監事持股減少14.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6199",
+        "name": "天品",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6208",
+        "name": "日揚",
+        "type": "內部人警示",
+        "detail": "董監事持股減少17.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6217",
+        "name": "中探針",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6218",
+        "name": "豪勉",
+        "type": "內部人警示",
+        "detail": "董監事持股減少9.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6223",
+        "name": "旺矽",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6228",
+        "name": "全譜",
+        "type": "內部人警示",
+        "detail": "董監事持股減少34.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6261",
+        "name": "久元",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6276",
+        "name": "安鈦克",
+        "type": "內部人警示",
+        "detail": "董監事持股減少30.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6291",
+        "name": "沛亨",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6425",
+        "name": "易發",
+        "type": "內部人警示",
+        "detail": "董監事持股減少12.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6462",
+        "name": "神盾",
+        "type": "內部人警示",
+        "detail": "董監事持股減少33.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6465",
+        "name": "威潤",
+        "type": "內部人警示",
+        "detail": "董監事持股減少9.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6470",
+        "name": "宇智",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6499",
+        "name": "益安",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6510",
+        "name": "精測",
+        "type": "內部人警示",
+        "detail": "董監事持股減少25.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6530",
+        "name": "創威",
+        "type": "內部人警示",
+        "detail": "董監事持股減少20.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6546",
+        "name": "正基",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6556",
+        "name": "勝品",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6640",
+        "name": "均華",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6684",
+        "name": "安格",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.2%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6725",
+        "name": "矽科宏晟",
+        "type": "內部人警示",
+        "detail": "董監事持股減少15.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6727",
+        "name": "亞泰金屬",
+        "type": "內部人警示",
+        "detail": "董監事持股減少15.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6785",
+        "name": "昱展新藥",
+        "type": "內部人警示",
+        "detail": "董監事持股減少14.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6788",
+        "name": "華景電",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6791",
+        "name": "虎門科技",
+        "type": "內部人警示",
+        "detail": "董監事持股減少25.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6823",
+        "name": "濾能",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6841",
+        "name": "長佳智能",
+        "type": "內部人警示",
+        "detail": "董監事持股減少14.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6982",
+        "name": "大井泵浦",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "6997",
+        "name": "博弘",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.8%",
+        "source": "TWSE"
+      },
+      {
+        "code": "7402",
+        "name": "邑錡",
+        "type": "內部人警示",
+        "detail": "董監事持股減少29.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "7642",
+        "name": "昶瑞機電",
+        "type": "內部人警示",
+        "detail": "董監事持股減少11.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "7703",
+        "name": "銳澤",
+        "type": "內部人警示",
+        "detail": "董監事持股減少12.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "7708",
+        "name": "全家餐飲",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "7717",
+        "name": "萊德光電-KY",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.6%",
+        "source": "TWSE"
+      },
+      {
+        "code": "7738",
+        "name": "東聯互動",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "7747",
+        "name": "昕奇雲端",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8034",
+        "name": "榮群",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8038",
+        "name": "長園科",
+        "type": "內部人警示",
+        "detail": "董監事持股減少40.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8050",
+        "name": "廣積",
+        "type": "內部人警示",
+        "detail": "董監事持股減少7.1%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8076",
+        "name": "伍豐",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8088",
+        "name": "品安",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8093",
+        "name": "保銳",
+        "type": "內部人警示",
+        "detail": "董監事持股減少40.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8097",
+        "name": "常珵",
+        "type": "內部人警示",
+        "detail": "董監事持股減少20.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8227",
+        "name": "巨有科技",
+        "type": "內部人警示",
+        "detail": "董監事持股減少38.5%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8272",
+        "name": "全景軟體",
+        "type": "內部人警示",
+        "detail": "董監事持股減少8.4%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8291",
+        "name": "尚茂",
+        "type": "內部人警示",
+        "detail": "董監事持股減少68.0%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8354",
+        "name": "冠好",
+        "type": "內部人警示",
+        "detail": "董監事持股減少12.3%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8358",
+        "name": "金居",
+        "type": "內部人警示",
+        "detail": "董監事持股減少5.7%",
+        "source": "TWSE"
+      },
+      {
+        "code": "8415",
+        "name": "大國鋼",
+        "type": "內部人警示",
+        "detail": "董監事持股減少10.9%",
+        "source": "TWSE"
+      }
+    ],
+    "季財報": [],
+    "產業強度": [
+      {
+        "code": "1808",
+        "name": "潤隆",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "yoy_pct": 57.1,
+        "industry_yoy": -96.1,
+        "detail": "市佔率掠奪 | 個股YoY:57% 產業YoY:-96%"
+      },
+      {
+        "code": "2505",
+        "name": "國揚",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "yoy_pct": -51.7,
+        "industry_yoy": -93.4,
+        "detail": "市佔率掠奪 | 個股YoY:-52% 產業YoY:-93%"
+      },
+      {
+        "code": "2548",
+        "name": "華固",
+        "industry": "建材營造",
+        "source": "TWSE",
+        "yoy_pct": -66.6,
+        "industry_yoy": -93.0,
+        "detail": "市佔率掠奪 | 個股YoY:-67% 產業YoY:-93%"
+      }
+    ],
+    "timestamp": "2026-04-12T18:06:04.437228"
+  },
+  "anomalies": [
+    {
+      "code": "1229",
+      "name": "聯華",
+      "industry": "食品工業",
+      "source": "TWSE",
+      "revenue": 932321.0,
+      "yoy_pct": 21.3,
+      "mom_pct": 35.6,
+      "detail": "雙增 | YoY:21% MoM:36%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1235",
+      "name": "興泰",
+      "industry": "食品工業",
+      "source": "TWSE",
+      "revenue": 27060.0,
+      "yoy_pct": 49.8,
+      "mom_pct": 70.7,
+      "detail": "雙增 | YoY:50% MoM:71%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1303",
+      "name": "南亞",
+      "industry": "塑膠工業",
+      "source": "TWSE",
+      "revenue": 27167406.0,
+      "yoy_pct": 18.1,
+      "mom_pct": 46.4,
+      "detail": "雙增 | YoY:18% MoM:46%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1305",
+      "name": "華夏",
+      "industry": "塑膠工業",
+      "source": "TWSE",
+      "revenue": 1082256.0,
+      "yoy_pct": 29.4,
+      "mom_pct": 37.8,
+      "detail": "雙增 | YoY:29% MoM:38%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1310",
+      "name": "台苯",
+      "industry": "塑膠工業",
+      "source": "TWSE",
+      "revenue": 854539.0,
+      "yoy_pct": 22.8,
+      "mom_pct": 36.9,
+      "detail": "雙增 | YoY:23% MoM:37%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1312",
+      "name": "國喬",
+      "industry": "塑膠工業",
+      "source": "TWSE",
+      "revenue": 3110910.0,
+      "yoy_pct": 17.5,
+      "mom_pct": 50.1,
+      "detail": "雙增 | YoY:18% MoM:50%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1313",
+      "name": "聯成",
+      "industry": "塑膠工業",
+      "source": "TWSE",
+      "revenue": 6489125.0,
+      "yoy_pct": 10.7,
+      "mom_pct": 152.9,
+      "detail": "雙增 | YoY:11% MoM:153%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1316",
+      "name": "上曜",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 655761.0,
+      "yoy_pct": 111.2,
+      "mom_pct": 26.0,
+      "detail": "雙增 | YoY:111% MoM:26%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1326",
+      "name": "台化",
+      "industry": "塑膠工業",
+      "source": "TWSE",
+      "revenue": 33728547.0,
+      "yoy_pct": 21.6,
+      "mom_pct": 46.8,
+      "detail": "雙增 | YoY:22% MoM:47%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1337",
+      "name": "再生-KY",
+      "industry": "塑膠工業",
+      "source": "TWSE",
+      "revenue": 61900.0,
+      "yoy_pct": 35.5,
+      "mom_pct": 71.0,
+      "detail": "雙增 | YoY:36% MoM:71%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1341",
+      "name": "富林-KY",
+      "industry": "塑膠工業",
+      "source": "TWSE",
+      "revenue": 308343.0,
+      "yoy_pct": 14.8,
+      "mom_pct": 149.5,
+      "detail": "雙增 | YoY:15% MoM:149%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1342",
+      "name": "八貫",
+      "industry": "其他",
+      "source": "TWSE",
+      "revenue": 370828.0,
+      "yoy_pct": 31.7,
+      "mom_pct": 51.4,
+      "detail": "雙增 | YoY:32% MoM:51%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1410",
+      "name": "南染",
+      "industry": "紡織纖維",
+      "source": "TWSE",
+      "revenue": 23195.0,
+      "yoy_pct": 21.5,
+      "mom_pct": 80.0,
+      "detail": "雙增 | YoY:22% MoM:80%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1419",
+      "name": "新紡",
+      "industry": "紡織纖維",
+      "source": "TWSE",
+      "revenue": 563421.0,
+      "yoy_pct": 42.3,
+      "mom_pct": 48.4,
+      "detail": "雙增 | YoY:42% MoM:48%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1438",
+      "name": "三地開發",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 197558.0,
+      "yoy_pct": 81874.3,
+      "mom_pct": 17321.3,
+      "detail": "雙增 | YoY:81874% MoM:17321%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1444",
+      "name": "力麗",
+      "industry": "紡織纖維",
+      "source": "TWSE",
+      "revenue": 950193.0,
+      "yoy_pct": 32.5,
+      "mom_pct": 42.8,
+      "detail": "雙增 | YoY:33% MoM:43%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1447",
+      "name": "力鵬",
+      "industry": "紡織纖維",
+      "source": "TWSE",
+      "revenue": 3871493.0,
+      "yoy_pct": 35.6,
+      "mom_pct": 124.7,
+      "detail": "雙增 | YoY:36% MoM:125%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1451",
+      "name": "年興",
+      "industry": "紡織纖維",
+      "source": "TWSE",
+      "revenue": 518409.0,
+      "yoy_pct": 14.2,
+      "mom_pct": 12.9,
+      "detail": "雙增 | YoY:14% MoM:13%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1452",
+      "name": "宏益",
+      "industry": "紡織纖維",
+      "source": "TWSE",
+      "revenue": 161166.0,
+      "yoy_pct": 40.4,
+      "mom_pct": 114.2,
+      "detail": "雙增 | YoY:40% MoM:114%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1465",
+      "name": "偉全",
+      "industry": "紡織纖維",
+      "source": "TWSE",
+      "revenue": 34511.0,
+      "yoy_pct": 37.8,
+      "mom_pct": 70.7,
+      "detail": "雙增 | YoY:38% MoM:71%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1467",
+      "name": "南緯",
+      "industry": "紡織纖維",
+      "source": "TWSE",
+      "revenue": 462982.0,
+      "yoy_pct": 15.4,
+      "mom_pct": 23.9,
+      "detail": "雙增 | YoY:15% MoM:24%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1474",
+      "name": "弘裕",
+      "industry": "紡織纖維",
+      "source": "TWSE",
+      "revenue": 302809.0,
+      "yoy_pct": 11.0,
+      "mom_pct": 103.5,
+      "detail": "雙增 | YoY:11% MoM:104%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1475",
+      "name": "業旺",
+      "industry": "紡織纖維",
+      "source": "TWSE",
+      "revenue": 130790.0,
+      "yoy_pct": 19.9,
+      "mom_pct": 48.7,
+      "detail": "雙增 | YoY:20% MoM:49%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1503",
+      "name": "士電",
+      "industry": "電機機械",
+      "source": "TWSE",
+      "revenue": 4230241.0,
+      "yoy_pct": 35.3,
+      "mom_pct": 48.7,
+      "detail": "雙增 | YoY:35% MoM:49%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1521",
+      "name": "大億",
+      "industry": "汽車工業",
+      "source": "TWSE",
+      "revenue": 349115.0,
+      "yoy_pct": 11.1,
+      "mom_pct": 22.5,
+      "detail": "雙增 | YoY:11% MoM:23%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1522",
+      "name": "堤維西",
+      "industry": "汽車工業",
+      "source": "TWSE",
+      "revenue": 2494987.0,
+      "yoy_pct": 46.7,
+      "mom_pct": 31.3,
+      "detail": "雙增 | YoY:47% MoM:31%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1528",
+      "name": "恩德",
+      "industry": "電機機械",
+      "source": "TWSE",
+      "revenue": 277042.0,
+      "yoy_pct": 30.9,
+      "mom_pct": 25.6,
+      "detail": "雙增 | YoY:31% MoM:26%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1532",
+      "name": "勤美",
+      "industry": "電機機械",
+      "source": "TWSE",
+      "revenue": 1237316.0,
+      "yoy_pct": 14.1,
+      "mom_pct": 27.1,
+      "detail": "雙增 | YoY:14% MoM:27%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1568",
+      "name": "倉佑",
+      "industry": "汽車工業",
+      "source": "TWSE",
+      "revenue": 109977.0,
+      "yoy_pct": 27.0,
+      "mom_pct": 64.4,
+      "detail": "雙增 | YoY:27% MoM:64%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1583",
+      "name": "程泰",
+      "industry": "電機機械",
+      "source": "TWSE",
+      "revenue": 414405.0,
+      "yoy_pct": 44.3,
+      "mom_pct": 101.3,
+      "detail": "雙增 | YoY:44% MoM:101%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1590",
+      "name": "亞德客-KY",
+      "industry": "電機機械",
+      "source": "TWSE",
+      "revenue": 4139710.0,
+      "yoy_pct": 18.1,
+      "mom_pct": 90.6,
+      "detail": "雙增 | YoY:18% MoM:91%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1597",
+      "name": "直得",
+      "industry": "電機機械",
+      "source": "TWSE",
+      "revenue": 120499.0,
+      "yoy_pct": 38.5,
+      "mom_pct": 13.4,
+      "detail": "雙增 | YoY:39% MoM:13%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1598",
+      "name": "岱宇",
+      "industry": "運動休閒",
+      "source": "TWSE",
+      "revenue": 673288.0,
+      "yoy_pct": 16.8,
+      "mom_pct": 38.2,
+      "detail": "雙增 | YoY:17% MoM:38%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1608",
+      "name": "華榮",
+      "industry": "電器電纜",
+      "source": "TWSE",
+      "revenue": 1288123.0,
+      "yoy_pct": 14.1,
+      "mom_pct": 31.0,
+      "detail": "雙增 | YoY:14% MoM:31%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1609",
+      "name": "大亞",
+      "industry": "電器電纜",
+      "source": "TWSE",
+      "revenue": 3088815.0,
+      "yoy_pct": 20.0,
+      "mom_pct": 35.2,
+      "detail": "雙增 | YoY:20% MoM:35%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1617",
+      "name": "榮星",
+      "industry": "電器電纜",
+      "source": "TWSE",
+      "revenue": 402765.0,
+      "yoy_pct": 45.5,
+      "mom_pct": 115.2,
+      "detail": "雙增 | YoY:45% MoM:115%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1711",
+      "name": "永光",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 837200.0,
+      "yoy_pct": 28.2,
+      "mom_pct": 73.0,
+      "detail": "雙增 | YoY:28% MoM:73%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1713",
+      "name": "國化",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 53239.0,
+      "yoy_pct": 23.3,
+      "mom_pct": 86.5,
+      "detail": "雙增 | YoY:23% MoM:86%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1714",
+      "name": "和桐",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 2799580.0,
+      "yoy_pct": 43.0,
+      "mom_pct": 51.4,
+      "detail": "雙增 | YoY:43% MoM:51%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1722",
+      "name": "台肥",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 1373996.0,
+      "yoy_pct": 18.9,
+      "mom_pct": 43.1,
+      "detail": "雙增 | YoY:19% MoM:43%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1723",
+      "name": "中碳",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 528456.0,
+      "yoy_pct": 13.8,
+      "mom_pct": 27.6,
+      "detail": "雙增 | YoY:14% MoM:28%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1725",
+      "name": "元禎",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 957345.0,
+      "yoy_pct": 22.7,
+      "mom_pct": 96.3,
+      "detail": "雙增 | YoY:23% MoM:96%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1726",
+      "name": "永記",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 1037376.0,
+      "yoy_pct": 15.1,
+      "mom_pct": 60.1,
+      "detail": "雙增 | YoY:15% MoM:60%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1727",
+      "name": "中華化",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 231340.0,
+      "yoy_pct": 53.2,
+      "mom_pct": 36.7,
+      "detail": "雙增 | YoY:53% MoM:37%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1732",
+      "name": "毛寶",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 59677.0,
+      "yoy_pct": 21.1,
+      "mom_pct": 23.8,
+      "detail": "雙增 | YoY:21% MoM:24%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1735",
+      "name": "日勝化",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 262636.0,
+      "yoy_pct": 11.4,
+      "mom_pct": 130.2,
+      "detail": "雙增 | YoY:11% MoM:130%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1736",
+      "name": "喬山",
+      "industry": "運動休閒",
+      "source": "TWSE",
+      "revenue": 4267265.0,
+      "yoy_pct": 11.5,
+      "mom_pct": 18.2,
+      "detail": "雙增 | YoY:12% MoM:18%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1737",
+      "name": "臺鹽",
+      "industry": "食品工業",
+      "source": "TWSE",
+      "revenue": 297553.0,
+      "yoy_pct": 19.3,
+      "mom_pct": 38.5,
+      "detail": "雙增 | YoY:19% MoM:39%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1762",
+      "name": "中化生",
+      "industry": "生技醫療業",
+      "source": "TWSE",
+      "revenue": 131435.0,
+      "yoy_pct": 108.9,
+      "mom_pct": 27.8,
+      "detail": "雙增 | YoY:109% MoM:28%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1773",
+      "name": "勝一",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 1122280.0,
+      "yoy_pct": 17.1,
+      "mom_pct": 24.3,
+      "detail": "雙增 | YoY:17% MoM:24%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1776",
+      "name": "展宇",
+      "industry": "化學工業",
+      "source": "TWSE",
+      "revenue": 128484.0,
+      "yoy_pct": 17.8,
+      "mom_pct": 130.9,
+      "detail": "雙增 | YoY:18% MoM:131%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1795",
+      "name": "美時",
+      "industry": "生技醫療業",
+      "source": "TWSE",
+      "revenue": 4354277.0,
+      "yoy_pct": 173.6,
+      "mom_pct": 94.5,
+      "detail": "雙增 | YoY:174% MoM:95%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1802",
+      "name": "台玻",
+      "industry": "玻璃陶瓷",
+      "source": "TWSE",
+      "revenue": 4138404.0,
+      "yoy_pct": 16.4,
+      "mom_pct": 69.8,
+      "detail": "雙增 | YoY:16% MoM:70%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1805",
+      "name": "寶徠",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 103470.0,
+      "yoy_pct": 67527.5,
+      "mom_pct": 94826.6,
+      "detail": "雙增 | YoY:67527% MoM:94827%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1808",
+      "name": "潤隆",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 2201874.0,
+      "yoy_pct": 68260.0,
+      "mom_pct": 33.2,
+      "detail": "雙增 | YoY:68260% MoM:33%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1904",
+      "name": "正隆",
+      "industry": "造紙工業",
+      "source": "TWSE",
+      "revenue": 4148502.0,
+      "yoy_pct": 10.3,
+      "mom_pct": 60.3,
+      "detail": "雙增 | YoY:10% MoM:60%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1906",
+      "name": "寶隆",
+      "industry": "造紙工業",
+      "source": "TWSE",
+      "revenue": 357786.0,
+      "yoy_pct": 50.1,
+      "mom_pct": 93.8,
+      "detail": "雙增 | YoY:50% MoM:94%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2010",
+      "name": "春源",
+      "industry": "鋼鐵工業",
+      "source": "TWSE",
+      "revenue": 2377195.0,
+      "yoy_pct": 15.8,
+      "mom_pct": 22.7,
+      "detail": "雙增 | YoY:16% MoM:23%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2022",
+      "name": "聚亨",
+      "industry": "鋼鐵工業",
+      "source": "TWSE",
+      "revenue": 1239005.0,
+      "yoy_pct": 52.5,
+      "mom_pct": 16.4,
+      "detail": "雙增 | YoY:52% MoM:16%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2025",
+      "name": "千興",
+      "industry": "鋼鐵工業",
+      "source": "TWSE",
+      "revenue": 162182.0,
+      "yoy_pct": 127.2,
+      "mom_pct": 216.7,
+      "detail": "雙增 | YoY:127% MoM:217%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2027",
+      "name": "大成鋼",
+      "industry": "鋼鐵工業",
+      "source": "TWSE",
+      "revenue": 11376755.0,
+      "yoy_pct": 25.1,
+      "mom_pct": 14.0,
+      "detail": "雙增 | YoY:25% MoM:14%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2028",
+      "name": "威致",
+      "industry": "鋼鐵工業",
+      "source": "TWSE",
+      "revenue": 997107.0,
+      "yoy_pct": 15.8,
+      "mom_pct": 106.0,
+      "detail": "雙增 | YoY:16% MoM:106%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2033",
+      "name": "佳大",
+      "industry": "鋼鐵工業",
+      "source": "TWSE",
+      "revenue": 67672.0,
+      "yoy_pct": 22.5,
+      "mom_pct": 81.4,
+      "detail": "雙增 | YoY:23% MoM:81%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2049",
+      "name": "上銀",
+      "industry": "電機機械",
+      "source": "TWSE",
+      "revenue": 2357195.0,
+      "yoy_pct": 17.4,
+      "mom_pct": 25.9,
+      "detail": "雙增 | YoY:17% MoM:26%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2062",
+      "name": "橋椿",
+      "industry": "居家生活",
+      "source": "TWSE",
+      "revenue": 674472.0,
+      "yoy_pct": 20.2,
+      "mom_pct": 75.6,
+      "detail": "雙增 | YoY:20% MoM:76%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2101",
+      "name": "南港",
+      "industry": "橡膠工業",
+      "source": "TWSE",
+      "revenue": 4305990.0,
+      "yoy_pct": 438.1,
+      "mom_pct": 753.6,
+      "detail": "雙增 | YoY:438% MoM:754%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2108",
+      "name": "南帝",
+      "industry": "橡膠工業",
+      "source": "TWSE",
+      "revenue": 981324.0,
+      "yoy_pct": 23.8,
+      "mom_pct": 31.7,
+      "detail": "雙增 | YoY:24% MoM:32%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2211",
+      "name": "長榮鋼",
+      "industry": "鋼鐵工業",
+      "source": "TWSE",
+      "revenue": 1333276.0,
+      "yoy_pct": 15.7,
+      "mom_pct": 34.0,
+      "detail": "雙增 | YoY:16% MoM:34%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2236",
+      "name": "百達-KY",
+      "industry": "汽車工業",
+      "source": "TWSE",
+      "revenue": 958419.0,
+      "yoy_pct": 68.6,
+      "mom_pct": 18.4,
+      "detail": "雙增 | YoY:69% MoM:18%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2248",
+      "name": "華勝-KY",
+      "industry": "汽車工業",
+      "source": "TWSE",
+      "revenue": 256118.0,
+      "yoy_pct": 64.5,
+      "mom_pct": 78.1,
+      "detail": "雙增 | YoY:64% MoM:78%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2301",
+      "name": "光寶科",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 16483767.0,
+      "yoy_pct": 23.4,
+      "mom_pct": 28.7,
+      "detail": "雙增 | YoY:23% MoM:29%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2308",
+      "name": "台達電",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 59779988.0,
+      "yoy_pct": 37.6,
+      "mom_pct": 19.8,
+      "detail": "雙增 | YoY:38% MoM:20%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2313",
+      "name": "華通",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 6943219.0,
+      "yoy_pct": 11.1,
+      "mom_pct": 33.5,
+      "detail": "雙增 | YoY:11% MoM:33%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2314",
+      "name": "台揚",
+      "industry": "通信網路業",
+      "source": "TWSE",
+      "revenue": 158726.0,
+      "yoy_pct": 98.1,
+      "mom_pct": 106.5,
+      "detail": "雙增 | YoY:98% MoM:107%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2316",
+      "name": "楠梓電",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 403900.0,
+      "yoy_pct": 16.5,
+      "mom_pct": 68.9,
+      "detail": "雙增 | YoY:16% MoM:69%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2317",
+      "name": "鴻海",
+      "industry": "其他電子業",
+      "source": "TWSE",
+      "revenue": 803737716.0,
+      "yoy_pct": 45.6,
+      "mom_pct": 34.9,
+      "detail": "雙增 | YoY:46% MoM:35%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2321",
+      "name": "東訊",
+      "industry": "通信網路業",
+      "source": "TWSE",
+      "revenue": 68358.0,
+      "yoy_pct": 12.9,
+      "mom_pct": 45.3,
+      "detail": "雙增 | YoY:13% MoM:45%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2324",
+      "name": "仁寶",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 89197731.0,
+      "yoy_pct": 17.0,
+      "mom_pct": 69.1,
+      "detail": "雙增 | YoY:17% MoM:69%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2327",
+      "name": "國巨*",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 13630196.0,
+      "yoy_pct": 22.8,
+      "mom_pct": 18.5,
+      "detail": "雙增 | YoY:23% MoM:18%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2329",
+      "name": "華泰",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 1764467.0,
+      "yoy_pct": 10.1,
+      "mom_pct": 24.5,
+      "detail": "雙增 | YoY:10% MoM:24%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2330",
+      "name": "台積電",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 415191699.0,
+      "yoy_pct": 45.2,
+      "mom_pct": 30.7,
+      "detail": "雙增 | YoY:45% MoM:31%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2331",
+      "name": "精英",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 1815423.0,
+      "yoy_pct": 30.8,
+      "mom_pct": 26.4,
+      "detail": "雙增 | YoY:31% MoM:26%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2337",
+      "name": "旺宏",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 4421909.0,
+      "yoy_pct": 96.5,
+      "mom_pct": 45.9,
+      "detail": "雙增 | YoY:96% MoM:46%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2344",
+      "name": "華邦電",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 14501399.0,
+      "yoy_pct": 91.5,
+      "mom_pct": 21.1,
+      "detail": "雙增 | YoY:91% MoM:21%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2347",
+      "name": "聯強",
+      "industry": "電子通路業",
+      "source": "TWSE",
+      "revenue": 56059078.0,
+      "yoy_pct": 64.4,
+      "mom_pct": 88.6,
+      "detail": "雙增 | YoY:64% MoM:89%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2351",
+      "name": "順德",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 1057713.0,
+      "yoy_pct": 13.2,
+      "mom_pct": 29.8,
+      "detail": "雙增 | YoY:13% MoM:30%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2352",
+      "name": "佳世達",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 19508490.0,
+      "yoy_pct": 10.4,
+      "mom_pct": 35.5,
+      "detail": "雙增 | YoY:10% MoM:36%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2356",
+      "name": "英業達",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 87563474.0,
+      "yoy_pct": 47.1,
+      "mom_pct": 71.9,
+      "detail": "雙增 | YoY:47% MoM:72%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2357",
+      "name": "華碩",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 86083764.0,
+      "yoy_pct": 33.8,
+      "mom_pct": 58.4,
+      "detail": "雙增 | YoY:34% MoM:58%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2360",
+      "name": "致茂",
+      "industry": "其他電子業",
+      "source": "TWSE",
+      "revenue": 4366231.0,
+      "yoy_pct": 63.5,
+      "mom_pct": 19.1,
+      "detail": "雙增 | YoY:63% MoM:19%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2368",
+      "name": "金像電",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 7384878.0,
+      "yoy_pct": 63.1,
+      "mom_pct": 24.3,
+      "detail": "雙增 | YoY:63% MoM:24%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2369",
+      "name": "菱生",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 595752.0,
+      "yoy_pct": 33.4,
+      "mom_pct": 19.3,
+      "detail": "雙增 | YoY:33% MoM:19%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2374",
+      "name": "佳能",
+      "industry": "光電業",
+      "source": "TWSE",
+      "revenue": 918553.0,
+      "yoy_pct": 92.2,
+      "mom_pct": 38.4,
+      "detail": "雙增 | YoY:92% MoM:38%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2376",
+      "name": "技嘉",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 39028800.0,
+      "yoy_pct": 74.8,
+      "mom_pct": 18.6,
+      "detail": "雙增 | YoY:75% MoM:19%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2380",
+      "name": "虹光",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 313065.0,
+      "yoy_pct": 13.3,
+      "mom_pct": 86.9,
+      "detail": "雙增 | YoY:13% MoM:87%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2382",
+      "name": "廣達",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 362803048.0,
+      "yoy_pct": 88.4,
+      "mom_pct": 68.3,
+      "detail": "雙增 | YoY:88% MoM:68%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2383",
+      "name": "台光電",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 12010861.0,
+      "yoy_pct": 56.6,
+      "mom_pct": 17.8,
+      "detail": "雙增 | YoY:57% MoM:18%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2387",
+      "name": "精元",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 1707044.0,
+      "yoy_pct": 12.8,
+      "mom_pct": 67.4,
+      "detail": "雙增 | YoY:13% MoM:67%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2388",
+      "name": "威盛",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 1128407.0,
+      "yoy_pct": 69.4,
+      "mom_pct": 89.2,
+      "detail": "雙增 | YoY:69% MoM:89%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2395",
+      "name": "研華",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 7698968.0,
+      "yoy_pct": 21.8,
+      "mom_pct": 36.8,
+      "detail": "雙增 | YoY:22% MoM:37%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2397",
+      "name": "友通",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 1143374.0,
+      "yoy_pct": 29.1,
+      "mom_pct": 44.1,
+      "detail": "雙增 | YoY:29% MoM:44%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2401",
+      "name": "凌陽",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 724523.0,
+      "yoy_pct": 22.1,
+      "mom_pct": 55.7,
+      "detail": "雙增 | YoY:22% MoM:56%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2402",
+      "name": "毅嘉",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 1016239.0,
+      "yoy_pct": 13.5,
+      "mom_pct": 22.6,
+      "detail": "雙增 | YoY:13% MoM:23%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2404",
+      "name": "漢唐",
+      "industry": "其他電子業",
+      "source": "TWSE",
+      "revenue": 7692593.0,
+      "yoy_pct": 100.6,
+      "mom_pct": 17.1,
+      "detail": "雙增 | YoY:101% MoM:17%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2406",
+      "name": "國碩",
+      "industry": "光電業",
+      "source": "TWSE",
+      "revenue": 993720.0,
+      "yoy_pct": 160.1,
+      "mom_pct": 22.5,
+      "detail": "雙增 | YoY:160% MoM:23%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2408",
+      "name": "南亞科",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 18169760.0,
+      "yoy_pct": 560.0,
+      "mom_pct": 16.4,
+      "detail": "雙增 | YoY:560% MoM:16%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2413",
+      "name": "環科",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 317887.0,
+      "yoy_pct": 17.6,
+      "mom_pct": 52.1,
+      "detail": "雙增 | YoY:18% MoM:52%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2414",
+      "name": "精技",
+      "industry": "電子通路業",
+      "source": "TWSE",
+      "revenue": 3294780.0,
+      "yoy_pct": 47.3,
+      "mom_pct": 74.2,
+      "detail": "雙增 | YoY:47% MoM:74%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2417",
+      "name": "圓剛",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 393898.0,
+      "yoy_pct": 33.0,
+      "mom_pct": 56.3,
+      "detail": "雙增 | YoY:33% MoM:56%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2419",
+      "name": "仲琦",
+      "industry": "通信網路業",
+      "source": "TWSE",
+      "revenue": 1007693.0,
+      "yoy_pct": 55.0,
+      "mom_pct": 100.6,
+      "detail": "雙增 | YoY:55% MoM:101%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2421",
+      "name": "建準",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 1917719.0,
+      "yoy_pct": 22.5,
+      "mom_pct": 44.9,
+      "detail": "雙增 | YoY:22% MoM:45%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2423",
+      "name": "固緯",
+      "industry": "其他電子業",
+      "source": "TWSE",
+      "revenue": 368687.0,
+      "yoy_pct": 34.8,
+      "mom_pct": 67.0,
+      "detail": "雙增 | YoY:35% MoM:67%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2425",
+      "name": "承啟",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 1539516.0,
+      "yoy_pct": 61.2,
+      "mom_pct": 65.0,
+      "detail": "雙增 | YoY:61% MoM:65%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2428",
+      "name": "興勤",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 798392.0,
+      "yoy_pct": 11.3,
+      "mom_pct": 76.9,
+      "detail": "雙增 | YoY:11% MoM:77%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2429",
+      "name": "銘旺科",
+      "industry": "光電業",
+      "source": "TWSE",
+      "revenue": 46071.0,
+      "yoy_pct": 30.0,
+      "mom_pct": 211.9,
+      "detail": "雙增 | YoY:30% MoM:212%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2432",
+      "name": "倚天酷碁-創",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 420623.0,
+      "yoy_pct": 29.2,
+      "mom_pct": 64.1,
+      "detail": "雙增 | YoY:29% MoM:64%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2436",
+      "name": "偉詮電",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 351534.0,
+      "yoy_pct": 25.8,
+      "mom_pct": 24.8,
+      "detail": "雙增 | YoY:26% MoM:25%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2438",
+      "name": "翔耀",
+      "industry": "光電業",
+      "source": "TWSE",
+      "revenue": 54549.0,
+      "yoy_pct": 41.3,
+      "mom_pct": 52.4,
+      "detail": "雙增 | YoY:41% MoM:52%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2439",
+      "name": "美律",
+      "industry": "通信網路業",
+      "source": "TWSE",
+      "revenue": 3908500.0,
+      "yoy_pct": 24.0,
+      "mom_pct": 24.3,
+      "detail": "雙增 | YoY:24% MoM:24%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2440",
+      "name": "太空梭",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 436121.0,
+      "yoy_pct": 14.6,
+      "mom_pct": 168.3,
+      "detail": "雙增 | YoY:15% MoM:168%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2441",
+      "name": "超豐",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 1649046.0,
+      "yoy_pct": 14.3,
+      "mom_pct": 12.1,
+      "detail": "雙增 | YoY:14% MoM:12%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2442",
+      "name": "新美齊",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 1647587.0,
+      "yoy_pct": 610.9,
+      "mom_pct": 13.2,
+      "detail": "雙增 | YoY:611% MoM:13%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2449",
+      "name": "京元電子",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 3597874.0,
+      "yoy_pct": 36.1,
+      "mom_pct": 11.6,
+      "detail": "雙增 | YoY:36% MoM:12%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2450",
+      "name": "神腦",
+      "industry": "通信網路業",
+      "source": "TWSE",
+      "revenue": 3289861.0,
+      "yoy_pct": 31.4,
+      "mom_pct": 39.8,
+      "detail": "雙增 | YoY:31% MoM:40%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2451",
+      "name": "創見",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 5683818.0,
+      "yoy_pct": 380.6,
+      "mom_pct": 78.5,
+      "detail": "雙增 | YoY:381% MoM:78%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2454",
+      "name": "聯發科",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 63219184.0,
+      "yoy_pct": 12.9,
+      "mom_pct": 62.3,
+      "detail": "雙增 | YoY:13% MoM:62%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2458",
+      "name": "義隆",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 1223041.0,
+      "yoy_pct": 19.8,
+      "mom_pct": 31.0,
+      "detail": "雙增 | YoY:20% MoM:31%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2460",
+      "name": "建通",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 456969.0,
+      "yoy_pct": 42.9,
+      "mom_pct": 99.5,
+      "detail": "雙增 | YoY:43% MoM:99%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2465",
+      "name": "麗臺",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 624910.0,
+      "yoy_pct": 83.1,
+      "mom_pct": 30.8,
+      "detail": "雙增 | YoY:83% MoM:31%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2467",
+      "name": "志聖",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 893498.0,
+      "yoy_pct": 77.6,
+      "mom_pct": 138.7,
+      "detail": "雙增 | YoY:78% MoM:139%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2476",
+      "name": "鉅祥",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 840594.0,
+      "yoy_pct": 42.0,
+      "mom_pct": 42.6,
+      "detail": "雙增 | YoY:42% MoM:43%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2478",
+      "name": "大毅",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 561148.0,
+      "yoy_pct": 13.5,
+      "mom_pct": 59.9,
+      "detail": "雙增 | YoY:14% MoM:60%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2481",
+      "name": "強茂",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 1242276.0,
+      "yoy_pct": 19.1,
+      "mom_pct": 32.8,
+      "detail": "雙增 | YoY:19% MoM:33%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2483",
+      "name": "百容",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 174999.0,
+      "yoy_pct": 17.8,
+      "mom_pct": 39.9,
+      "detail": "雙增 | YoY:18% MoM:40%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2485",
+      "name": "兆赫",
+      "industry": "通信網路業",
+      "source": "TWSE",
+      "revenue": 413129.0,
+      "yoy_pct": 200.1,
+      "mom_pct": 63.7,
+      "detail": "雙增 | YoY:200% MoM:64%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2486",
+      "name": "一詮",
+      "industry": "光電業",
+      "source": "TWSE",
+      "revenue": 614726.0,
+      "yoy_pct": 19.5,
+      "mom_pct": 37.5,
+      "detail": "雙增 | YoY:19% MoM:38%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2489",
+      "name": "瑞軒",
+      "industry": "光電業",
+      "source": "TWSE",
+      "revenue": 2355352.0,
+      "yoy_pct": 11.2,
+      "mom_pct": 44.0,
+      "detail": "雙增 | YoY:11% MoM:44%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2492",
+      "name": "華新科",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 3403151.0,
+      "yoy_pct": 11.1,
+      "mom_pct": 27.3,
+      "detail": "雙增 | YoY:11% MoM:27%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2495",
+      "name": "普安",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 146573.0,
+      "yoy_pct": 61.0,
+      "mom_pct": 49.7,
+      "detail": "雙增 | YoY:61% MoM:50%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2501",
+      "name": "國建",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 4524900.0,
+      "yoy_pct": 286.2,
+      "mom_pct": 31.9,
+      "detail": "雙增 | YoY:286% MoM:32%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2506",
+      "name": "太設",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 192170.0,
+      "yoy_pct": 115.3,
+      "mom_pct": 190.5,
+      "detail": "雙增 | YoY:115% MoM:190%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2511",
+      "name": "太子",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 1086528.0,
+      "yoy_pct": 90.4,
+      "mom_pct": 79.8,
+      "detail": "雙增 | YoY:90% MoM:80%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2515",
+      "name": "中工",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 1947354.0,
+      "yoy_pct": 30.2,
+      "mom_pct": 26.8,
+      "detail": "雙增 | YoY:30% MoM:27%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2527",
+      "name": "宏璟",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 4526413.0,
+      "yoy_pct": 3888.2,
+      "mom_pct": 14994.1,
+      "detail": "雙增 | YoY:3888% MoM:14994%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2530",
+      "name": "華建",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 150655.0,
+      "yoy_pct": 1040.7,
+      "mom_pct": 17920.9,
+      "detail": "雙增 | YoY:1041% MoM:17921%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2535",
+      "name": "達欣工",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 3118623.0,
+      "yoy_pct": 24.7,
+      "mom_pct": 121.9,
+      "detail": "雙增 | YoY:25% MoM:122%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2537",
+      "name": "聯上發",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 301990.0,
+      "yoy_pct": 60177.4,
+      "mom_pct": 16.5,
+      "detail": "雙增 | YoY:60177% MoM:16%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2538",
+      "name": "基泰",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 31859.0,
+      "yoy_pct": 61.1,
+      "mom_pct": 52.3,
+      "detail": "雙增 | YoY:61% MoM:52%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2542",
+      "name": "興富發",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 7193130.0,
+      "yoy_pct": 1537.7,
+      "mom_pct": 69.7,
+      "detail": "雙增 | YoY:1538% MoM:70%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2543",
+      "name": "皇昌",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 1188640.0,
+      "yoy_pct": 20.4,
+      "mom_pct": 77.2,
+      "detail": "雙增 | YoY:20% MoM:77%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2545",
+      "name": "皇翔",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 1153426.0,
+      "yoy_pct": 95.5,
+      "mom_pct": 57.6,
+      "detail": "雙增 | YoY:96% MoM:58%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2547",
+      "name": "日勝生",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 694835.0,
+      "yoy_pct": 51.4,
+      "mom_pct": 50.5,
+      "detail": "雙增 | YoY:51% MoM:50%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2548",
+      "name": "華固",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "revenue": 1965711.0,
+      "yoy_pct": 81838.8,
+      "mom_pct": 72.8,
+      "detail": "雙增 | YoY:81839% MoM:73%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2605",
+      "name": "新興",
+      "industry": "航運業",
+      "source": "TWSE",
+      "revenue": 529767.0,
+      "yoy_pct": 34.7,
+      "mom_pct": 21.4,
+      "detail": "雙增 | YoY:35% MoM:21%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2606",
+      "name": "裕民",
+      "industry": "航運業",
+      "source": "TWSE",
+      "revenue": 1467421.0,
+      "yoy_pct": 17.7,
+      "mom_pct": 29.0,
+      "detail": "雙增 | YoY:18% MoM:29%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2610",
+      "name": "華航",
+      "industry": "航運業",
+      "source": "TWSE",
+      "revenue": 20785205.0,
+      "yoy_pct": 20.0,
+      "mom_pct": 13.1,
+      "detail": "雙增 | YoY:20% MoM:13%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2611",
+      "name": "志信",
+      "industry": "航運業",
+      "source": "TWSE",
+      "revenue": 220495.0,
+      "yoy_pct": 307.7,
+      "mom_pct": 184.4,
+      "detail": "雙增 | YoY:308% MoM:184%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2616",
+      "name": "山隆",
+      "industry": "油電燃氣業",
+      "source": "TWSE",
+      "revenue": 770562.0,
+      "yoy_pct": 11.5,
+      "mom_pct": 45.6,
+      "detail": "雙增 | YoY:12% MoM:46%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2617",
+      "name": "台航",
+      "industry": "航運業",
+      "source": "TWSE",
+      "revenue": 406479.0,
+      "yoy_pct": 11.9,
+      "mom_pct": 23.6,
+      "detail": "雙增 | YoY:12% MoM:24%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2618",
+      "name": "長榮航",
+      "industry": "航運業",
+      "source": "TWSE",
+      "revenue": 21587609.0,
+      "yoy_pct": 18.5,
+      "mom_pct": 13.6,
+      "detail": "雙增 | YoY:18% MoM:14%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2637",
+      "name": "慧洋-KY",
+      "industry": "航運業",
+      "source": "TWSE",
+      "revenue": 1723874.0,
+      "yoy_pct": 34.9,
+      "mom_pct": 35.6,
+      "detail": "雙增 | YoY:35% MoM:36%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2645",
+      "name": "長榮航太",
+      "industry": "航運業",
+      "source": "TWSE",
+      "revenue": 1697939.0,
+      "yoy_pct": 12.2,
+      "mom_pct": 28.4,
+      "detail": "雙增 | YoY:12% MoM:28%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2801",
+      "name": "彰銀",
+      "industry": "金融保險業",
+      "source": "TWSE",
+      "revenue": 4394752.0,
+      "yoy_pct": 23.7,
+      "mom_pct": 17.1,
+      "detail": "雙增 | YoY:24% MoM:17%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2884",
+      "name": "玉山金",
+      "industry": "金融保險業",
+      "source": "TWSE",
+      "revenue": 8441262.0,
+      "yoy_pct": 10.2,
+      "mom_pct": 12.9,
+      "detail": "雙增 | YoY:10% MoM:13%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2890",
+      "name": "永豐金",
+      "industry": "金融保險業",
+      "source": "TWSE",
+      "revenue": 8362826.0,
+      "yoy_pct": 50.7,
+      "mom_pct": 19.1,
+      "detail": "雙增 | YoY:51% MoM:19%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2897",
+      "name": "王道銀行",
+      "industry": "金融保險業",
+      "source": "TWSE",
+      "revenue": 965665.0,
+      "yoy_pct": 38.2,
+      "mom_pct": 18.5,
+      "detail": "雙增 | YoY:38% MoM:19%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3002",
+      "name": "歐格",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 70495.0,
+      "yoy_pct": 15.5,
+      "mom_pct": 60.4,
+      "detail": "雙增 | YoY:16% MoM:60%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3003",
+      "name": "健和興",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 471149.0,
+      "yoy_pct": 25.6,
+      "mom_pct": 42.6,
+      "detail": "雙增 | YoY:26% MoM:43%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3004",
+      "name": "豐達科",
+      "industry": "鋼鐵工業",
+      "source": "TWSE",
+      "revenue": 452769.0,
+      "yoy_pct": 31.2,
+      "mom_pct": 25.1,
+      "detail": "雙增 | YoY:31% MoM:25%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3006",
+      "name": "晶豪科",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 3025805.0,
+      "yoy_pct": 188.1,
+      "mom_pct": 44.4,
+      "detail": "雙增 | YoY:188% MoM:44%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3008",
+      "name": "大立光",
+      "industry": "光電業",
+      "source": "TWSE",
+      "revenue": 5419732.0,
+      "yoy_pct": 10.8,
+      "mom_pct": 17.5,
+      "detail": "雙增 | YoY:11% MoM:17%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3010",
+      "name": "華立",
+      "industry": "電子通路業",
+      "source": "TWSE",
+      "revenue": 7615816.0,
+      "yoy_pct": 23.7,
+      "mom_pct": 14.9,
+      "detail": "雙增 | YoY:24% MoM:15%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3013",
+      "name": "晟銘電",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 1177608.0,
+      "yoy_pct": 40.8,
+      "mom_pct": 128.1,
+      "detail": "雙增 | YoY:41% MoM:128%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3016",
+      "name": "嘉晶",
+      "industry": "半導體業",
+      "source": "TWSE",
+      "revenue": 379287.0,
+      "yoy_pct": 20.3,
+      "mom_pct": 13.6,
+      "detail": "雙增 | YoY:20% MoM:14%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3017",
+      "name": "奇鋐",
+      "industry": "電腦及週邊設備業",
+      "source": "TWSE",
+      "revenue": 18017169.0,
+      "yoy_pct": 111.7,
+      "mom_pct": 28.5,
+      "detail": "雙增 | YoY:112% MoM:29%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3019",
+      "name": "亞光",
+      "industry": "光電業",
+      "source": "TWSE",
+      "revenue": 2226321.0,
+      "yoy_pct": 12.3,
+      "mom_pct": 30.2,
+      "detail": "雙增 | YoY:12% MoM:30%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3021",
+      "name": "鴻名",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 249976.0,
+      "yoy_pct": 34.7,
+      "mom_pct": 28.2,
+      "detail": "雙增 | YoY:35% MoM:28%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3025",
+      "name": "星通",
+      "industry": "通信網路業",
+      "source": "TWSE",
+      "revenue": 46161.0,
+      "yoy_pct": 85.8,
+      "mom_pct": 29.6,
+      "detail": "雙增 | YoY:86% MoM:30%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3028",
+      "name": "增你強",
+      "industry": "電子通路業",
+      "source": "TWSE",
+      "revenue": 7514995.0,
+      "yoy_pct": 125.2,
+      "mom_pct": 96.3,
+      "detail": "雙增 | YoY:125% MoM:96%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3029",
+      "name": "零壹",
+      "industry": "資訊服務業",
+      "source": "TWSE",
+      "revenue": 2317450.0,
+      "yoy_pct": 26.0,
+      "mom_pct": 33.0,
+      "detail": "雙增 | YoY:26% MoM:33%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3031",
+      "name": "佰鴻",
+      "industry": "光電業",
+      "source": "TWSE",
+      "revenue": 121481.0,
+      "yoy_pct": 22.7,
+      "mom_pct": 119.5,
+      "detail": "雙增 | YoY:23% MoM:119%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3033",
+      "name": "威健",
+      "industry": "電子通路業",
+      "source": "TWSE",
+      "revenue": 12744358.0,
+      "yoy_pct": 12.6,
+      "mom_pct": 99.8,
+      "detail": "雙增 | YoY:13% MoM:100%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3036",
+      "name": "文曄",
+      "industry": "電子通路業",
+      "source": "TWSE",
+      "revenue": 194101276.0,
+      "yoy_pct": 118.9,
+      "mom_pct": 85.9,
+      "detail": "雙增 | YoY:119% MoM:86%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3037",
+      "name": "欣興",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 13079019.0,
+      "yoy_pct": 23.3,
+      "mom_pct": 12.7,
+      "detail": "雙增 | YoY:23% MoM:13%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3044",
+      "name": "健鼎",
+      "industry": "電子零組件業",
+      "source": "TWSE",
+      "revenue": 7317712.0,
+      "yoy_pct": 24.4,
+      "mom_pct": 24.1,
+      "detail": "雙增 | YoY:24% MoM:24%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "3048",
+      "name": "益登",
+      "industry": "電子通路業",
+      "source": "TWSE",
+      "revenue": 12463552.0,
+      "yoy_pct": 26.7,
+      "mom_pct": 30.0,
+      "detail": "雙增 | YoY:27% MoM:30%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1569",
+      "name": "濱川",
+      "industry": "電腦及週邊設備業",
+      "source": "Tpex",
+      "revenue": 373329.0,
+      "yoy_pct": 11.4,
+      "mom_pct": 95.3,
+      "detail": "雙增 | YoY:11% MoM:95%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1570",
+      "name": "力肯",
+      "industry": "電機機械",
+      "source": "Tpex",
+      "revenue": 52171.0,
+      "yoy_pct": 40.0,
+      "mom_pct": 132.3,
+      "detail": "雙增 | YoY:40% MoM:132%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1591",
+      "name": "駿吉-KY",
+      "industry": "電機機械",
+      "source": "Tpex",
+      "revenue": 50028.0,
+      "yoy_pct": 2218.3,
+      "mom_pct": 30.6,
+      "detail": "雙增 | YoY:2218% MoM:31%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1599",
+      "name": "宏佳騰",
+      "industry": "電機機械",
+      "source": "Tpex",
+      "revenue": 246130.0,
+      "yoy_pct": 24.9,
+      "mom_pct": 38.3,
+      "detail": "雙增 | YoY:25% MoM:38%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1784",
+      "name": "訊聯",
+      "industry": "生技醫療業",
+      "source": "Tpex",
+      "revenue": 127172.0,
+      "yoy_pct": 14.7,
+      "mom_pct": 57.6,
+      "detail": "雙增 | YoY:15% MoM:58%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1785",
+      "name": "光洋科",
+      "industry": "其他電子業",
+      "source": "Tpex",
+      "revenue": 5956286.0,
+      "yoy_pct": 95.6,
+      "mom_pct": 51.2,
+      "detail": "雙增 | YoY:96% MoM:51%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "1799",
+      "name": "易威",
+      "industry": "生技醫療業",
+      "source": "Tpex",
+      "revenue": 100120.0,
+      "yoy_pct": 30.6,
+      "mom_pct": 69.3,
+      "detail": "雙增 | YoY:31% MoM:69%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2064",
+      "name": "晉椿",
+      "industry": "鋼鐵工業",
+      "source": "Tpex",
+      "revenue": 172401.0,
+      "yoy_pct": 23.7,
+      "mom_pct": 42.6,
+      "detail": "雙增 | YoY:24% MoM:43%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2070",
+      "name": "精湛",
+      "industry": "電機機械",
+      "source": "Tpex",
+      "revenue": 75686.0,
+      "yoy_pct": 22.8,
+      "mom_pct": 108.6,
+      "detail": "雙增 | YoY:23% MoM:109%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2641",
+      "name": "正德",
+      "industry": "航運業",
+      "source": "Tpex",
+      "revenue": 205976.0,
+      "yoy_pct": 11.4,
+      "mom_pct": 12.3,
+      "detail": "雙增 | YoY:11% MoM:12%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2755",
+      "name": "揚秦",
+      "industry": "觀光餐旅",
+      "source": "Tpex",
+      "revenue": 280921.0,
+      "yoy_pct": 17.9,
+      "mom_pct": 12.6,
+      "detail": "雙增 | YoY:18% MoM:13%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2756",
+      "name": "聯發國際",
+      "industry": "觀光餐旅",
+      "source": "Tpex",
+      "revenue": 114278.0,
+      "yoy_pct": 49.2,
+      "mom_pct": 26.0,
+      "detail": "雙增 | YoY:49% MoM:26%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "2949",
+      "name": "欣新網",
+      "industry": "數位雲端",
+      "source": "Tpex",
+      "revenue": 583898.0,
+      "yoy_pct": 32.8,
+      "mom_pct": 52.0,
+      "detail": "雙增 | YoY:33% MoM:52%",
+      "flags": [
+        "雙增"
+      ]
+    },
+    {
+      "code": "6126",
+      "name": "信音",
+      "title": "代子公司信音電子(中國)股份有限公司公告董事會決議通過\r\n2025年度利潤分配預案的議案",
+      "level": "mid",
+      "flags": [
+        "[正現金股利]"
+      ],
+      "date": "1150411",
+      "source": "Tpex",
+      "detail": "[正現金股利]"
+    },
+    {
+      "code": "1104",
+      "name": "環泥",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1232",
+      "name": "大統益",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1414",
+      "name": "東和",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1416",
+      "name": "廣豐",
+      "type": "內部人警示",
+      "detail": "董監事持股減少9.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1441",
+      "name": "大東",
+      "type": "內部人警示",
+      "detail": "董監事持股減少31.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1444",
+      "name": "力麗",
+      "type": "內部人警示",
+      "detail": "董監事持股減少13.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1464",
+      "name": "得力",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1470",
+      "name": "大統新創",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1525",
+      "name": "江申",
+      "type": "內部人警示",
+      "detail": "董監事持股減少25.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1528",
+      "name": "恩德",
+      "type": "內部人警示",
+      "detail": "董監事持股減少36.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1537",
+      "name": "廣隆",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1538",
+      "name": "正峰",
+      "type": "內部人警示",
+      "detail": "董監事持股減少40.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1597",
+      "name": "直得",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1603",
+      "name": "華電",
+      "type": "內部人警示",
+      "detail": "董監事持股減少18.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1616",
+      "name": "億泰",
+      "type": "內部人警示",
+      "detail": "董監事持股減少18.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1731",
+      "name": "美吾華",
+      "type": "內部人警示",
+      "detail": "董監事持股減少9.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1752",
+      "name": "南光",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1760",
+      "name": "寶齡富錦",
+      "type": "內部人警示",
+      "detail": "董監事持股減少20.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2006",
+      "name": "東和鋼鐵",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2007",
+      "name": "燁興",
+      "type": "內部人警示",
+      "detail": "董監事持股減少12.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2010",
+      "name": "春源",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2017",
+      "name": "官田鋼",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2032",
+      "name": "新鋼",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2069",
+      "name": "運錩",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2101",
+      "name": "南港",
+      "type": "內部人警示",
+      "detail": "董監事持股減少12.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2102",
+      "name": "泰豐",
+      "type": "內部人警示",
+      "detail": "董監事持股減少12.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2233",
+      "name": "宇隆",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2308",
+      "name": "台達電",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2314",
+      "name": "台揚",
+      "type": "內部人警示",
+      "detail": "董監事持股減少57.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2332",
+      "name": "友訊",
+      "type": "內部人警示",
+      "detail": "董監事持股減少17.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2338",
+      "name": "光罩",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2355",
+      "name": "敬鵬",
+      "type": "內部人警示",
+      "detail": "董監事持股減少15.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2360",
+      "name": "致茂",
+      "type": "內部人警示",
+      "detail": "董監事持股減少9.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2363",
+      "name": "矽統",
+      "type": "內部人警示",
+      "detail": "董監事持股減少34.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2373",
+      "name": "震旦行",
+      "type": "內部人警示",
+      "detail": "董監事持股減少19.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2380",
+      "name": "虹光",
+      "type": "內部人警示",
+      "detail": "董監事持股減少13.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2429",
+      "name": "銘旺科",
+      "type": "內部人警示",
+      "detail": "董監事持股減少14.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2460",
+      "name": "建通",
+      "type": "內部人警示",
+      "detail": "董監事持股減少27.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2461",
+      "name": "光群雷",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2466",
+      "name": "冠西電",
+      "type": "內部人警示",
+      "detail": "董監事持股減少33.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2489",
+      "name": "瑞軒",
+      "type": "內部人警示",
+      "detail": "董監事持股減少17.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2492",
+      "name": "華新科",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2501",
+      "name": "國建",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2535",
+      "name": "達欣工",
+      "type": "內部人警示",
+      "detail": "董監事持股減少19.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2607",
+      "name": "榮運",
+      "type": "內部人警示",
+      "detail": "董監事持股減少50.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2614",
+      "name": "東森",
+      "type": "內部人警示",
+      "detail": "董監事持股減少31.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2618",
+      "name": "長榮航",
+      "type": "內部人警示",
+      "detail": "董監事持股減少18.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2832",
+      "name": "台產",
+      "type": "內部人警示",
+      "detail": "董監事持股減少30.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2838",
+      "name": "聯邦銀",
+      "type": "內部人警示",
+      "detail": "董監事持股減少14.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2851",
+      "name": "中再保",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2911",
+      "name": "麗嬰房",
+      "type": "內部人警示",
+      "detail": "董監事持股減少46.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2929",
+      "name": "淘帝-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3003",
+      "name": "健和興",
+      "type": "內部人警示",
+      "detail": "董監事持股減少18.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3005",
+      "name": "神基",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3013",
+      "name": "晟銘電",
+      "type": "內部人警示",
+      "detail": "董監事持股減少16.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3014",
+      "name": "聯陽",
+      "type": "內部人警示",
+      "detail": "董監事持股減少17.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3017",
+      "name": "奇鋐",
+      "type": "內部人警示",
+      "detail": "董監事持股減少15.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3022",
+      "name": "威強電",
+      "type": "內部人警示",
+      "detail": "董監事持股減少15.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3028",
+      "name": "增你強",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3033",
+      "name": "威健",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3035",
+      "name": "智原",
+      "type": "內部人警示",
+      "detail": "董監事持股減少15.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3043",
+      "name": "科風",
+      "type": "內部人警示",
+      "detail": "董監事持股減少20.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3051",
+      "name": "力特",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3057",
+      "name": "喬鼎",
+      "type": "內部人警示",
+      "detail": "董監事持股減少34.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3060",
+      "name": "銘異",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3149",
+      "name": "正達",
+      "type": "內部人警示",
+      "detail": "董監事持股減少51.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3164",
+      "name": "景岳",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3321",
+      "name": "同泰",
+      "type": "內部人警示",
+      "detail": "董監事持股減少27.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3346",
+      "name": "麗清",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3356",
+      "name": "奇偶",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3376",
+      "name": "新日興",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3494",
+      "name": "誠研",
+      "type": "內部人警示",
+      "detail": "董監事持股減少55.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3528",
+      "name": "安馳",
+      "type": "內部人警示",
+      "detail": "董監事持股減少20.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3535",
+      "name": "晶彩科",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3576",
+      "name": "聯合再生",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3593",
+      "name": "力銘",
+      "type": "內部人警示",
+      "detail": "董監事持股減少31.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3702",
+      "name": "大聯大",
+      "type": "內部人警示",
+      "detail": "董監事持股減少9.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4164",
+      "name": "承業醫",
+      "type": "內部人警示",
+      "detail": "董監事持股減少23.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4414",
+      "name": "如興",
+      "type": "內部人警示",
+      "detail": "董監事持股減少73.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4426",
+      "name": "利勤",
+      "type": "內部人警示",
+      "detail": "董監事持股減少20.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4551",
+      "name": "智伸科",
+      "type": "內部人警示",
+      "detail": "董監事持股減少12.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4552",
+      "name": "力達-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少24.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4562",
+      "name": "穎漢",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4583",
+      "name": "台灣精銳",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4590",
+      "name": "富田-創",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4766",
+      "name": "南寶",
+      "type": "內部人警示",
+      "detail": "董監事持股減少16.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4927",
+      "name": "泰鼎-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少21.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5007",
+      "name": "三星",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5471",
+      "name": "松翰",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5515",
+      "name": "建國",
+      "type": "內部人警示",
+      "detail": "董監事持股減少17.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5521",
+      "name": "工信",
+      "type": "內部人警示",
+      "detail": "董監事持股減少20.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5907",
+      "name": "大洋-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少49.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6152",
+      "name": "百一",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6215",
+      "name": "和椿",
+      "type": "內部人警示",
+      "detail": "董監事持股減少12.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6409",
+      "name": "旭隼",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6426",
+      "name": "統新",
+      "type": "內部人警示",
+      "detail": "董監事持股減少25.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6431",
+      "name": "光麗-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少100.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6451",
+      "name": "訊芯-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少20.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6477",
+      "name": "安集",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6515",
+      "name": "穎崴",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6525",
+      "name": "捷敏-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少9.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6533",
+      "name": "晶心科",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6558",
+      "name": "興能高",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6668",
+      "name": "中揚光",
+      "type": "內部人警示",
+      "detail": "董監事持股減少33.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6754",
+      "name": "匯僑設計",
+      "type": "內部人警示",
+      "detail": "董監事持股減少12.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6781",
+      "name": "AES-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少24.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6933",
+      "name": "AMAX-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6949",
+      "name": "沛爾生醫-創",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6994",
+      "name": "富威電力",
+      "type": "內部人警示",
+      "detail": "董監事持股減少17.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "7732",
+      "name": "金興精密",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "7823",
+      "name": "奧義賽博-KY創",
+      "type": "內部人警示",
+      "detail": "董監事持股減少19.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8016",
+      "name": "矽創",
+      "type": "內部人警示",
+      "detail": "董監事持股減少14.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8103",
+      "name": "瀚荃",
+      "type": "內部人警示",
+      "detail": "董監事持股減少25.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8110",
+      "name": "華東",
+      "type": "內部人警示",
+      "detail": "董監事持股減少22.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8112",
+      "name": "至上",
+      "type": "內部人警示",
+      "detail": "董監事持股減少17.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8222",
+      "name": "寶一",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8249",
+      "name": "菱光",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8429",
+      "name": "金麗-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少16.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8464",
+      "name": "億豐",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8467",
+      "name": "波力-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8473",
+      "name": "山林水",
+      "type": "內部人警示",
+      "detail": "董監事持股減少26.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "9906",
+      "name": "欣巴巴",
+      "type": "內部人警示",
+      "detail": "董監事持股減少21.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "9908",
+      "name": "大台北",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "9919",
+      "name": "康那香",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "9924",
+      "name": "福興",
+      "type": "內部人警示",
+      "detail": "董監事持股減少20.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "9927",
+      "name": "泰銘",
+      "type": "內部人警示",
+      "detail": "董監事持股減少26.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "9939",
+      "name": "宏全",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1742",
+      "name": "台蠟",
+      "type": "內部人警示",
+      "detail": "董監事持股減少9.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1784",
+      "name": "訊聯",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2073",
+      "name": "雄順",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "2745",
+      "name": "五福",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3078",
+      "name": "僑威",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3081",
+      "name": "聯亞",
+      "type": "內部人警示",
+      "detail": "董監事持股減少44.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3093",
+      "name": "港建*",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3128",
+      "name": "昇銳",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3163",
+      "name": "波若威",
+      "type": "內部人警示",
+      "detail": "董監事持股減少15.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3171",
+      "name": "炎洲流通",
+      "type": "內部人警示",
+      "detail": "董監事持股減少50.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3217",
+      "name": "優群",
+      "type": "內部人警示",
+      "detail": "董監事持股減少13.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3228",
+      "name": "金麗科",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3252",
+      "name": "海灣",
+      "type": "內部人警示",
+      "detail": "董監事持股減少33.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3264",
+      "name": "欣銓",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3290",
+      "name": "東浦",
+      "type": "內部人警示",
+      "detail": "董監事持股減少31.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3294",
+      "name": "英濟",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3303",
+      "name": "岱稜",
+      "type": "內部人警示",
+      "detail": "董監事持股減少14.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3323",
+      "name": "加百裕",
+      "type": "內部人警示",
+      "detail": "董監事持股減少16.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3324",
+      "name": "雙鴻",
+      "type": "內部人警示",
+      "detail": "董監事持股減少25.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3339",
+      "name": "泰谷",
+      "type": "內部人警示",
+      "detail": "董監事持股減少16.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3357",
+      "name": "臺慶科",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3455",
+      "name": "由田",
+      "type": "內部人警示",
+      "detail": "董監事持股減少17.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3466",
+      "name": "德晉",
+      "type": "內部人警示",
+      "detail": "董監事持股減少32.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3479",
+      "name": "安勤",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3490",
+      "name": "單井",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3577",
+      "name": "泓格",
+      "type": "內部人警示",
+      "detail": "董監事持股減少18.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3597",
+      "name": "映興",
+      "type": "內部人警示",
+      "detail": "董監事持股減少30.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3615",
+      "name": "安可",
+      "type": "內部人警示",
+      "detail": "董監事持股減少46.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3623",
+      "name": "富晶通",
+      "type": "內部人警示",
+      "detail": "董監事持股減少14.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "3680",
+      "name": "家登",
+      "type": "內部人警示",
+      "detail": "董監事持股減少9.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4127",
+      "name": "天良",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4174",
+      "name": "浩鼎",
+      "type": "內部人警示",
+      "detail": "董監事持股減少50.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4413",
+      "name": "飛寶企業",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4530",
+      "name": "宏易",
+      "type": "內部人警示",
+      "detail": "董監事持股減少54.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4549",
+      "name": "桓達",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4558",
+      "name": "寶緯",
+      "type": "內部人警示",
+      "detail": "董監事持股減少18.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4563",
+      "name": "百德",
+      "type": "內部人警示",
+      "detail": "董監事持股減少20.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4744",
+      "name": "皇將",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4806",
+      "name": "桂田文創",
+      "type": "內部人警示",
+      "detail": "董監事持股減少50.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4908",
+      "name": "前鼎",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4909",
+      "name": "新復興",
+      "type": "內部人警示",
+      "detail": "董監事持股減少6.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4924",
+      "name": "欣厚-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少27.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4950",
+      "name": "金耘國際",
+      "type": "內部人警示",
+      "detail": "董監事持股減少60.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "4979",
+      "name": "華星光",
+      "type": "內部人警示",
+      "detail": "董監事持股減少22.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5011",
+      "name": "久陽",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5301",
+      "name": "寶得利",
+      "type": "內部人警示",
+      "detail": "董監事持股減少53.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5348",
+      "name": "正能量智能",
+      "type": "內部人警示",
+      "detail": "董監事持股減少31.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5371",
+      "name": "中光電",
+      "type": "內部人警示",
+      "detail": "董監事持股減少12.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5432",
+      "name": "新門",
+      "type": "內部人警示",
+      "detail": "董監事持股減少26.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5457",
+      "name": "宣德",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5520",
+      "name": "力泰",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5536",
+      "name": "聖暉*",
+      "type": "內部人警示",
+      "detail": "董監事持股減少16.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5878",
+      "name": "台名",
+      "type": "內部人警示",
+      "detail": "董監事持股減少19.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "5904",
+      "name": "寶雅",
+      "type": "內部人警示",
+      "detail": "董監事持股減少14.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6134",
+      "name": "萬旭",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6160",
+      "name": "欣技",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6161",
+      "name": "捷波",
+      "type": "內部人警示",
+      "detail": "董監事持股減少25.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6167",
+      "name": "久正",
+      "type": "內部人警示",
+      "detail": "董監事持股減少9.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6173",
+      "name": "信昌電",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6175",
+      "name": "立敦",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6194",
+      "name": "育富",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6195",
+      "name": "詩肯",
+      "type": "內部人警示",
+      "detail": "董監事持股減少14.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6199",
+      "name": "天品",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6208",
+      "name": "日揚",
+      "type": "內部人警示",
+      "detail": "董監事持股減少17.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6217",
+      "name": "中探針",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6218",
+      "name": "豪勉",
+      "type": "內部人警示",
+      "detail": "董監事持股減少9.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6223",
+      "name": "旺矽",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6228",
+      "name": "全譜",
+      "type": "內部人警示",
+      "detail": "董監事持股減少34.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6261",
+      "name": "久元",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6276",
+      "name": "安鈦克",
+      "type": "內部人警示",
+      "detail": "董監事持股減少30.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6291",
+      "name": "沛亨",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6425",
+      "name": "易發",
+      "type": "內部人警示",
+      "detail": "董監事持股減少12.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6462",
+      "name": "神盾",
+      "type": "內部人警示",
+      "detail": "董監事持股減少33.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6465",
+      "name": "威潤",
+      "type": "內部人警示",
+      "detail": "董監事持股減少9.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6470",
+      "name": "宇智",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6499",
+      "name": "益安",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6510",
+      "name": "精測",
+      "type": "內部人警示",
+      "detail": "董監事持股減少25.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6530",
+      "name": "創威",
+      "type": "內部人警示",
+      "detail": "董監事持股減少20.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6546",
+      "name": "正基",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6556",
+      "name": "勝品",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6640",
+      "name": "均華",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6684",
+      "name": "安格",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.2%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6725",
+      "name": "矽科宏晟",
+      "type": "內部人警示",
+      "detail": "董監事持股減少15.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6727",
+      "name": "亞泰金屬",
+      "type": "內部人警示",
+      "detail": "董監事持股減少15.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6785",
+      "name": "昱展新藥",
+      "type": "內部人警示",
+      "detail": "董監事持股減少14.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6788",
+      "name": "華景電",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6791",
+      "name": "虎門科技",
+      "type": "內部人警示",
+      "detail": "董監事持股減少25.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6823",
+      "name": "濾能",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6841",
+      "name": "長佳智能",
+      "type": "內部人警示",
+      "detail": "董監事持股減少14.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6982",
+      "name": "大井泵浦",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "6997",
+      "name": "博弘",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.8%",
+      "source": "TWSE"
+    },
+    {
+      "code": "7402",
+      "name": "邑錡",
+      "type": "內部人警示",
+      "detail": "董監事持股減少29.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "7642",
+      "name": "昶瑞機電",
+      "type": "內部人警示",
+      "detail": "董監事持股減少11.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "7703",
+      "name": "銳澤",
+      "type": "內部人警示",
+      "detail": "董監事持股減少12.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "7708",
+      "name": "全家餐飲",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "7717",
+      "name": "萊德光電-KY",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.6%",
+      "source": "TWSE"
+    },
+    {
+      "code": "7738",
+      "name": "東聯互動",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "7747",
+      "name": "昕奇雲端",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8034",
+      "name": "榮群",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8038",
+      "name": "長園科",
+      "type": "內部人警示",
+      "detail": "董監事持股減少40.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8050",
+      "name": "廣積",
+      "type": "內部人警示",
+      "detail": "董監事持股減少7.1%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8076",
+      "name": "伍豐",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8088",
+      "name": "品安",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8093",
+      "name": "保銳",
+      "type": "內部人警示",
+      "detail": "董監事持股減少40.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8097",
+      "name": "常珵",
+      "type": "內部人警示",
+      "detail": "董監事持股減少20.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8227",
+      "name": "巨有科技",
+      "type": "內部人警示",
+      "detail": "董監事持股減少38.5%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8272",
+      "name": "全景軟體",
+      "type": "內部人警示",
+      "detail": "董監事持股減少8.4%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8291",
+      "name": "尚茂",
+      "type": "內部人警示",
+      "detail": "董監事持股減少68.0%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8354",
+      "name": "冠好",
+      "type": "內部人警示",
+      "detail": "董監事持股減少12.3%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8358",
+      "name": "金居",
+      "type": "內部人警示",
+      "detail": "董監事持股減少5.7%",
+      "source": "TWSE"
+    },
+    {
+      "code": "8415",
+      "name": "大國鋼",
+      "type": "內部人警示",
+      "detail": "董監事持股減少10.9%",
+      "source": "TWSE"
+    },
+    {
+      "code": "1808",
+      "name": "潤隆",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "yoy_pct": 57.1,
+      "industry_yoy": -96.1,
+      "detail": "市佔率掠奪 | 個股YoY:57% 產業YoY:-96%"
+    },
+    {
+      "code": "2505",
+      "name": "國揚",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "yoy_pct": -51.7,
+      "industry_yoy": -93.4,
+      "detail": "市佔率掠奪 | 個股YoY:-52% 產業YoY:-93%"
+    },
+    {
+      "code": "2548",
+      "name": "華固",
+      "industry": "建材營造",
+      "source": "TWSE",
+      "yoy_pct": -66.6,
+      "industry_yoy": -93.0,
+      "detail": "市佔率掠奪 | 個股YoY:-67% 產業YoY:-93%"
+    }
+  ]
+}

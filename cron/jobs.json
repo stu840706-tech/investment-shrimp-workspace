@@ -1,0 +1,80 @@
+{
+  "_comment": "OpenClaw cron jobs — 用 openclaw cron list 查看，openclaw cron add/edit 修改",
+  "jobs": [
+    {
+      "id": "daily-revenue-scan",
+      "name": "每日營收異常掃描 (S-1)",
+      "enabled": true,
+      "schedule": {
+        "kind": "cron",
+        "cron": "0 6 * * *",
+        "tz": "Asia/Taipei"
+      },
+      "sessionTarget": "isolated",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "執行每日營收異常掃描：python3 workflows/daily-scan.py。掃描完成後執行 python3 workflows/daily-notion.py 寫入 Notion。如果失敗超過 1 次，觸發 S-6 escalation 通知 Kai。"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "5604476530"
+      },
+      "deleteAfterRun": false
+    },
+    {
+      "id": "daily-news-brief",
+      "name": "每日新聞摘要 (任務1)",
+      "enabled": true,
+      "schedule": {
+        "kind": "cron",
+        "cron": "30 7 * * *",
+        "tz": "Asia/Taipei"
+      },
+      "sessionTarget": "isolated",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "執行每日新聞摘要：python3 workflows/news_fetcher.py all 抓取新聞，再執行 python3 workflows/news_aggregator.py 分析，最後 python3 workflows/news_publisher.py 發布到 Telegram。"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "deleteAfterRun": false
+    },
+    {
+      "id": "daily-event-check",
+      "name": "每日重大事件檢查 (S-2)",
+      "enabled": true,
+      "schedule": {
+        "kind": "cron",
+        "cron": "0 9 * * *",
+        "tz": "Asia/Taipei"
+      },
+      "sessionTarget": "main",
+      "payload": {
+        "kind": "systemEvent",
+        "message": "S-2 觸發：檢查今日重大事件（法說會、財報發布、重要公告）。若有 Kai 追蹤中的個股相關事件，主動發送 Telegram 提醒。無事件則靜默。"
+      },
+      "deleteAfterRun": false
+    },
+    {
+      "id": "daily-notion-write",
+      "name": "每日 Notion 寫入（備用觸發）",
+      "enabled": false,
+      "schedule": {
+        "kind": "cron",
+        "cron": "0 18 * * *",
+        "tz": "Asia/Taipei"
+      },
+      "sessionTarget": "isolated",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "執行 python3 workflows/daily-notion.py 確保今日掃描結果已寫入 Notion。若 06:00 的 daily-scan 已觸發，此任務可跳過。"
+      },
+      "delivery": {
+        "mode": "none"
+      },
+      "deleteAfterRun": false
+    }
+  ]
+}

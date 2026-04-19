@@ -1,0 +1,30 @@
+# Secrets
+config/secrets.json
+config/*.secret.json
+
+# Backups
+*.bak
+*.bak-*
+
+# State files
+state/*.json
+memory/raw-*.jsonl
+memory/archive/news_raw/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Skills state
+skills/*/state/
+
+# OpenClaw internal
+.openclaw/
+.clawhub/
+
+# State text outputs (dynamic)
+state/*.txt
+
+# Memory processed streams (raw append logs)
+memory/*.jsonl
