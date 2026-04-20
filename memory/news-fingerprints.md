@@ -6,7 +6,7 @@ test_key	2026-04-15
 美股收盤》市場盼望美伊協議！道瓊升317點 台積電	2026-04-15
 光聖3月eps 4.02元 年增2倍 - 自由時報	2026-04-15
 旺宏漲真的！三大法人同步掃貨逾3萬張 爆量噴出 -	2026-04-15
-prediction markets will g	2026-04-17
+prediction markets will g	2026-04-19
 morrison targets ai phone	2026-04-15
 global semiconductor equi	2026-04-15
 《盤後解析》台積再飆天價2055元留意法人逢高下車	2026-04-15
@@ -25,7 +25,7 @@ imf下修今年全球經濟成長率 台灣逆勢上揚5.2％	2026-04-15
 東典3月eps0.1元轉虧為盈 第1季每股虧損0.	2026-04-15
 生華科獲外資gem最高5億投資 助攻ai新藥研發	2026-04-15
 東陽第1季稅前淨利2.02元 同期歷史第3高 -	2026-04-15
-citigroup beats estimates	2026-04-17
+citigroup beats estimates	2026-04-19
 offbeat wall street resea	2026-04-15
 blue owl caps private cre	2026-04-15
 yancoal buys australia mi	2026-04-15
@@ -35,7 +35,7 @@ taiwan races to shore up	2026-04-15
 台積電鉅額交易40張漲停價刷歷史第二高價- 證券	2026-04-15
 《盤後解析》收高556點周線翻紅噴漲台積電法說會將	2026-04-16
 台股收盤創新高 台積電「2」字頭再現 電子五哥展笑	2026-04-16
-京鼎下半年營收估持穩，全年挑戰雙位數成長- 新聞	2026-04-17
+京鼎下半年營收估持穩，全年挑戰雙位數成長- 新聞	2026-04-19
 鴻海磷酸鋰鐵電池量產 新款model c布局北美	2026-04-15
 焦點股》光鋐：題材熱度延燒 猛攻漲停 - 自由時報	2026-04-15
 熱門股》祭出庫藏股 金居挑戰新高 - 自由時報	2026-04-15
@@ -53,7 +53,7 @@ panel makers lift 1q26 sa	2026-04-15
 策略轉向台電擬投資海廣風場- 日報 - 工商時報	2026-04-15
 台積台股創高光學、機器人噴出ccl三箭齊發- 證券	2026-04-15
 工商時報	2026-04-15
-工商時報- www.ctee.com.tw - 工	2026-04-17
+工商時報- www.ctee.com.tw - 工	2026-04-19
 川普坦言：高油價恐持續至11月 - 工商時報	2026-04-15
 《經濟》轉讓聯合再生股票國發會：釋股後仍保有董事-	2026-04-15
 《盤後解析》台股震盪格局中小兵還有戲- 證券 -	2026-04-15
@@ -81,33 +81,33 @@ fed接班人有多有錢？華許資產曝光 身價遠超歷任主	2026-04-15
 川普最新表態：美國對伊朗戰爭「結束了」 - new	2026-04-15
 藥廠ai合作潮！諾和諾德攜手openai 股價走揚	2026-04-15
 美航+聯航 拿下美航空業4成市佔？專家：法院幾乎不	2026-04-15
-晶彩科12月單月轉盈，營運有望走出谷底- 新聞 -	2026-04-17
-光寶科技股份有限公司 - moneydj理財網	2026-04-17
+晶彩科12月單月轉盈，營運有望走出谷底- 新聞 -	2026-04-19
+光寶科技股份有限公司 - moneydj理財網	2026-04-19
 辛耘企業股份有限公司 - moneydj理財網	2026-04-17
-家碩科技股份有限公司 - moneydj理財網	2026-04-17
-鈺邦科技股份有限公司 - moneydj理財網	2026-04-17
-安勤科技股份有限公司 - moneydj理財網	2026-04-16
-揚博科技股份有限公司 - moneydj理財網	2026-04-17
-聯策科技股份有限公司 - moneydj理財網	2026-04-17
-博弘雲端科技股份有限公司 - moneydj理財網	2026-04-17
+家碩科技股份有限公司 - moneydj理財網	2026-04-19
+鈺邦科技股份有限公司 - moneydj理財網	2026-04-19
+安勤科技股份有限公司 - moneydj理財網	2026-04-19
+揚博科技股份有限公司 - moneydj理財網	2026-04-19
+聯策科技股份有限公司 - moneydj理財網	2026-04-19
+博弘雲端科技股份有限公司 - moneydj理財網	2026-04-19
 大宇資訊股份有限公司 - moneydj理財網	2026-04-15
-首頁 etf排行 社群排行 點閱人氣排行 - mo	2026-04-17
-元大台灣50-0050.tw-etf試算 - mo	2026-04-17
-強茂股份有限公司 - moneydj理財網	2026-04-17
-晶達光電股份有限公司 - moneydj理財網	2026-04-17
-東方風能科技股份有限公司 - moneydj理財網	2026-04-17
+首頁 etf排行 社群排行 點閱人氣排行 - mo	2026-04-19
+元大台灣50-0050.tw-etf試算 - mo	2026-04-19
+強茂股份有限公司 - moneydj理財網	2026-04-19
+晶達光電股份有限公司 - moneydj理財網	2026-04-19
+東方風能科技股份有限公司 - moneydj理財網	2026-04-19
 首頁 etf搜尋 區域搜尋 - moneydj理財	2026-04-16
-東友科技股份有限公司 - moneydj理財網	2026-04-17
-牧德科技股份有限公司 - moneydj理財網	2026-04-17
-智晶光電股份有限公司 - moneydj理財網	2026-04-15
-新光合成纖維股份有限公司 - moneydj理財網	2026-04-17
-瑞智精密股份有限公司 - moneydj理財網	2026-04-17
-中華工程股份有限公司 - moneydj理財網	2026-04-17
-得力實業股份有限公司 - moneydj理財網	2026-04-16
-華義國際數位娛樂股份有限公司 - moneydj理	2026-04-17
+東友科技股份有限公司 - moneydj理財網	2026-04-19
+牧德科技股份有限公司 - moneydj理財網	2026-04-19
+智晶光電股份有限公司 - moneydj理財網	2026-04-19
+新光合成纖維股份有限公司 - moneydj理財網	2026-04-19
+瑞智精密股份有限公司 - moneydj理財網	2026-04-19
+中華工程股份有限公司 - moneydj理財網	2026-04-19
+得力實業股份有限公司 - moneydj理財網	2026-04-19
+華義國際數位娛樂股份有限公司 - moneydj理	2026-04-19
 熒茂光學股份有限公司 - moneydj理財網	2026-04-17
-民眾黨中評會開鍘 李貞秀即日喪失立委身分 - 聯合	2026-04-16
-蘋果平價 nb 賣爆緊急追單 鴻海、廣達跟著動起來	2026-04-16
+民眾黨中評會開鍘 李貞秀即日喪失立委身分 - 聯合	2026-04-19
+蘋果平價 nb 賣爆緊急追單 鴻海、廣達跟著動起來	2026-04-19
 馬英九親致電回應楊渡：我只是老了健忘 不構成蕭旭岑	2026-04-15
 桃園61人疑食物中毒！上野烤肉飯內壢店致歉 懷疑「	2026-04-15
 天氣漸熱 新北在板橋路口設「自動化人行道遮陽傘」	2026-04-17
@@ -148,14 +148,14 @@ ltn經濟通》日本百年紡織廠 扼ai產業咽喉 -	2026-04-15
 恆大欺詐案深圳開審 許家印當庭認罪 - 自由時報	2026-04-15
 宏泰人壽傳涉非常規交易案 檢調搜索偵訊中 - 自由	2026-04-15
 台新證券系統再度大當機 券商：確保每位客戶權益 -	2026-04-15
-jamie dimon says anthropi	2026-04-17
-david einhorn signals cau	2026-04-17
-global recession is inevi	2026-04-17
-treasury secretary bessen	2026-04-17
-jpmorgan tops estimates o	2026-04-17
-china exports growth in m	2026-04-17
-goldman sachs tops estima	2026-04-17
-how bond market's private	2026-04-17
+jamie dimon says anthropi	2026-04-19
+david einhorn signals cau	2026-04-19
+global recession is inevi	2026-04-19
+treasury secretary bessen	2026-04-19
+jpmorgan tops estimates o	2026-04-19
+china exports growth in m	2026-04-19
+goldman sachs tops estima	2026-04-19
+how bond market's private	2026-04-19
 michael burry says he's s	2026-04-17
 blackrock rips page from	2026-04-17
 behind china's 'active ef	2026-04-17
@@ -312,7 +312,7 @@ apple supplier luxshare g	2026-04-15
 sk hynix may cut nvidia h	2026-04-15
 southern taiwan science p	2026-04-15
 新台幣重返31.6元價位專家估短線仍區間盤整日圓、	2026-04-17
-台股台積刷新高被動元件開飆這檔國家隊倒貨股今日爆量	2026-04-17
+台股台積刷新高被動元件開飆這檔國家隊倒貨股今日爆量	2026-04-19
 才剛宣布停火 川普轉頭就祭威脅 對向伊朗提供武器的	2026-04-17
 3月股債雙跌衝擊富壽 富邦金首季仍賺332.7億元	2026-04-15
 李貞秀丟立委火力全開痛批高虹安民眾黨罪人、男友月領	2026-04-15
@@ -385,8 +385,8 @@ imf展望台灣2026經濟成長 居先進國家之冠 -	2026-04-15
 又傳奴工！比亞迪匈牙利廠被控違反勞動法 - 自由時	2026-04-15
 點名台灣！美國半導體製造背後最大贏家曝光 - 自由	2026-04-15
 上市公司去年肥貓高達230家 大同、台泥最肥 中鋼	2026-04-15
-bank of america tops esti	2026-04-17
-chinese robotaxi companie	2026-04-17
+bank of america tops esti	2026-04-19
+chinese robotaxi companie	2026-04-19
 the future of preventive	2026-04-15
 us stocks ease as traders	2026-04-15
 india’s trade gap narrows	2026-04-15
@@ -455,7 +455,7 @@ qep raises quarterly divi	2026-04-15
 中菲關係緊張…北京派船、設屏障擋黃岩島入口衛星照曝	2026-04-15
 俄海軍艦艇編隊訪中新華社：與當前國際局勢無關| 兩	2026-04-15
 中工經營權之爭 商業法院裁定理由曝 - 自由時報	2026-04-15
-morgan stanley tops estim	2026-04-17
+morgan stanley tops estim	2026-04-19
 jpmorgan looks to raise a	2026-04-15
 uk government picks bidde	2026-04-15
 pakistan aims to handover	2026-04-15
@@ -496,7 +496,7 @@ israel stocks lower at cl	2026-04-15
 川普宣布停火兩周亞股、歐股、黃金、比特幣同場嗨翻-	2026-04-15
 快訊》川普曾要求中國「別給伊朗武器」 習近平回信了	2026-04-16
 傳調解方稱美伊「原則上同意」延長停火 但遭伊朗及美	2026-04-16
-宏達國際電子股份有限公司 - moneydj理財網	2026-04-17
+宏達國際電子股份有限公司 - moneydj理財網	2026-04-19
 爆陳亭妃博士論文抄維基百科…藍營「這2人」遭求償	2026-04-15
 mlb／山本由伸7.2局失1分無關勝敗 大谷翔平獲	2026-04-15
 韓職／自曝遭言語暴力、躲在廁所哭 韓啦啦隊鄭嘉睿：	2026-04-15
@@ -617,7 +617,7 @@ form 13f badgley phelps w	2026-04-15
 就市論勢／ai 基建受惠股 分批布局 - 經濟日報	2026-04-15
 凱擘砸百億 升級網路 - 經濟日報	2026-04-15
 新聿科大搶 ai 商機 - 經濟日報	2026-04-15
-regulators are reportedly	2026-04-17
+regulators are reportedly	2026-04-19
 u.s. army names bellâ€™s	2026-04-15
 美伊戰爭重塑能源版圖 wti原油由定價基準晉升為「	2026-04-15
 google rolls out a native	2026-04-16
@@ -666,7 +666,7 @@ ford ev and tech chief le	2026-04-16
 新興市場教父 傳奇投資人墨比爾斯逝世享壽89歲 -	2026-04-16
 台電扛物價消波塊 揆︰政府欠2千億電費 - 自由時	2026-04-15
 立院初審通過 電影、藝文、競技比賽 免徵娛樂稅 -	2026-04-15
-goldman sachs bond trader	2026-04-17
+goldman sachs bond trader	2026-04-19
 oil steady on signs us, i	2026-04-15
 plata hits $5 billion val	2026-04-15
 gold steadies as traders	2026-04-15
@@ -697,7 +697,7 @@ form 144 maplight therape	2026-04-15
 form 144 goldman sachs gr	2026-04-15
 form 144 mineralys therap	2026-04-15
 cineverse appoints sean m	2026-04-15
-《熱點透視》李嘉誠重組商業帝國 改奉股東價值至上	2026-04-17
+《熱點透視》李嘉誠重組商業帝國 改奉股東價值至上	2026-04-19
 tsmc guides over 15% 2q26	2026-04-16
 鉅亨速報 - factset 最新調查：聚陽(14	2026-04-16
 鉅亨速報 - factset 最新調查：環球晶(6	2026-04-16
@@ -725,7 +725,7 @@ china’s economy rides out	2026-04-16
 euro-zone inflation was f	2026-04-16
 samsung pushes hbm4 yield	2026-04-16
 taiwan's investment in ch	2026-04-16
-《盤後解析》收漲再創巔峰分析師：這訊號出現續攻高-	2026-04-17
+《盤後解析》收漲再創巔峰分析師：這訊號出現續攻高-	2026-04-19
 美牛價格飆升創歷史新高 烤肉旺季恐加重消費者負擔	2026-04-16
 美股收盤》中東談判露曙光！標普、那指創新高 台積電	2026-04-16
 焦點股》南茂：驅動ic封測跟漲 股價爆量漲停 -	2026-04-16
@@ -796,7 +796,7 @@ tsmc enters 2nm mass prod	2026-04-16
 熱門股》三大法人掃貨 強茂帶量大漲 - 自由時報	2026-04-16
 熱門股》傳言代工記憶體 聯電飆漲停 - 自由時報	2026-04-16
 長榮航強攻歐洲轉機市場 拚當飛歐班次最多業者 |	2026-04-16
-(0056.tw)元大高股息 - moneydj理	2026-04-17
+(0056.tw)元大高股息 - moneydj理	2026-04-19
 大立光cpo新業務 動起來 董座林恩平談本業展望	2026-04-16
 鉅亨速報 - factset 最新調查：海洋公司s	2026-04-16
 台新證券錯帳風暴擴大！未如期完成申報 恐吞10萬罰	2026-04-16
@@ -843,7 +843,7 @@ tidf國際紀錄片影展| 搜尋標籤 - 轉角國際u	2026-04-17
 原油每桶喊到286 美元天價 傳「亞洲這國」含淚吞	2026-04-17
 投信：ai外溢效應發酵 出口第二季看俏 - 自由時	2026-04-17
 市場懷疑美伊和談能否化解供應問題 國際油價上揚 -	2026-04-17
-retail traders pile into	2026-04-17
+retail traders pile into	2026-04-19
 gold heads for fourth wee	2026-04-16
 oil drops as trump strike	2026-04-16
 trump says deal with iran	2026-04-16
@@ -895,8 +895,8 @@ memory module maker apace	2026-04-17
 spanish startup openchip	2026-04-17
 umc signals 2026 wafer pr	2026-04-17
 foxconn industrial intern	2026-04-17
-泰國出現etc門架遠通聯手泰國bgsr集團 m8公	2026-04-17
-pcb迎來「價值重估」新紀元！ccl三雄挺進m8、	2026-04-17
+泰國出現etc門架遠通聯手泰國bgsr集團 m8公	2026-04-19
+pcb迎來「價值重估」新紀元！ccl三雄挺進m8、	2026-04-19
 獨／中工和寶佳大和解寶佳取得四席的過半席次| 房屋	2026-04-17
 輝達h100租金半年漲近4成陸ai大模型運算成本壓	2026-04-17
 記憶體賺很大！高職畢業進海力士當作業員爽領1,60	2026-04-17
@@ -927,7 +927,7 @@ china wafer maker nsig li	2026-04-17
 川普：美伊本周末可望再談伊朗同意20年以上不發展核	2026-04-17
 川普：汽油價格「並沒有很高」 - news.cny	2026-04-17
 最怕劇本來了？中東戰事衝擊發酵 fed三把手警告停	2026-04-17
-etf區域搜尋-funddj基智網 - money	2026-04-17
+etf區域搜尋-funddj基智網 - money	2026-04-19
 原本要低調卻全曝光！日經：卓榮泰wbc觀戰惹日方不	2026-04-17
 影／逛完台大商圈趕公車 8旬婦甩開孫「闖紅燈衝入車	2026-04-17
 猴硐 - udn寵物部落	2026-04-17
@@ -978,7 +978,7 @@ form 6k himalaya shipping	2026-04-17
 wolfe models airline merg	2026-04-17
 needham reiterates servic	2026-04-17
 stifel cuts camtek stock	2026-04-17
-honda plans deeper china	2026-04-17
+honda plans deeper china	2026-04-19
 openai's hbm push signals	2026-04-17
 accelerating enterprise a	2026-04-17
 c*core completes internal	2026-04-17
@@ -994,3 +994,172 @@ stellantis, microsoft ink	2026-04-17
 aurotek launches three ai	2026-04-17
 openai reportedly to spen	2026-04-17
 china outlines ai-led inv	2026-04-17
+台積電熄火大盤跌327點光通訊、pcb多族群燃起-	2026-04-19
+largan eyes fau opportuni	2026-04-19
+defense and trade tension	2026-04-19
+〈熱門股〉勤誠各產品線出貨旺 營運逐季增 周漲逾1	2026-04-19
+台股市值兆元俱樂部增至13家！「3黑馬」入列、台達	2026-04-19
+鴻海、國巨衝刺半導體 台積老臣助攻 左大川加入富鼎	2026-04-19
+here are 3 forces that dr	2026-04-19
+tesla brings its robotaxi	2026-04-19
+pc品牌q2迎補貨旺季 華碩、宏碁全年獲利展望維持	2026-04-19
+中國信託證券 sn 平台 上線 - 經濟日報	2026-04-19
+盤中速報 - 愛麗絲大漲58.19%，報0.197	2026-04-19
+盤中速報 - theta大漲12.98%，報0.2	2026-04-19
+盤中速報 - api3大漲28.3%，報0.399	2026-04-19
+台灣人均gdp擴大領先南韓 邁向差距1萬美元！韓媒	2026-04-19
+software stock dogs have	2026-04-19
+00919邊領息邊賺價差？連12季年化配息率逾10	2026-04-19
+曾拒中資巨頭金援！deepseek今擬首度對外融資	2026-04-19
+台北最大民辦都更案怎麼辦到？璞真用這套「整合模式」	2026-04-19
+盤中速報 - worldcoin大跌9.32%，報	2026-04-19
+盤中速報 - moonriver大跌29.59%，	2026-04-19
+台灣人均gdp估五年內將贏南韓逾1萬美元韓媒點出關	2026-04-19
+46萬人跟著媽祖徒步進香 百年白沙屯的變與不變 -	2026-04-19
+下週油價連3凍 中油補貼破114億 - 自由時報	2026-04-19
+這款太陽眼鏡日本賣翻！「像沒戴」般空氣感爆紅、59	2026-04-19
+中國3億農民工在城市難找工作 滯留家鄉引發北京維穩	2026-04-19
+imf預測 5年內人均gdp 台灣將多南韓1萬美元	2026-04-19
+69歲阿伯存1230萬爽退休 撐不到4年「晚年崩盤	2026-04-19
+名校光環破滅！她靠變賣物品維生 如今創業僅1年衝出	2026-04-19
+為了買尿布！他意外靠「出租破車」從低收入戶翻身 年	2026-04-19
+一度14.6元敲詐台電？周軒批蔣萬安無恥：翡翠水庫	2026-04-19
+oil prices rebound 7% as	2026-04-19
+xenon pharma’s azetukalne	2026-04-19
+卓揆：電動車輛補助範圍擴大年底公告- 要聞 - 工	2026-04-19
+影／大甲媽遶境彰化打起來偵查隊長鼻子被打斷 嫌犯持	2026-04-19
+10年增種都市林 彭啓明：盼雙北捷運站到公司都有樹	2026-04-19
+台股站上新高 帶動00631l規模突破千億 - 自	2026-04-19
+bloomberg this weekend 4/	2026-04-19
+the app store is booming	2026-04-19
+h3c expands in southeast	2026-04-19
+kemflo strengthens water	2026-04-19
+taiwan networking firms p	2026-04-19
+at 360&deg; mobility show	2026-04-19
+taiwan's mitac shifts fro	2026-04-19
+memory price surge hits x	2026-04-19
+vlsi tsa 2026 explores qu	2026-04-19
+bemc advances micro led o	2026-04-19
+股王、股后雙雙站上五位數！台股將開啟雙萬金時代-	2026-04-19
+伊朗宣布荷姆茲海峽「完全開放」 - 工商時報	2026-04-19
+荷姆茲危機還沒完馬六甲又成下一個火藥庫？美國傳出手	2026-04-19
+地王光環退場？新光三越台南中山店恐不續約 接手者傳	2026-04-19
+習川會預計5月中登場川普：將是場歷史性會談- 日報	2026-04-19
+越南支持中國加入cptpp - 工商時報	2026-04-19
+長榮總動員迎下個黃金十年- 商情 - 工商時報	2026-04-19
+ai功耗飆升引爆電力革命！法人點名三強受惠電源價值	2026-04-19
+睽違10年！「超級聖嬰」恐再現專家示警：史上3次皆	2026-04-19
+快訊》不滿美違背承諾伊朗：恢復控制荷姆茲海峽- 國	2026-04-19
+記憶體有錢也買不到！陸廠現「先付費再排產」 長江存	2026-04-19
+幽默還是失控？川普自比耶穌又痛批教宗6成美民眾認反	2026-04-19
+美股狂飆13天專家示警：背後藏多頭陷阱- 國際 -	2026-04-19
+林漢偉︱本周大盤脈動關注三焦點- 日報 - 工商時	2026-04-19
+神秘大單再現！停火前精準做空 油市不斷上演「未卜先	2026-04-19
+陳葳米 - 鉅亨號	2026-04-19
+林思悅 - 鉅亨號	2026-04-19
+cnyes金融商品 - news.cnyes.co	2026-04-19
+本週操盤筆記：美伊兩周停火協議到期、特斯拉英特爾財	2026-04-19
+川普對伊朗嘴硬但其實內心充滿恐懼？wsj揭美國決策	2026-04-19
+憂戰事影響與伊天然氣續約！土能源部長：攻擊「土耳其	2026-04-19
+美伊衝突恐數日內再爆發？川普緊急召開白宮戰情室會議	2026-04-19
+川普要求太過分！伊朗：「尚未同意」舉行美伊第二輪談	2026-04-19
+停火不穩？伊朗：與美仍有重大分歧 核談判未達協議	2026-04-19
+快訊！伊朗軍方：美國違背承諾 伊方已恢復控制荷姆茲	2026-04-19
+紐時揭露伊朗最新戰力！專家：德黑蘭早有無敵的「核彈	2026-04-19
+柯文哲被問噴辣椒水有無受影響？他比著眼睛這樣說 -	2026-04-19
+影／接駕大甲媽再生風波！西螺大橋嚴重推擠 鎮長廖秋	2026-04-19
+阿卡西記憶 - 林清陽的文字與心情 - udn 部	2026-04-19
+伊朗批川普「全是謊言」 再封鎖荷莫茲海峽 - 聯合	2026-04-19
+美尖端研究領域11人接連死亡、失蹤 白宮聯手fbi	2026-04-19
+深櫻桃紅| 搜尋標籤 - udn科技玩家	2026-04-19
+厚切薑燒豬肉 - 聯合新聞網	2026-04-19
+中職／林鋅杰面對滿壘從沒自信到小小昇龍拳 葉總：表	2026-04-19
+google 新 tpu 來了 光聖、奇鋐、台達電	2026-04-19
+全訊攻海外軍工 接單旺 - 經濟日報	2026-04-19
+政治領導層與軍方分歧 伊朗談判困境 - 聯合新聞網	2026-04-19
+民進黨擬徵召沈伯洋參選市長 連勝文大酸：是不是開玩	2026-04-19
+「不再當好好先生」川普控伊朗違反停火協議威脅攻擊橋	2026-04-19
+搭高雄捷運嫌乘客說話大聲 7旬翁列車上醉亮摺疊刀被	2026-04-19
+「世界最長蛇」網紋蟒頻繁出沒高雄 專家示警：南部恐	2026-04-19
+大漢橋機車分隔島拆除將完工 新北多座橋梁評估跟進調	2026-04-19
+停火倒數！美國與伊朗可望本周舉行第2輪談判 以宣布	2026-04-19
+伊朗再關荷莫茲海峽中印船舶似被迫折返、航運停擺|	2026-04-19
+ltn經濟通》貴如金賤如土 卻是全球經濟關鍵 -	2026-04-19
+川普確認第二輪談判日期 警告伊朗別當「硬漢」 否則	2026-04-19
+記憶體短缺還要持續數年 數據說明一切 - 自由時報	2026-04-19
+翡管局能收耗水費？ 水利署澄清：勿混用援引法源 -	2026-04-19
+起跑即終點！中國機器人跑馬拉松慘摔 零件碎滿地「擔	2026-04-19
+53檔基金除息旺日明登場 法人看低接是個好時機 -	2026-04-19
+20艘船被迫折返荷姆茲 能源危機加劇 - 自由時報	2026-04-19
+外媒曝美伊談判進度！伊朗同意「這類船」優先通過荷姆	2026-04-19
+報稅季來了！財部：今年申報期間5/1~6/1 查調	2026-04-19
+中東戰火未歇 胡睿涵看「荷姆茲海峽危機」延伸至亞洲	2026-04-19
+媽祖遶境如何不被曬爆？無印良品「這款裝備」被信眾封	2026-04-19
+美商務部長：拒中國汽車在美設廠 斬釘截鐵強調 不會	2026-04-19
+熱門族群》大立光帶頭衝 光學鏡頭族群一擁而上 -	2026-04-19
+企業高管為老後買別墅、玩遊艇喊「錢不留給子女」 還	2026-04-19
+最幸運！8艘油輪通過荷姆茲了 - 自由時報	2026-04-19
+wsj：英特爾尚未脫離險境 股價狂飆不能反映賺錢力	2026-04-19
+中壢體育園區可負擔宅、社宅雙軌旗下 2處社宅預計2	2026-04-19
+特斯拉2奈米晶片「雙軌外包」 台積電、三星操刀！	2026-04-19
+ai startup cursor in talk	2026-04-19
+if a violent downturn str	2026-04-19
+oil and gas jump after us	2026-04-19
+us futures fall, oil jump	2026-04-19
+traders brace for renewed	2026-04-19
+hedge fund pay spirals ev	2026-04-19
+point72, blackrock-backed	2026-04-19
+uae in talks with us for	2026-04-19
+trump says us military se	2026-04-19
+next catalyst for treasur	2026-04-19
+bank debate interview: um	2026-04-19
+after long avoiding polit	2026-04-19
+pointed news quiz | inves	2026-04-19
+fmr. secretary of defense	2026-04-19
+us officials head to paki	2026-04-19
+vitol made about $2 billi	2026-04-19
+rep. stutzman: iran war h	2026-04-19
+why private credit is not	2026-04-19
+jon finer criticizes lack	2026-04-19
+achieving a comfortable r	2026-04-19
+are the rich paying their	2026-04-19
+openai’s existential ques	2026-04-19
+the 12-month window	2026-04-19
+blue origin’s new glenn p	2026-04-19
+robots beat human records	2026-04-19
+palantir posts mini-manif	2026-04-19
+techcrunch mobility: uber	2026-04-19
+cracks are starting to fo	2026-04-19
+blue origin successfully	2026-04-19
+vc ron conway says he has	2026-04-19
+ai chip startup cerebras	2026-04-19
+anthropic’s relationship	2026-04-19
+once close enough for an	2026-04-19
+sam altman’s project worl	2026-04-19
+kevin weil and bill peebl	2026-04-19
+man who hacked us supreme	2026-04-19
+sources: cursor in talks	2026-04-19
+‘tokenmaxxing’ is making	2026-04-19
+hackers are abusing unpat	2026-04-19
+us seizes iranian cargo s	2026-04-19
+dollar rebounds as middle	2026-04-19
+lilly in advanced talks t	2026-04-19
+oil jumps and stock futur	2026-04-19
+whitehawk presents precli	2026-04-19
+xenon presents positive e	2026-04-19
+boj’s hawkish hints keep	2026-04-19
+us, mexican officials ass	2026-04-19
+malaysia says u.s. chipma	2026-04-19
+cfius kills sanan's bid f	2026-04-19
+corning leads glass subst	2026-04-19
+wage protests in northern	2026-04-19
+ase's copos advanced pack	2026-04-19
+amazon acquisition highli	2026-04-19
+taiwan's e-lead expands b	2026-04-19
+commentary: humanoid robo	2026-04-19
+taiwan's satellite edge c	2026-04-19
+securing the supply chain	2026-04-19
+samsung launches voluntar	2026-04-19
+commentary: ai drives cpu	2026-04-19
+musk lines up chip suppli	2026-04-19
+the drowning detection st	2026-04-19
