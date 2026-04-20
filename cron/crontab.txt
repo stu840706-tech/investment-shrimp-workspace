@@ -1,0 +1,24 @@
+# investment-shrimp workspace — system crontab
+# Source of truth:拿這份部署到 VM 用 `crontab < cron/crontab.txt`
+#
+# 命名/風格規範:
+#   - 時間一律 UTC(左邊)+ 註解寫 Taipei 時間方便查
+#   - 路徑絕對化:/home/ubuntu/.openclaw/workspace
+#   - log 一律寫 /tmp/<job>.log(不寫 workspace 內,避免污染 git)
+#   - 工作日限定用 `* * 1-5`,每日任務用 `* * *`
+#
+# 最後更新:2026-04-20(B3 新增 memory-archive-daily)
+
+# ───── B3 新增(2026-04-20)─────────────────────────────────────
+# L3 memory 歸檔 + MEMORY.md 字元數檢查 — 每日 23:30 台灣時間 (15:30 UTC)
+30 15 * * * cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/memory_archive.py >> /tmp/memory_archive.log 2>&1
+
+# ───── 既有 job(B1 以前建立,B6 總檢查時會再 review)───────────────
+# 投資蝦每日市場掃描 — 每天 20:00 台灣時間 (12:00 UTC)
+0 12 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/daily-scan.py >> /tmp/daily-scan.log 2>&1
+
+# 新聞晨報 — 每天 07:23 台灣時間 (Phase 3)
+23 07 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/news_phase3.py >> /tmp/news_phase3.log 2>&1
+
+# 新聞晚報 — 每天 19:23 台灣時間 (Phase 3)
+23 19 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/news_phase3.py >> /tmp/news_phase3.log 2>&1
