@@ -1,32 +1,56 @@
-# SESSION-STATE.md — Active Working Memory
+# active-context.md — 當前任務狀態(L2)
 
-*這是 agent 的 RAM — 存活於 compaction、restart、中斷之間*
-*Chat history 是 BUFFER，這個檔案是 STORAGE*
+_每次任務切換時更新。此檔 ALWAYS READ(AGENTS.md Session 啟動 step 5)。_
 
-## 當前任務
-[None — 等待 Kai 指令]
+## 當前進行中任務
 
-## 關鍵上下文
-- daily-scan.py + daily-notion.py 已完成第一批清理（2026-04-18）
-- revenue_history.json 已完成單位標準化修正
-- 待執行：第二批架構優化（日誌見 CLEANUP_NOTES.md）
+任務:B1-B6 workspace 深度重構(執行中,目前到 B2 已完成)
+狀態:等待進入 B3
+最後更新:2026-04-20
 
-## 待處理行動
-- [ ] 確認 cron/jobs.json 排程設定是否生效
-- [ ] 確認 daily-notion.py 寫入 Notion 的格式是否正確（建議 --test 跑一次）
-- [ ] 設定 Telegram channel 白名單（-5290205228 接收券商報告）
-- [ ] 開發任務 3：報告發布追蹤
-- [ ] 開發任務 5：追蹤清單維護
+## B1-B6 進度概觀
 
-## 最近決策
-- [2026-04-18] config/secrets.json 集中管理所有 token
-- [2026-04-18] save_to_notion() 從 daily-scan.py 刪除，改由 cron 獨立呼叫 daily-notion.py
-- [2026-04-18] backfill_revenue.py 包裝成 skill（skills/tw-revenue-backfill/）
-- [2026-04-18] daily-scan.py 拆分為 scan_revenue / scan_news / scan_institutional / scan_quarterly / scan_industry
+| 批次 | 內容 | 狀態 | commit |
+|------|------|------|--------|
+| B1 | Git 初始化 + GitHub remote | ✅ 完成 | 5e6530b |
+| B2 | 部署 blueprint tar + 清孤兒檔 | ✅ 完成 | d36bdf8 |
+| B3 | memory-archive cron 啟用 | 🚧 下一步 | — |
+| B4 | Notion 9 DB 建立 + daily dashboard | ⏳ 等 B3 | — |
+| B5 | pdf-reader 驗證 + Task 3/4/5/8 上線 | ⏳ 等 B4 | — |
+| B6 | Task 1 升級 + 小坑修復 + cron 總檢查 | ⏳ 等 B5 | — |
 
-## Session Handoff
-*模型切換時填寫：記錄未完成的事和下一步*
-（目前無交接事項）
+## 下一步
 
----
-*Last updated: 2026-04-18*
+B3:啟用 memory-archive daily cron(23:30)
+- workflows/memory_archive.py 已部署(B2 tar 內)
+- B3 只做:dry-run 驗證 → 實跑一次 → 註冊 cron job → commit
+- 預估 1 小時
+
+## B6 待處理小坑(已知,不急)
+
+1. .gitignore 未擋 memory/YYYY-MM-DD.md L3 日誌 → B2 commit 時誤進 git
+2. .gitignore 未擋 memory/news-fingerprints.md → B2 commit 時誤進 git
+
+兩點實際沒害到執行(dry-run 不寫檔),B6 一起加進 .gitignore。
+
+## 背景運行中的任務
+
+目前仍運行的 cron:
+- daily-scan(06:00)
+- 其他既有 cron(B6 會做總檢查)
+
+尚未註冊的 cron(各批次會加):
+- memory-archive-daily(B3)
+- daily-dashboard-page(B4)
+- report-calendar-daily(B5)
+- outcome-review-daily(B5)
+- git-autocommit-daily(B6)
+- rule-governance-weekly(B6,Task R)
+
+## 使用須知
+
+- Session 啟動時先讀本檔,若有「進行中任務」優先完成後再處理 Kai 新請求
+- 切換任務前,把當前進度寫回本檔
+- B1-B6 全部完成後,本檔改回 idle 模板
+- 本檔目標字數 < 2000 字元;超過代表有任務沒收尾
+- 跨對話銜接真相來源以 Kai 手上的 HANDOFF.md 為準(本檔只是快速查閱)
