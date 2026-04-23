@@ -539,9 +539,10 @@ def main():
         if result and isinstance(result, list):
             print(f" ✅ ({len(result)}則)")
             for j, lr in enumerate(result):
-                if j < len(batch):
-                    item = batch[j]
-                    llm_results.append({
+                if lr is None or j >= len(batch):
+                    continue
+                item = batch[j]
+                llm_results.append({
                         "title": item.get('title', ''),
                         "url": item.get('url', ''),
                         "source": item.get('source', ''),
