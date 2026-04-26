@@ -1,141 +1,271 @@
 #!/usr/bin/env python3
-"""fetch_calendar.py — 抓未來 N 天的重大事件寫入 Notion event_calendar
+"""fetch_calendar.py — 抓重大事件寫入 Notion event_calendar
 
-骨架狀態(B5 實測後補完):
-  - [ ] TWSE 爬蟲(法說會)
-  - [ ] TPEX 爬蟲
-  - [ ] MOPS 財報發布日
-  - [ ] FinMind fallback
-  - [ ] idempotency(key = symbol + date + type)
-  - [ ] stock_tracking 交叉比對 + Telegram 通知
+實作範圍（B5b）：
+  - FinMind TaiwanStockMonthRevenue → 月營收公告日（每月10日截止）
+  - FinMind TaiwanStockFinancialStatements → 季報/年報法定截止日
+  - idempotency: key = stock_code + date + event_type
+  - 追蹤中個股有新事件 → Telegram 摘要通知
+
+法說會：由 broker-materials/receive_telegram.py 解析券商報告時順帶寫入，
+        本腳本不處理（無可靠公開 API）。
 
 用法:
-    python3 fetch_calendar.py               # 未來 14 天(預設)
+    python3 fetch_calendar.py           # 抓未來 60 天
     python3 fetch_calendar.py --days 30
-    python3 fetch_calendar.py --dry-run     # 不寫 Notion
+    python3 fetch_calendar.py --dry-run # 只印出，不寫 Notion
 """
 import argparse
 import json
 import sys
-from datetime import date, timedelta
+import time
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
+import requests
 
 WORKSPACE = Path.home() / ".openclaw" / "workspace"
 SECRETS_FILE = WORKSPACE / "config" / "secrets.json"
 
-DEFAULT_DAYS = 14
-VALID_TYPES = ["法說會", "年報", "季報", "除權息", "其他"]
+NOTION_API = "https://api.notion.com/v1"
+NOTION_VERSION = "2022-06-28"
+FINMIND_API = "https://api.finmindtrade.com/api/v4/data"
+
+MONTH_REVENUE_DAY = 10  # 台灣規定：每月10日前公告上月營收
 
 
 def load_secrets():
     return json.loads(SECRETS_FILE.read_text(encoding="utf-8"))
 
 
-def fetch_twse_events(start_date: date, end_date: date):
-    """TWSE 公告爬蟲。骨架 TODO。回傳 list of dict。"""
-    # TODO (B5): requests + BeautifulSoup,抓「法人說明會資訊」
-    return []
+def notion_headers(secrets):
+    return {
+        "Authorization": f"Bearer {secrets['notion_key']}",
+        "Notion-Version": NOTION_VERSION,
+        "Content-Type": "application/json",
+    }
 
 
-def fetch_tpex_events(start_date: date, end_date: date):
-    """TPEX 公告爬蟲。骨架 TODO。"""
-    # TODO (B5)
-    return []
+def rt(content):
+    return [{"text": {"content": str(content)[:2000]}}]
 
 
-def fetch_mops_earnings(start_date: date, end_date: date):
-    """MOPS 財報發布日。骨架 TODO。"""
-    # TODO (B5)
-    return []
+# ─── 抓追蹤清單 ──────────────────────────────────────────────────────────────
+
+def fetch_tracking_stocks(secrets):
+    """從 Notion stock_tracking 撈出所有追蹤中個股（排除不繼續追蹤）。"""
+    db_id = secrets["notion_stock_tracking_db"]
+    headers = notion_headers(secrets)
+    payload = {
+        "filter": {
+            "property": "狀態",
+            "select": {"does_not_equal": "不繼續追蹤"},
+        },
+        "page_size": 100,
+    }
+    resp = requests.post(
+        f"{NOTION_API}/databases/{db_id}/query",
+        headers=headers, json=payload, timeout=30,
+    )
+    resp.raise_for_status()
+    stocks = []
+    for page in resp.json().get("results", []):
+        props = page.get("properties", {})
+        title = props.get("股票代碼", {}).get("title", [])
+        if title:
+            code = title[0].get("text", {}).get("content", "").strip()
+            if code:
+                stock_id = code.replace(".TW", "").replace(".TWO", "").strip()
+                stocks.append({"code": code, "stock_id": stock_id})
+    return stocks
 
 
-def fetch_finmind_fallback(start_date: date, end_date: date):
-    """FinMind fallback(爬蟲失敗時用)。骨架 TODO。"""
-    # TODO (B5)
-    return []
+# ─── FinMind 事件推算 ─────────────────────────────────────────────────────────
+
+def fetch_month_revenue_dates(stock_id, token, start_date, end_date):
+    """推算月營收公告日（每月10日）。先確認 FinMind 有此股資料。"""
+    resp = requests.get(
+        FINMIND_API,
+        params={"dataset": "TaiwanStockMonthRevenue",
+                "data_id": stock_id,
+                "start_date": start_date,
+                "token": token},
+        timeout=15,
+    )
+    d = resp.json()
+    if d.get("msg") != "success" or not d.get("data"):
+        return []
+
+    events = []
+    cur = datetime.strptime(start_date, "%Y-%m-%d").replace(day=1)
+    end = datetime.strptime(end_date, "%Y-%m-%d")
+    start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+    while cur <= end:
+        announce_date = cur.replace(day=MONTH_REVENUE_DAY)
+        if start_dt <= announce_date <= end:
+            prev_month = (cur - timedelta(days=1)).strftime("%Y-%m")
+            events.append({
+                "date": announce_date.strftime("%Y-%m-%d"),
+                "event_type": "月營收",
+                "description": f"{prev_month} 月營收公告",
+            })
+        cur = (cur.replace(day=28) + timedelta(days=4)).replace(day=1)
+    return events
 
 
-def dedupe_events(events):
-    """key = (個股代號, 事件日期, 類型),重複的丟掉。"""
-    seen = set()
-    out = []
-    for e in events:
-        key = (e.get("symbol"), e.get("date"), e.get("type"))
-        if key in seen:
-            continue
-        seen.add(key)
-        out.append(e)
-    return out
+def fetch_financial_statement_dates(stock_id, token, start_date):
+    """推算季報/年報法定截止日（Q1:5/15, Q2:8/14, Q3:11/14, Q4:3/31）。"""
+    resp = requests.get(
+        FINMIND_API,
+        params={"dataset": "TaiwanStockFinancialStatements",
+                "data_id": stock_id,
+                "start_date": "2025-01-01",
+                "token": token},
+        timeout=15,
+    )
+    d = resp.json()
+    if d.get("msg") != "success" or not d.get("data"):
+        return []
+
+    year = datetime.now().year
+    deadlines = [
+        (f"{year}-03-31", "年報",  f"{year-1}年 年報"),
+        (f"{year}-05-15", "季報",  f"{year}Q1 季報"),
+        (f"{year}-08-14", "季報",  f"{year}Q2 季報"),
+        (f"{year}-11-14", "季報",  f"{year}Q3 季報"),
+        (f"{year+1}-03-31", "年報", f"{year}年 年報"),
+    ]
+    today = datetime.now()
+    start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+    events = []
+    for date_str, etype, desc in deadlines:
+        dt = datetime.strptime(date_str, "%Y-%m-%d")
+        if dt >= start_dt and dt >= today:
+            events.append({
+                "date": date_str,
+                "event_type": etype,
+                "description": desc,
+            })
+    return events
 
 
-def write_to_notion(events, db_id: str, secrets: dict, dry_run: bool):
-    """寫 Notion event_calendar,idempotent。骨架 TODO。"""
+# ─── Notion 寫入（idempotent）────────────────────────────────────────────────
+
+def event_exists(stock_code, event_date, event_type, secrets):
+    db_id = secrets["notion_event_calendar_db"]
+    payload = {
+        "filter": {
+            "and": [
+                {"property": "股票代碼", "rich_text": {"equals": stock_code}},
+                {"property": "事件類型", "select": {"equals": event_type}},
+                {"property": "預計日期", "title": {"equals": event_date}},
+            ]
+        },
+        "page_size": 1,
+    }
+    resp = requests.post(
+        f"{NOTION_API}/databases/{db_id}/query",
+        headers=notion_headers(secrets), json=payload, timeout=15,
+    )
+    resp.raise_for_status()
+    return len(resp.json().get("results", [])) > 0
+
+
+def write_event(stock_code, event, secrets, dry_run=False):
     if dry_run:
-        for e in events:
-            print(f"  [DRY-RUN] would write: {e.get('title')} @ {e.get('date')}")
-        return
+        print(f"  [DRY-RUN] {stock_code} {event['date']} {event['event_type']}: {event['description']}")
+        return True
 
-    # TODO (B5):
-    #   1. 先 query db 抓現有 (symbol, date, type) set
-    #   2. 只寫不在 set 內的
-    #   3. 追蹤中個股(跨比對 stock_tracking)→ mark 追蹤中 checkbox
-    pass
+    if event_exists(stock_code, event["date"], event["event_type"], secrets):
+        print(f"  [SKIP] 已存在: {stock_code} {event['date']} {event['event_type']}")
+        return False
+
+    db_id = secrets["notion_event_calendar_db"]
+    props = {
+        "預計日期": {"title": [{"text": {"content": event["date"]}}]},
+        "股票代碼": {"rich_text": rt(stock_code)},
+        "事件類型": {"select": {"name": event["event_type"]}},
+        "重要性":   {"select": {"name": "高"}},
+        "已提醒":   {"checkbox": False},
+    }
+    resp = requests.post(
+        f"{NOTION_API}/pages",
+        headers=notion_headers(secrets),
+        json={"parent": {"database_id": db_id}, "properties": props},
+        timeout=15,
+    )
+    resp.raise_for_status()
+    print(f"  [OK] 寫入: {stock_code} {event['date']} {event['event_type']}")
+    time.sleep(0.3)
+    return True
 
 
-def notify_telegram_for_tracked(events, secrets):
-    """追蹤中個股有相關事件 → Telegram 通知。骨架 TODO。"""
-    # TODO (B5):
-    #   1. 讀 stock_tracking 的 active list
-    #   2. 過濾 events 中 symbol in active list 且 date <= 7 天內
-    #   3. Telegram sendMessage
-    pass
+# ─── Telegram 通知 ───────────────────────────────────────────────────────────
 
+def notify_telegram(message, secrets):
+    url = f"https://api.telegram.org/bot{secrets['telegram_bot_token']}/sendMessage"
+    try:
+        requests.post(url, json={
+            "chat_id": secrets["telegram_dm"],
+            "text": message,
+            "parse_mode": "HTML",
+        }, timeout=15)
+    except Exception as e:
+        print(f"[WARN] Telegram 失敗: {e}")
+
+
+# ─── 主流程 ──────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="抓重大事件寫 event_calendar")
-    parser.add_argument("--days", type=int, default=DEFAULT_DAYS)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--days", type=int, default=60)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
     secrets = load_secrets()
-    db_id = secrets.get("notion_event_calendar_db")
-    if not db_id:
-        print("[ERROR] secrets.json 缺 notion_event_calendar_db(B4 後才有)", file=sys.stderr)
-        return 1
+    token = secrets["finmind_token"]
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    end_date = (datetime.now(timezone.utc) + timedelta(days=args.days)).strftime("%Y-%m-%d")
 
-    today = date.today()
-    end = today + timedelta(days=args.days)
+    print(f"[START] fetch_calendar: {today} → {end_date} (dry_run={args.dry_run})")
 
-    print(f"=== fetch_calendar ({today.isoformat()} ~ {end.isoformat()}) ===")
-    print(f"模式: {'DRY-RUN' if args.dry_run else 'LIVE'}")
+    print("[1/3] 載入 stock_tracking...")
+    stocks = fetch_tracking_stocks(secrets)
+    print(f"  → {len(stocks)} 檔追蹤中")
+    if not stocks:
+        print("[WARN] 追蹤清單為空，結束")
+        return 0
 
-    all_events = []
-    for fetcher_name, fetcher in [
-        ("TWSE", fetch_twse_events),
-        ("TPEX", fetch_tpex_events),
-        ("MOPS", fetch_mops_earnings),
-    ]:
+    print("[2/3] 抓 FinMind 事件...")
+    new_events = []
+    for s in stocks:
+        code, stock_id = s["code"], s["stock_id"]
+        print(f"  處理: {code}")
         try:
-            events = fetcher(today, end)
-            print(f"  [{fetcher_name}] 抓到 {len(events)} 筆")
-            all_events.extend(events)
+            for ev in fetch_month_revenue_dates(stock_id, token, today, end_date):
+                if write_event(code, ev, secrets, args.dry_run):
+                    new_events.append((code, ev))
+            time.sleep(0.5)
         except Exception as e:
-            print(f"  [{fetcher_name}] 失敗: {e},走 FinMind fallback")
-            try:
-                events = fetch_finmind_fallback(today, end)
-                all_events.extend(events)
-            except Exception as e2:
-                print(f"  [FinMind fallback] 也失敗: {e2}")
+            print(f"  [WARN] 月營收失敗 {code}: {e}")
+        try:
+            for ev in fetch_financial_statement_dates(stock_id, token, today):
+                if write_event(code, ev, secrets, args.dry_run):
+                    new_events.append((code, ev))
+            time.sleep(0.5)
+        except Exception as e:
+            print(f"  [WARN] 季報失敗 {code}: {e}")
 
-    all_events = dedupe_events(all_events)
-    print(f"\n去重後共 {len(all_events)} 筆事件")
+    print("[3/3] Telegram 通知...")
+    if new_events and not args.dry_run:
+        lines = [f"📅 event_calendar 新增 {len(new_events)} 筆\n"]
+        for code, ev in new_events[:10]:
+            lines.append(f"• {code} {ev['date']} {ev['event_type']}")
+        if len(new_events) > 10:
+            lines.append(f"...共 {len(new_events)} 筆")
+        notify_telegram("\n".join(lines), secrets)
 
-    write_to_notion(all_events, db_id, secrets, args.dry_run)
-
-    if not args.dry_run:
-        notify_telegram_for_tracked(all_events, secrets)
-
-    print("=== 完成 ===")
+    print(f"[DONE] 新增 {len(new_events)} 筆事件")
     return 0
 
 

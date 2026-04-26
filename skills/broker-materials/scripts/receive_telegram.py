@@ -74,7 +74,7 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
         '"rating":"買進/加碼/中立/減碼/賣出/未明確","target_price":0,"current_price":0,'
         '"core_view":"核心觀點","revenue_forecast_this_year":0,"revenue_forecast_next_year":0,'
         '"eps_forecast_this_year":0,"eps_forecast_next_year":0,"gross_margin_forecast":0,'
-        '"pe_valuation":0,"key_excerpt":"關鍵段落200字內"}\n\n'
+        '"pe_valuation":0,"key_excerpt":"關鍵段落200字內","investor_meeting_date":"YYYY-MM-DD或空字串"}\n\n'
         'industry_report 格式：\n'
         '{"category":"industry_report","confidence":"high/medium/low","report_date":"YYYY-MM-DD",'
         '"topic":"主題標題","industry_tags":["產業"],"broker_name":"券商名","core_view":"核心觀點",'
@@ -118,6 +118,46 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
 def rt(content: str) -> list:
     """Notion rich_text 格式，截斷 2000 字元。"""
     return [{"text": {"content": str(content)[:2000]}}]
+
+
+def write_investor_meeting(stock_code: str, meeting_date: str, secrets: dict):
+    """若券商報告提到法說會日期，寫入 event_calendar（idempotent）。"""
+    import time as _time
+    db_id = secrets["notion_event_calendar_db"]
+    headers = {
+        "Authorization": f"Bearer {secrets['notion_key']}",
+        "Notion-Version": NOTION_VERSION,
+        "Content-Type": "application/json",
+    }
+    # idempotency check
+    check = requests.post(
+        f"{NOTION_API}/databases/{db_id}/query",
+        headers=headers,
+        json={"filter": {"and": [
+            {"property": "股票代碼", "rich_text": {"equals": stock_code}},
+            {"property": "事件類型", "select": {"equals": "法說會"}},
+            {"property": "預計日期", "title": {"equals": meeting_date}},
+        ]}, "page_size": 1},
+        timeout=15,
+    )
+    check.raise_for_status()
+    if check.json().get("results"):
+        print(f"  [SKIP] 法說會已存在: {stock_code} {meeting_date}")
+        return
+    props = {
+        "預計日期": {"title": [{"text": {"content": meeting_date}}]},
+        "股票代碼": {"rich_text": [{"text": {"content": stock_code}}]},
+        "事件類型": {"select": {"name": "法說會"}},
+        "重要性":   {"select": {"name": "高"}},
+        "已提醒":   {"checkbox": False},
+    }
+    resp = requests.post(
+        f"{NOTION_API}/pages",
+        headers=headers,
+        json={"parent": {"database_id": db_id}, "properties": props},
+        timeout=15,
+    )
+    resp.raise_for_status()
 
 
 def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
@@ -257,6 +297,18 @@ def process_file(file_path: Path, secrets: dict):
                f"📅 {result.get('report_date','')}\n"
                f"💬 {str(result.get('core_view',''))[:200]}")
     notify_telegram(msg, secrets)
+
+    # Step 5b: 若 stock_report 有法說會日期，寫入 event_calendar
+    if category == "stock_report":
+        meeting_date = str(result.get("investor_meeting_date", "")).strip()
+        stock_code = result.get("stock_code", "")
+        if meeting_date and len(meeting_date) == 10 and meeting_date != "YYYY-MM-DD":
+            try:
+                write_investor_meeting(stock_code, meeting_date, secrets)
+                print(f"  [OK] 法說會事件寫入 event_calendar: {stock_code} {meeting_date}")
+            except Exception as e:
+                print(f"  [WARN] 法說會寫入失敗: {e}")
+
     print(f"[DONE] {category} 處理完成")
 
 
