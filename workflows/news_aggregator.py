@@ -15,7 +15,7 @@ MEMORY_DIR = Path(__file__).parent.parent / "memory"
 MINIMAX_BASE = "https://api.minimax.io/anthropic/v1"
 # ⚠️ 原始程式碼中 MINIMAX_TOKEN 與 FINMIND_TOKEN 使用相同 value
 # 兩個 API 共用 token 不是標準做法，建議確認是否為誤用
-MINIMAX_TOKEN = FINMIND_TOKEN
+MINIMAX_TOKEN = MINIMAX_API_KEY
 TELEGRAM_BOT_TOKEN = TELEGRAM_TOKEN
 
 BATCH_SIZE = 3           # 每批 3 則
@@ -216,7 +216,6 @@ def call_llm_batch(items, retries=2):
                 data=data,
                 headers={
                     'Authorization': f'Bearer {MINIMAX_TOKEN}',
-                    'x-api-key': MINIMAX_API_KEY,
                     'Content-Type': 'application/json',
                     'anthropic-version': '2023-06-01',
                 },
