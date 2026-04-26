@@ -5,7 +5,7 @@ fetch_universe.py - 抓取回測標的池
 """
 import sys, json, urllib.request, urllib.parse
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'workflows'))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'workflows'))
 from _common import FINMIND_TOKEN, SECRETS, NOTION_KEY
 
 BASE_URL = "https://api.finmindtrade.com/api/v4/data"
@@ -22,17 +22,17 @@ def finmind_get(dataset, data_id="", start_date="2020-01-01"):
 
 def get_0050_components():
     """抓 0050 當前成分股"""
-    data = finmind_get("TaiwanStockInfo")
-    rows = data.get("data", [])
-    # 篩選市值前50大（簡化版，實際應抓 ETF 持股）
-    # 先用 TaiwanStockStockDividend 的 stock_id 清單代替
-    data2 = finmind_get("Taiwan0050StocksInfo")
-    if data2.get("data"):
-        return [r["stock_id"] for r in data2["data"]]
     # fallback：用已知 0050 核心成分股
-    return ["2330", "2317", "2454", "2382", "2308",
-            "2881", "2882", "2886", "2891", "2303",
-            "3711", "2412", "2002", "1301", "1303"]
+    fallback = ["2330", "2317", "2454", "2382", "2308",
+                "2881", "2882", "2886", "2891", "2303",
+                "3711", "2412", "2002", "1301", "1303"]
+    try:
+        data2 = finmind_get("Taiwan0050StocksInfo")
+        if data2.get("data"):
+            return [r["stock_id"] for r in data2["data"]]
+    except Exception:
+        pass
+    return fallback
 
 def get_tracking_list():
     """從 Notion stock_tracking DB 抓追蹤清單"""
