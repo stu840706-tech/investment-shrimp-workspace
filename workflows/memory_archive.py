@@ -22,6 +22,7 @@ import shutil
 import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
+import json, urllib.request
 
 WORKSPACE = Path.home() / ".openclaw" / "workspace"
 MEMORY_DIR = WORKSPACE / "memory"
@@ -29,6 +30,7 @@ ARCHIVE_DIR = MEMORY_DIR / "archive"
 MEMORY_FILE = WORKSPACE / "MEMORY.md"
 
 ARCHIVE_AGE_DAYS = 30
+MEMORY_CHAR_AUTO_DISTILL = 15000
 MEMORY_CHAR_WARN = 12000
 
 DATE_FILE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})\.md$")
@@ -76,14 +78,67 @@ def archive_file(src: Path, dry_run: bool):
     return True
 
 
+def auto_distill_memory(content_text):
+    try:
+        sys.path.insert(0, str(WORKSPACE / "workflows"))
+        from _common import MINIMAX_API_KEY
+    except ImportError:
+        print("[WARN] 無法載入 MINIMAX_API_KEY，跳過自動蒸餾")
+        return None
+    prompt = f"""以下是投資研究 AI 系統的長期記憶檔案（MEMORY.md）。
+請蒸餾成精簡版本，保留所有「跨 session 仍相關」的事實，刪除過時或重複的內容。
+規則：
+- 保留：系統架構決策、Kai 的投研偏好、重要工具限制、待處理事項
+- 刪除：已完成的臨時任務、過時的狀態描述、重複資訊
+- 輸出格式與原檔相同（繁體中文 Markdown）
+- 蒸餾後長度應在 8000 字元以內
+原始 MEMORY.md：
+{content_text[:20000]}
+"""
+    payload = {
+        "model": "MiniMax-M2.7",
+        "max_tokens": 3000,
+        "thinking": {"type": "disabled"},
+        "messages": [{"role": "user", "content": prompt}],
+    }
+    data = json.dumps(payload).encode()
+    req = urllib.request.Request(
+        "https://api.minimax.io/anthropic/v1/messages",
+        data=data,
+        headers={
+            "Content-Type": "application/json",
+            "x-api-key": MINIMAX_API_KEY,
+            "anthropic-version": "2023-06-01",
+        }
+    )
+    with urllib.request.urlopen(req, timeout=120) as r:
+        resp = json.loads(r.read().decode())
+    text_blocks = [b for b in resp.get("content", []) if b.get("type") == "text"]
+    if not text_blocks:
+        print("[WARN] M2.7 無 text block 回應")
+        return None
+    return text_blocks[0]["text"].strip()
+
 def check_memory_size():
     """檢查 MEMORY.md 字元數,> 12000 印警告。回傳實際字元數(沒有 MEMORY.md 時回傳 0)。"""
     if not MEMORY_FILE.exists():
         print(f"[INFO] MEMORY.md 不存在於 {MEMORY_FILE},跳過字元數檢查")
         return 0
 
-    chars = len(MEMORY_FILE.read_text(encoding="utf-8"))
-    if chars > MEMORY_CHAR_WARN:
+    content_text = MEMORY_FILE.read_text(encoding="utf-8")
+    chars = len(content_text)
+    if chars > MEMORY_CHAR_AUTO_DISTILL:
+        print(f"[WARN] MEMORY.md {chars} > {MEMORY_CHAR_AUTO_DISTILL}，觸發自動蒸餾...")
+        distilled = auto_distill_memory(content_text)
+        if distilled:
+            backup = MEMORY_FILE.with_suffix(f".md.bak-{datetime.now().strftime('%Y%m%d')}")
+            backup.write_text(content_text, encoding="utf-8")
+            MEMORY_FILE.write_text(distilled, encoding="utf-8")
+            new_chars = len(distilled)
+            print(f"[OK] 自動蒸餾完成：{chars} → {new_chars}（備份：{backup.name}）")
+        else:
+            print(f"[WARN] 自動蒸餾失敗，請手動蒸餾")
+    elif chars > MEMORY_CHAR_WARN:
         print(
             f"[WARN] MEMORY.md 字元數 {chars} 超過 {MEMORY_CHAR_WARN},"
             f"建議手動蒸餾(詳見 memory/runbooks/memory-management.md)"
