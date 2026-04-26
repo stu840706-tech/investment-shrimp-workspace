@@ -28,3 +28,9 @@ state/*.txt
 
 # Memory processed streams (raw append logs)
 memory/*.jsonl
+
+# State logs
+state/*.log
+
+# Memory daily logs (L3)
+memory/[0-9]*.md
