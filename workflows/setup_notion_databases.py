@@ -21,7 +21,7 @@ import argparse
 import urllib.request
 import urllib.error
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 # ============================================================
 # 環境
@@ -504,7 +504,7 @@ def update_runbook_with_db_ids(db_ids):
     new_text = "\n".join(lines)
 
     # 加入更新時戳
-    stamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+    stamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     if "_最後 setup_notion_databases.py 寫入" in new_text:
         # 替換既有時戳
         import re
