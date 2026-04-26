@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """book_main.py - 書籍概念萃取主流程"""
-import sys, json, argparse, re
+import sys, json, time, urllib.request, argparse, re
 from datetime import datetime
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'workflows'))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / 'workflows'))
 from _common import SECRETS, NOTION_KEY, MINIMAX_API_KEY as MINIMAX_TOKEN
 
 NOTION_VERSION = "2022-06-28"
+BOOK_NOTES_DB = SECRETS["notion_book_notes_db"]
+BOOK_CONCEPTS_DB = SECRETS["notion_book_concepts_db"]
+CHUNK_SIZE = 30000
 
 def notion_post(url, payload, method='POST'):
-    import urllib.request
     data = json.dumps(payload).encode('utf-8')
     req = urllib.request.Request(
         url, data=data,
@@ -28,51 +30,56 @@ def to_rich_text(text, limit=1990):
         return []
     return [{"text": {"content": text[i:i+limit]}} for i in range(0, len(text), limit)]
 
-def read_book_txt(path):
-    """讀取 txt 檔案，分段（每段 35K 字）"""
-    text = Path(path).read_text(encoding='utf-8', errors='ignore')
-    # 分段：每 35K 字一段
-    chunks = []
-    for i in range(0, len(text), 35000):
-        chunks.append(text[i:i+35000])
-    return chunks
+def split_text(text, chunk_size=CHUNK_SIZE):
+    chapter_pattern = re.compile(
+        r'(?=第[一二三四五六七八九十百\d]+[章節篇部]|Chapter\s+\d+|CHAPTER\s+\d+)',
+        re.IGNORECASE
+    )
+    parts = chapter_pattern.split(text)
+    parts = [p.strip() for p in parts if p.strip()]
+    if len(parts) < 3:
+        parts = [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
+    result = []
+    for part in parts:
+        if len(part) > chunk_size:
+            for i in range(0, len(part), chunk_size):
+                result.append(part[i:i+chunk_size])
+        else:
+            result.append(part)
+    return result
 
-def extract_concepts_from_chunk(chunk_text, book_title):
-    """M2.7 萃取概念（thinking=off）"""
-    import urllib.request
+def extract_concepts(chunk, book_title, chunk_idx, total_chunks):
+    prompt = f"""你是一位書籍概念萃取專家。以下是《{book_title}》第 {chunk_idx+1}/{total_chunks} 段的內容。
 
-    prompt = f"""以下是一本書的節錄內容。請萃取其中重要的投資/商業概念，每個概念產出以下欄位的 JSON：
+請萃取這段文字中作者想傳達的每一個重要概念，以 JSON array 格式輸出：
 
-{{
- "concepts": [
- {{
- "概念名稱": "概念的中文名稱",
- "觀點說明": "這個概念的核心觀點（2-3句）",
- "舉例": "書中提到的實際案例或數字",
- "如何使用": "這個概念如何應用在投資分析中",
- "適用情境": "這個概念適用的分析場景",
- "重要度": "高/中/低"
- }},
- ...
- ]
-}}
+[
+  {{
+    "概念名稱": "簡短的概念標題（10字以內）",
+    "觀點說明": "作者在說什麼，2-4句話說清楚核心觀點",
+    "舉例": "書中給出的例子或案例（若無則填「書中未提供例子」）",
+    "如何使用": "投資實務上如何應用這個概念，要具體",
+    "適用情境": ["選股", "估值", "風險管理", "心理", "總經", "策略"],
+    "重要度": "核心/重要/參考"
+  }}
+]
 
-規則：
-- 全程使用繁體中文
-- 只萃取書中明確提到的概念，不要捏造
-- 一個章節或段落至少萃取 2-3 個概念，最多 8 個
-- 重要度：高 = 核心投資框架，中 = 實用工具，低 = 延伸知識
-- 只輸出 JSON，不要其他文字
+注意事項：
+- 全程使用繁體中文，嚴禁輸出簡體中文
+- 只萃取真正重要的概念（每段 3-8 個概念）
+- 適用情境只能從以下選擇：選股/估值/風險管理/心理/總經/策略
+- 重要度：核心（改變思維框架）/ 重要（實用工具）/ 參考（背景知識）
+- 不得捏造書中沒有的內容
+- 只輸出 JSON array，不要其他文字
 
-書本節錄：
-{chunk_text[:35000]}
+書籍內容：
+{chunk}
 """
-
     payload = {
         "model": "MiniMax-M2.7",
-        "max_tokens": 4000,
+        "max_tokens": 3000,
         "thinking": {"type": "disabled"},
-        "messages": [{"role": "user", "content": prompt}, {"role": "assistant", "content": "{"}],
+        "messages": [{"role": "user", "content": prompt}, {"role": "assistant", "content": "["}],
     }
     data = json.dumps(payload).encode()
     req = urllib.request.Request(
@@ -89,119 +96,117 @@ def extract_concepts_from_chunk(chunk_text, book_title):
 
     text_blocks = [b for b in resp.get("content", []) if b.get("type") == "text"]
     if not text_blocks:
-        return []
-    raw = "{" + text_blocks[0]["text"].strip()
+        raise RuntimeError("M2.7 無 text block 回應")
+    raw = "[" + text_blocks[0]["text"].strip()
     if "```" in raw:
         raw = raw.split("```")[1]
         if raw.startswith("json"):
             raw = raw[4:]
-    try:
-        data = json.loads(raw.strip())
-        return data.get("concepts", [])
-    except Exception:
-        return []
+    return json.loads(raw.strip())
 
-def write_book_notes_page(book_title, author, category, total_concepts):
-    """在 book_notes DB 建立書籍主檔"""
-    db_id = SECRETS["notion_book_notes_db"]
+def create_book_notes_page(title, author, category):
+    query = notion_post(
+        f"https://api.notion.com/v1/databases/{BOOK_NOTES_DB}/query",
+        {"filter": {"property": "書名", "title": {"equals": title}}, "page_size": 1}
+    )
+    if query.get("results"):
+        page_id = query["results"][0]["id"]
+        print(f"[book_main] 書籍已存在: {page_id}")
+        return page_id
+
     payload = {
-        "parent": {"database_id": db_id},
+        "parent": {"database_id": BOOK_NOTES_DB},
         "properties": {
-            "書名": {"title": to_rich_text(book_title)},
+            "書名": {"title": to_rich_text(title)},
             "作者": {"rich_text": to_rich_text(author)},
-            "類別": {"select": {"name": category}},
-            "萃取日期": {"date": {"start": datetime.now().strftime("%Y-%m-%d")}},
-            "概念數量": {"number": total_concepts},
-            "已作廢": {"checkbox": False},
+            "類別": {"multi_select": [{"name": category}]},
+            "閱讀狀態": {"select": {"name": "已讀"}},
+            "閱讀完成日": {"date": {"start": datetime.now().strftime("%Y-%m-%d")}},
         }
     }
     page = notion_post("https://api.notion.com/v1/pages", payload)
-    return page.get("id")
+    page_id = page.get("id")
+    print(f"[book_main] 書籍主檔建立: {page_id}")
+    return page_id
 
-def write_concept_cards(concepts, book_page_id):
-    """批次寫入概念卡到 book_concepts DB"""
-    db_id = SECRETS["notion_book_concepts_db"]
-    results = []
-    for c in concepts:
-        select_map = {"高": "高", "中": "中", "低": "低"}
-        importance = select_map.get(c.get("重要度", "中"), "中")
-        scenario = c.get("適用情境", "")
-        # 適用情境轉成 multi_select 格式
-        scenarios = []
-        if scenario:
-            for s in scenario.split(","):
-                s = s.strip()
-                if s:
-                    scenarios.append({"name": s})
+def write_concept_card(concept, book_page_id):
+    valid_situations = {"選股", "估值", "風險管理", "心理", "總經", "策略"}
+    situations = [{"name": s} for s in concept.get("適用情境", []) if s in valid_situations]
+    valid_levels = {"核心", "重要", "參考"}
+    level = concept.get("重要度", "參考")
+    if level not in valid_levels:
+        level = "參考"
 
-        payload = {
-            "parent": {"database_id": db_id},
-            "properties": {
-                "概念名稱": {"title": to_rich_text(c.get("概念名稱", ""))},
-                "觀點說明": {"rich_text": to_rich_text(c.get("觀點說明", ""))},
-                "舉例": {"rich_text": to_rich_text(c.get("舉例", ""))},
-                "如何使用": {"rich_text": to_rich_text(c.get("如何使用", ""))},
-                "適用情境": {"multi_select": scenarios},
-                "重要度": {"select": {"name": importance}},
-                "所屬書籍": {"relation": [{"id": book_page_id}]},
-            }
+    payload = {
+        "parent": {"database_id": BOOK_CONCEPTS_DB},
+        "properties": {
+            "概念名稱": {"title": to_rich_text(concept.get("概念名稱", "未命名")[:100])},
+            "觀點說明": {"rich_text": to_rich_text(concept.get("觀點說明", ""))},
+            "舉例": {"rich_text": to_rich_text(concept.get("舉例", ""))},
+            "如何使用": {"rich_text": to_rich_text(concept.get("如何使用", ""))},
+            "適用情境": {"multi_select": situations},
+            "重要度": {"select": {"name": level}},
+            "所屬書籍": {"relation": [{"id": book_page_id}]},
         }
-        page = notion_post("https://api.notion.com/v1/pages", payload)
-        results.append(page.get("id"))
-    return results
+    }
+    result = notion_post("https://api.notion.com/v1/pages", payload)
+    return result.get("id")
 
 def main():
     parser = argparse.ArgumentParser(description="書籍概念萃取")
-    parser.add_argument("book_title", help="書名")
+    parser.add_argument("title", help="書名")
     parser.add_argument("author", help="作者")
     parser.add_argument("category", help="類別")
-    parser.add_argument("txt_path", help="txt 檔案路徑")
+    parser.add_argument("txt_path", help="書籍 txt 檔案路徑")
+    parser.add_argument("--dry-run", action="store_true", help="只萃取不寫入 Notion")
     args = parser.parse_args()
 
-    book_title = args.book_title
-    author = args.author
-    category = args.category
-    txt_path = Path(args.txt_path)
-
-    if not txt_path.exists():
-        print(f"[book_main] 找不到檔案: {txt_path}")
-        return
-
     print(f"\n{'='*60}")
-    print(f"📚 書籍概念萃取：{book_title}")
-    print(f"作者：{author} | 類別：{category}")
+    print(f"📚 書籍概念萃取：{args.title}")
+    print(f"作者：{args.author} | 類別：{args.category}")
     print(f"{'='*60}\n")
 
-    # Step 1: 讀取並分段書籍
-    print("【1】讀取書籍...")
-    chunks = read_book_txt(txt_path)
-    print(f"    共 {len(chunks)} 段")
+    txt_path = Path(args.txt_path)
+    if not txt_path.exists():
+        print(f"ERROR: 找不到檔案 {txt_path}")
+        sys.exit(1)
+    text = txt_path.read_text(encoding="utf-8", errors="ignore")
+    print(f"[book_main] 讀取完成，共 {len(text):,} 字元")
+
+    chunks = split_text(text)
+    print(f"[book_main] 分成 {len(chunks)} 段處理")
+
+    if not args.dry_run:
+        book_page_id = create_book_notes_page(args.title, args.author, args.category)
+    else:
+        book_page_id = "dry-run"
 
     all_concepts = []
     for i, chunk in enumerate(chunks):
-        print(f"\n【2.{i+1}】萃取第 {i+1}/{len(chunks)} 段概念...")
-        concepts = extract_concepts_from_chunk(chunk, book_title)
-        print(f"    萃取 {len(concepts)} 個概念")
-        all_concepts.extend(concepts)
-
-    print(f"\n共萃取 {len(all_concepts)} 個概念")
-
-    # Step 3: 寫入 Notion
-    print("\n【3】寫入 Notion...")
-    book_page_id = write_book_notes_page(book_title, author, category, len(all_concepts))
-    print(f"    書籍主檔：{book_page_id}")
-
-    concept_ids = write_concept_cards(all_concepts, book_page_id)
-    print(f"    已寫入 {len(concept_ids)} 個概念卡")
-
-    # Step 4: 預覽前5個概念
-    print("\n【4】概念預覽（前5個）：")
-    for c in all_concepts[:5]:
-        print(f"  • {c.get('概念名稱')}（{c.get('重要度')}）")
+        print(f"\n[book_main] 處理第 {i+1}/{len(chunks)} 段（{len(chunk):,} 字元）...")
+        try:
+            concepts = extract_concepts(chunk, args.title, i, len(chunks))
+            print(f" 萃取到 {len(concepts)} 個概念")
+            for c in concepts:
+                print(f" - [{c.get('重要度','?')}] {c.get('概念名稱','?')}")
+            all_concepts.extend(concepts)
+            if not args.dry_run:
+                for c in concepts:
+                    write_concept_card(c, book_page_id)
+                    time.sleep(0.3)
+        except Exception as e:
+            print(f"  ERROR 第 {i+1} 段: {e}")
+            time.sleep(1)
 
     print(f"\n{'='*60}")
-    print(f"✅ 完成：{book_title} | 共 {len(all_concepts)} 個概念")
-    print(f"{'='*60}")
+    print(f"✅ 完成！共萃取 {len(all_concepts)} 個概念卡")
+    if not args.dry_run:
+        print(f"已寫入 Notion book_concepts DB")
+    print(f"{'='*60}\n")
+
+    print("概念預覽（前5個）：")
+    for c in all_concepts[:5]:
+        print(f" [{c.get('重要度')}] {c.get('概念名稱')} — {c.get('觀點說明','')[:50]}")
 
 if __name__ == "__main__":
     main()
