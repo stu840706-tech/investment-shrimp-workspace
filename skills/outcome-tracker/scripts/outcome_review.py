@@ -37,13 +37,13 @@ def find_due_items(notion_client, stock_tracking_db_id: str, today: date, symbol
     """
     filter_cond = {
         "and": [
-            {"property": "outcome_review_date", "date": {"on_or_before": today.isoformat()}},
+            {"property": "下次驗證日", "date": {"on_or_before": today.isoformat()}},
             {"property": "狀態", "select": {"does_not_equal": "已退出"}},
         ]
     }
     if symbol_filter:
         filter_cond["and"].append(
-            {"property": "個股代號", "title": {"equals": symbol_filter}}
+            {"property": "股票代碼", "title": {"equals": symbol_filter}}
         )
 
     # TODO (B5): pagination 支援(has_more)
@@ -129,7 +129,7 @@ def main():
         print("[ERROR] notion_client 未安裝", file=sys.stderr)
         return 1
 
-    notion = Client(auth=secrets["notion_api_key"])
+    notion = Client(auth=secrets["notion_key"])
     today = date.today()
 
     print(f"=== outcome_review ({today.isoformat()}) ===")
@@ -142,8 +142,8 @@ def main():
         # 骨架:只 print,實際處理 B5 補
         props = page["properties"]
         try:
-            symbol = props["個股代號"]["title"][0]["plain_text"]
-            start_date_str = props["立案日期"]["date"]["start"]
+            symbol = props["股票代碼"]["title"][0]["plain_text"]
+            start_date_str = props["初次加入日"]["date"]["start"]
             reason = props["立案理由"]["rich_text"][0]["plain_text"] if props["立案理由"]["rich_text"] else ""
         except (KeyError, IndexError) as e:
             print(f"  [WARN] 跳過不完整 row: {e}")

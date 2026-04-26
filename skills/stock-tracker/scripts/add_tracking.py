@@ -57,13 +57,12 @@ def add_to_stock_tracking(
     page = notion_client.pages.create(
         parent={"database_id": db_id},
         properties={
-            "個股代號": {"title": [{"text": {"content": symbol}}]},
+            "股票代碼": {"title": [{"text": {"content": symbol}}]},
             "公司名稱": {"rich_text": [{"text": {"content": name}}]},
-            "立案日期": {"date": {"start": today}},
-            "來源": {"select": {"name": source}},
-            "立案理由": {"rich_text": [{"text": {"content": reason}}]},
+            "初次加入日": {"date": {"start": today}},
+            "期待催化劑": {"rich_text": [{"text": {"content": reason}}]},
             "狀態": {"select": {"name": "追蹤中"}},
-            "outcome_review_date": {"date": {"start": review_date.isoformat()}},
+            "下次驗證日": {"date": {"start": review_date.isoformat()}},
         },
     )
     return page["id"]
@@ -78,7 +77,7 @@ def main():
         choices=VALID_SOURCES,
         help=f"來源: {'/'.join(VALID_SOURCES)}",
     )
-    parser.add_argument("--reason", required=True, help="立案理由")
+    parser.add_argument("--reason", required=True, help="期待催化劑")
     parser.add_argument("--name", default=None, help="公司名稱(未填從 FinMind 抓)")
     parser.add_argument(
         "--review-days",
@@ -116,7 +115,7 @@ def main():
         print("[ERROR] notion_client 未安裝,請 pip install notion-client", file=sys.stderr)
         return 1
 
-    notion = Client(auth=secrets["notion_api_key"])
+    notion = Client(auth=secrets["notion_key"])
     try:
         page_id = add_to_stock_tracking(
             notion, db_id, args.symbol, name, args.source, args.reason, review_date
