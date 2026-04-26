@@ -215,7 +215,7 @@ def call_llm_batch(items, retries=2):
                 f"{MINIMAX_BASE}/messages",
                 data=data,
                 headers={
-                    'Authorization': f'Bearer {MINIMAX_TOKEN}',
+                    'x-api-key': MINIMAX_TOKEN,
                     'Content-Type': 'application/json',
                     'anthropic-version': '2023-06-01',
                 },
