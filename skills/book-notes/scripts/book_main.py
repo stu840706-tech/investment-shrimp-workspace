@@ -101,10 +101,15 @@ def extract_concepts(chunk, book_title, chunk_idx, total_chunks, dry_run=False):
     with urllib.request.urlopen(req, timeout=120) as r:
         resp = json.loads(r.read().decode())
 
-    text_blocks = [b for b in resp.get("content", []) if b.get("type") == "text"]
+        text_blocks = [b for b in resp.get("content", []) if b.get("type") == "text"]
     if not text_blocks:
-        raise RuntimeError("M2.7 無 text block 回應")
-    raw = "[" + text_blocks[0]["text"].strip()
+        print(f" [warn] M2.7 無 text block，content: {resp.get('content')}")
+        return []
+    raw_text = text_blocks[0].get("text", "")
+    if not raw_text or not raw_text.strip():
+        print(f" [warn] M2.7 text block 為空")
+        return []
+    raw = "[" + raw_text.strip()
     if "```" in raw:
         raw = raw.split("```")[1]
         if raw.startswith("json"):
