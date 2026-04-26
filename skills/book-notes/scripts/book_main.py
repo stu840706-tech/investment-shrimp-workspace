@@ -94,7 +94,7 @@ def extract_concepts(chunk, book_title, chunk_idx, total_chunks, dry_run=False):
         data=data,
         headers={
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {MINIMAX_TOKEN}",
+            "x-api-key": MINIMAX_TOKEN,
             "anthropic-version": "2023-06-01",
         },
     )
