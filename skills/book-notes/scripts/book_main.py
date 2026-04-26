@@ -3,7 +3,7 @@
 import sys, json, time, urllib.request, argparse, re
 from datetime import datetime
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / 'workflows'))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'workflows'))
 from _common import SECRETS, NOTION_KEY, MINIMAX_API_KEY as MINIMAX_TOKEN
 
 NOTION_VERSION = "2022-06-28"
