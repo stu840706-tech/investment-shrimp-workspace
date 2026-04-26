@@ -8,24 +8,25 @@ _注意:本檔的 `db_id` 欄位將在 B4 完成後由 `workflows/setup_notion_d
 
 - **主要資料庫**:Notion(不換工具,HANDOFF 已決策)
 - **API**:用 `notion_client` Python SDK
-- **api_key**:`config/secrets.json` → `"notion_api_key"`
+- **api_key**:`config/secrets.json` → `"notion_key"`
 - **rate limit 防呆**:每個 db 建立後 `time.sleep(0.5)`,每個 property 設定後 `time.sleep(0.3)`
 
 ## 9 + 1 個資料庫清單
 
 | 用途 | db 名稱 | 對應任務 | db_id(B4 後補) |
 |------|---------|----------|----------------|
-| 追蹤中個股 | `stock_tracking` | Task 5(樞紐) | `<TBD>` |
-| 交易紀錄 | `trading_journal` | Task 8 | `<TBD>` |
-| 券商個股報告 | `broker_reports` | Task 4 | `<TBD>` |
-| 產業報告 | `industry_reports` | Task 4 | `<TBD>` |
-| 新聞 db(現有,擴充「來源」欄位) | `news_db` | Task 1 | `<既有 id>` |
-| 重大事件日曆 | `event_calendar` | Task 3 | `<TBD>` |
-| 研究報告 | `research_pages` | Task 6 | `<TBD>` |
-| 書籍筆記(主) | `book_notes` | Task 7 | `<TBD>` |
-| 書籍概念(子,拆分 book_notes) | `book_concepts` | Task 7 | `<TBD>` |
-| 回測結果 | `backtest_results` | Task 8 後期 | `<TBD>` |
-| Outcome log | `outcome_log` | Task 8 | `<TBD>` |
+| 追蹤中個股 | `stock_tracking` | Task 5(樞紐) | `34e226f5-a398-814f-b457-c9e2fe01c1c0` |
+| 交易紀錄 | `trading_journal` | Task 8 | `34e226f5-a398-8194-aa56-de9b2f639585` |
+| 券商個股報告 | `broker_reports` | Task 4 | `34e226f5-a398-81a0-b22d-fea135a192fd` |
+| 產業報告 | `industry_reports` | Task 4 | `34e226f5-a398-81fa-8c7e-ea8d8b32de67` |
+| 新聞 db(現有,擴充「來源」欄位) | `news_db` | Task 1 | `342226f5-a398-81ab-bfeb-fefda2d30a68` |
+| 重大事件日曆 | `event_calendar` | Task 3 | `34e226f5-a398-81ea-8a99-ecd61b9e8795` |
+| 研究報告 | `research_pages` | Task 6 | `34e226f5-a398-8167-85eb-eb5ae7d42943` |
+| 書籍筆記(主) | `book_notes` | Task 7 | `34e226f5-a398-8166-9cd6-c628e6e73950` |
+| 書籍概念(子,拆分 book_notes) | `book_concepts` | Task 7 | `34e226f5-a398-8151-affd-d8b11b213ac1` |
+| 回測結果 | `backtest_results` | Task 8 後期 | `34e226f5-a398-81ba-ad8c-fea14d88ff29` |
+| Outcome log | `outcome_log` | Task 8 | `34e226f5-a398-81fe-b0f3-d029abc41d2a` |
+| 掃描結果(每日) | scan_results | Task 2(B6 切換) | 34e226f5-a398-816e-93ca-c2f0d5a2456a |
 
 **加起來共 10 個 db**(book_notes + book_concepts 算兩個)。完整 schema 見 Kai 手上的 `02_NOTION_SCHEMA_PLAN_v2.md`。
 
@@ -49,7 +50,7 @@ import json, time
 from pathlib import Path
 
 SECRETS = json.loads((Path.home() / ".openclaw/workspace/config/secrets.json").read_text())
-notion = Client(auth=SECRETS["notion_api_key"])
+notion = Client(auth=SECRETS["notion_key"])
 
 DB_ID = SECRETS["notion_stock_tracking_db"]
 
@@ -143,3 +144,7 @@ def find_or_create_db(parent_page_id, db_name, schema):
 ---
 
 _上次更新:2026-04-19(B4 後補 db_id)_
+
+
+---
+_最後 setup_notion_databases.py 寫入: 2026-04-26 05:29 UTC_

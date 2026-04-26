@@ -22,3 +22,4 @@
 
 # 新聞晚報 — 每天 19:23 台灣時間 (Phase 3)
 23 19 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/news_phase3.py >> /tmp/news_phase3.log 2>&1
+10 12 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/daily_dashboard.py >> state/cron-dashboard.log 2>&1
