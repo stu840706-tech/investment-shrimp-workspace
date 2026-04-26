@@ -69,10 +69,10 @@ def extract_key_points(text, stock_id):
 年報內容：
 {text_truncated}
 
-只輸出 JSON，不要其他文字。"""
+只輸出 JSON，不要其他文字。全程使用繁體中文，嚴禁輸出簡體中文。"""
 
     payload = {
-        "model": "MiniMax-Text-01",
+        "model": "MiniMax-M2.7",
         "max_tokens": 1000,
         "thinking": {"type": "disabled"},
         "messages": [{"role": "user", "content": prompt}],

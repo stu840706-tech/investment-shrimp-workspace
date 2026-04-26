@@ -111,6 +111,7 @@ def build_prompt(stock_id, data, memo):
 }}
 
 注意事項：
+- 全程使用繁體中文，嚴禁輸出簡體中文
 - 所有數字必須來自上方提供的資料，不得捏造
 - 月營收單位：元（非千元）
 - 季報 EPS 單位：元/股
@@ -125,8 +126,8 @@ def build_prompt(stock_id, data, memo):
 def call_minimax(prompt):
     """呼叫 M2.7 產生報告（thinking=off）"""
     payload = {
-        "model": "MiniMax-Text-01",
-        "max_tokens": 4000,
+        "model": "MiniMax-M2.7",
+        "max_tokens": 8000,
         "thinking": {"type": "disabled"},
         "messages": [
             {"role": "user", "content": prompt},
@@ -139,7 +140,7 @@ def call_minimax(prompt):
         data=data,
         headers={
             "Content-Type": "application/json",
-            "x-api-key": MINIMAX_TOKEN,
+            'Authorization': f'Bearer {MINIMAX_TOKEN}',
             "anthropic-version": "2023-06-01",
         },
     )
