@@ -3,8 +3,8 @@
 import sys, json, time, urllib.request, argparse, re
 from datetime import datetime
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'workflows'))
-from _common import SECRETS, NOTION_KEY, MINIMAX_TOKEN
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'workflows'))
+from _common import SECRETS, NOTION_KEY, MINIMAX_API_KEY as MINIMAX_TOKEN
 
 NOTION_VERSION = "2022-06-28"
 BOOK_NOTES_DB = SECRETS["notion_book_notes_db"]
@@ -48,7 +48,14 @@ def split_text(text, chunk_size=CHUNK_SIZE):
             result.append(part)
     return result
 
-def extract_concepts(chunk, book_title, chunk_idx, total_chunks):
+def extract_concepts(chunk, book_title, chunk_idx, total_chunks, dry_run=False):
+    if dry_run:
+        print(f"  [DRY-RUN] 跳過 LLM 萃取（模擬 3 個概念）")
+        return [
+            {"概念名稱": "測試概念1", "觀點說明": "這是乾測試模式", "舉例": "無", "如何使用": "無", "適用情境": ["策略"], "重要度": "參考"},
+            {"概念名稱": "測試概念2", "觀點說明": "只驗證文字處理流程", "舉例": "無", "如何使用": "無", "適用情境": ["心理"], "重要度": "重要"},
+            {"概念名稱": "測試概念3", "觀點說明": "不做真實 API 呼叫", "舉例": "無", "如何使用": "無", "適用情境": ["選股"], "重要度": "核心"},
+        ]
     prompt = f"""你是一位書籍概念萃取專家。以下是《{book_title}》第 {chunk_idx+1}/{total_chunks} 段的內容。
 
 請萃取這段文字中作者想傳達的每一個重要概念，以 JSON array 格式輸出：
@@ -185,7 +192,7 @@ def main():
     for i, chunk in enumerate(chunks):
         print(f"\n[book_main] 處理第 {i+1}/{len(chunks)} 段（{len(chunk):,} 字元）...")
         try:
-            concepts = extract_concepts(chunk, args.title, i, len(chunks))
+            concepts = extract_concepts(chunk, args.title, i, len(chunks), dry_run=args.dry_run)
             print(f" 萃取到 {len(concepts)} 個概念")
             for c in concepts:
                 print(f" - [{c.get('重要度','?')}] {c.get('概念名稱','?')}")
