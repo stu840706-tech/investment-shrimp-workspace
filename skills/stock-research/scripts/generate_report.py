@@ -19,6 +19,7 @@ def load_state(stock_id):
     return {
         "financials": load("financials"),
         "chips": load("chips"),
+        "price": load("price"),
         "annual": load("annual"),
         "broker": load("broker"),
     }
@@ -27,6 +28,7 @@ def build_prompt(stock_id, data, memo):
     """組裝 M2.7 輸入 prompt，控制在 40K tokens 內"""
     fin = data.get("financials", {})
     chips = data.get("chips", {})
+    price = data.get("price", {})
     annual = data.get("annual", {})
     broker = data.get("broker", {})
 
@@ -92,6 +94,14 @@ def build_prompt(stock_id, data, memo):
 
 ## 融資餘額
 最新：{margin_latest} 張，30日變化：{margin_change:+} 張
+
+## 股價技術面
+現價：{price.get("price", {}).get("current_price", "N/A")} 元（{price.get("price", {}).get("date", "")}）
+均線：MA5={price.get("price", {}).get("ma5")} / MA10={price.get("price", {}).get("ma10")} / MA20={price.get("price", {}).get("ma20")} / MA60={price.get("price", {}).get("ma60")}
+60日高點：{price.get("price", {}).get("high_60d")} / 60日低點：{price.get("price", {}).get("low_60d")}
+現價偏離MA20：{price.get("price", {}).get("price_vs_ma20")}%
+20日均量：{price.get("price", {}).get("avg_volume_20d", "N/A"):,} 股
+外資持股比率：{price.get("shareholding", {}).get("foreign_pct")}%
 
 ## 券商報告摘要
 {broker_text}

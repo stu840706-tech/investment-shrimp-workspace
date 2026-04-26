@@ -7,6 +7,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'workflows')
 
 from fetch_financials import main as fetch_financials
 from fetch_chips import main as fetch_chips
+from fetch_price import main as fetch_price
 from fetch_annual_report import main as fetch_annual_report
 from fetch_broker_summary import main as fetch_broker_summary
 from generate_report import main as generate_report
@@ -65,6 +66,10 @@ def main():
     # S2: 籌碼面
     print("\n【S2】抓取籌碼面...")
     fetch_chips(stock_id)
+
+    # S2.5: 股價技術面
+    print("\n【S2.5】抓取股價技術面...")
+    fetch_price(stock_id)
 
     # S3: 年報
     if not args.skip_annual:
