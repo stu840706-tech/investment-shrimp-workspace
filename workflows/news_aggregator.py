@@ -81,6 +81,36 @@ def score_item(it):
     if re.search(r'\b[12][0-9]{3}\b', text): score += 1
     return score
 
+def fact_layer_filter(items):
+    import re
+    layer3_patterns = [
+        '多空對決', '後市怎麼走', '行情展望', '盤勢分析',
+        '本週操作策略', '下週展望', '技術面分析', '籌碼面解讀',
+        '大盤走勢', '指數預測', '市場氣氛', '投資人情緒',
+    ]
+    layer1_patterns = [
+        '%', 'EPS', '目標價', '營收',
+        '法說會', '財報', '除權息', '配息', '增資',
+        '擴產', '量產', '出貨', '訂單', '簽約',
+    ]
+    layer1, layer2, layer3 = [], [], []
+    for it in items:
+        text = it.get('title', '') + ' ' + (it.get('body_snippet', '') or '')
+        is_layer3 = any(p in text for p in layer3_patterns)
+        has_number = bool(re.search(r'\d+[%元億萬]|\d{4}年|\d+月', text))
+        if is_layer3 and not has_number:
+            it['_fact_layer'] = 3
+            layer3.append(it)
+        elif any(p in text for p in layer1_patterns):
+            it['_fact_layer'] = 1
+            layer1.append(it)
+        else:
+            it['_fact_layer'] = 2
+            layer2.append(it)
+    print(f"  Fact預審：L1={len(layer1)} L2={len(layer2)} L3={len(layer3)}（跳過）")
+    return layer1 + layer2, layer3
+
+
 def dedup_title(items):
     """第一階段去重：title 前 25 字相同者合併來源"""
     seen = {}
@@ -523,6 +553,12 @@ def main():
     top_items = [it for _, it in scored[:MAX_LLM_ITEMS]]
     rest_items = [it for _, it in scored[MAX_LLM_ITEMS:]]
     print(f"  LLM 分析：{len(top_items)} 筆，其餘 {len(rest_items)} 筆用規則分類")
+
+    # Step 4.5: Fact 三層預審（P-011）
+    print(f"\n[4.5] Fact 三層預審...")
+    top_items, layer3_skipped = fact_layer_filter(top_items)
+    rest_items = rest_items + layer3_skipped  # Layer 3 改用規則分類
+
 
     # Step 6: LLM 批次分析
     print(f"\n[5] LLM 批次分析（{len(top_items)}則，每批{BATCH_SIZE}則）...")
