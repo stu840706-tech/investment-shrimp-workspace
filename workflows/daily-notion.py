@@ -34,6 +34,7 @@ STATE_DIR = Path("/home/ubuntu/.openclaw/workspace/state")
 from _common import now_tw,  FINMIND_TOKEN, NOTION_KEY, SECRETS
 NOTION_VERSION = "2022-06-28"
 PARENT_DB_ID = SECRETS["notion_parent_db_id"]  # 來自 https://www.notion.so/341226f5a39880198606d2ce990675b0
+SCAN_RESULTS_DB_ID = SECRETS["notion_scan_results_db"]  # B7: 固定 DB，不再動態建立
 
 # ==================== Notion API ====================
 
@@ -319,68 +320,9 @@ def create_page_and_database(date_str, scan_results):
     page_id = page.get('id')
     print(f" [+] 頁面建立: {page_id}")
 
-    # Step 2: 建立子資料庫（11 欄位）
-    db_schema = {
-        "parent": {"page_id": page_id},
-        "title": [{"text": {"content": "每日公司資料掃描"}}],
-        "properties": {
-            "股票名稱": {"title": {}},
-            "月營收": {"rich_text": {}},
-            "月營收YoY": {"rich_text": {}},
-            "月營收MoM": {"rich_text": {}},
-            "營收利多": {
-                "multi_select": {
-                    "options": [
-                        {"name": "營收連續成長月數 > 3", "color": "purple"},
-                        {"name": "營收達成率異常(法人預估)", "color": "orange"},
-                        {"name": "營收雙增(YoY/MoM>10%)", "color": "yellow"},
-                        {"name": "營收創歷史新高", "color": "blue"},
-                        {"name": "營收創近兩年新高", "color": "green"},
-                    ]
-                }
-            },
-            "三率利多": {
-                "multi_select": {
-                    "options": [
-                        {"name": "EPS > 過去 4 季平均 * 1.2", "color": "purple"},
-                        {"name": "業外損益<10%", "color": "orange"},
-                        {"name": "毛利跳升(傳產股 QoQ 增加 > 1.5%)", "color": "pink"},
-                        {"name": "毛利跳升(電子股 QoQ 增加 > 3%)", "color": "gray"},
-                        {"name": "三率齊升", "color": "red"},
-                    ]
-                }
-            },
-            "籌碼面利多": {
-                "multi_select": {
-                    "options": [
-                        {"name": "董監事公開市場買進", "color": "blue"},
-                        {"name": "董監事或大股東申報轉讓 > 持股 5%", "color": "brown"},
-                        {"name": "外援 OR 投信連續買超 >= 5 天 AND 買超張數 > 該股日均量 5%", "color": "yellow"},
-                    ]
-                }
-            },
-            "股利條件": {
-                "multi_select": {
-                    "options": [
-                        {"name": "配息率 > 80%", "color": "blue"},
-                        {"name": "現金股利 / 當前股價 > 5%", "color": "red"},
-                    ]
-                }
-            },
-            "產業相對強弱": {
-                "multi_select": {
-                    "options": [
-                        {"name": "個股營收 YOY>0%/產業平均<-10%", "color": "brown"},
-                        {"name": "個股營收 YOY - 產業平均 > 10%", "color": "yellow"},
-                    ]
-                }
-            },
-            "重大訊息": {"rich_text": {}},
-            "詳細內容(前面所有標籤的實際內容)": {"rich_text": {}},
-        }
-    }
-    db = notion_post("https://api.notion.com/v1/databases", db_schema)
-    db_id = db.get('id')
+        # Step 2: B7 改用固定 scan_results DB（不再動態建立子 DB）
+    db_id = SCAN_RESULTS_DB_ID
+    print(f" [+] 使用固定資料庫: {db_id}")
     print(f" [+] 資料庫建立: {db_id}")
 
     # Step 3: 收集公司（合併所有分類，同一 code 不丟棄任何來源）
