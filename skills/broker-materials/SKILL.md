@@ -7,8 +7,9 @@ description: 處理 Telegram Group -5290205228 傳來的券商 PDF,M2.7 自動�
 
 ## 何時使用
 
-- S-3 常駐授權:Telegram Group `-5290205228` 收到 PDF / 圖片時自動觸發
+- S-3 常駐授權: Telegram Group `-5290205228` 收到 PDF / 圖片時自動觸發
 - Kai 手動轉寄券商報告到該 channel
+- Kai 的 DM 收到 PDF 檔案時自動觸發（Line → Render → OpenClaw bot → DM）
 
 ## 為什麼是單一 channel + 自動分類
 

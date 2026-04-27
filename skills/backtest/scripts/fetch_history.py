@@ -4,7 +4,7 @@ fetch_history.py - 抓取歷史股價與財務資料供回測使用
 """
 import sys, json, time, urllib.request, urllib.parse
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'workflows'))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'workflows'))
 from _common import FINMIND_TOKEN
 
 BASE_URL = "https://api.finmindtrade.com/api/v4/data"

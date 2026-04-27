@@ -5,7 +5,7 @@ write_notion.py - 將回測結果寫入 Notion backtest_results DB
 import sys, json, urllib.request, time
 from datetime import datetime
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'workflows'))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'workflows'))
 from _common import SECRETS, NOTION_KEY
 
 NOTION_VERSION = "2022-06-28"

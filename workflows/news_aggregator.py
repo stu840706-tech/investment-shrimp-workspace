@@ -6,7 +6,7 @@ Layer 2: Aggregator Agent - 批次版
 - Impact 推論必須有內文依據
 """
 
-from _common import FINMIND_TOKEN, MINIMAX_API_KEY, TELEGRAM_TOKEN, TELEGRAM_DM
+from _common import FINMIND_TOKEN, MINIMAX_API_KEY, TELEGRAM_TOKEN, TELEGRAM_DM, SECRETS, NOTION_KEY
 import json, sys, time, re, requests
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -19,7 +19,7 @@ MINIMAX_TOKEN = MINIMAX_API_KEY
 TELEGRAM_BOT_TOKEN = TELEGRAM_TOKEN
 
 BATCH_SIZE = 3           # 每批 3 則
-MAX_LLM_ITEMS = 120       # 最多 LLM 分析 80 則
+MAX_LLM_ITEMS = 120       # 最多 LLM 分析 120 則
 
 # ============================================================
 # 工具函式
