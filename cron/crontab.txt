@@ -17,9 +17,7 @@
 # 投資蝦每日市場掃描 — 每天 20:00 台灣時間 (12:00 UTC)
 0 12 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/daily-scan.py >> /tmp/daily-scan.log 2>&1
 
-# 新聞晨報 — 每天 07:23 台灣時間 (Phase 3)
 
-# 新聞晚報 — 每天 19:23 台灣時間 (Phase 3)
 10 12 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/daily_dashboard.py >> state/cron-dashboard.log 2>&1
 0 1 * * 1-5 cd ~/.openclaw/workspace && python3 skills/report-calendar/scripts/fetch_calendar.py >> ~/.openclaw/logs/fetch_calendar.log 2>&1
 0 15 * * 1-5 cd ~/.openclaw/workspace && python3 skills/outcome-tracker/scripts/outcome_review.py >> ~/.openclaw/logs/outcome_review.log 2>&1

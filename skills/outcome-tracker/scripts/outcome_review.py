@@ -144,7 +144,7 @@ def llm_judge_thesis(symbol, thesis, catalyst, price_data, secrets):
     )
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {secrets['minimax_api_key']}",
+        "x-api-key": secrets["minimax_api_key"],
     }
     payload = {
         "model": MINIMAX_MODEL,

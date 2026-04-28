@@ -87,7 +87,7 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {secrets['minimax_api_key']}",
+        "x-api-key": secrets["minimax_api_key"],
     }
     payload = {
         "model": MINIMAX_MODEL,

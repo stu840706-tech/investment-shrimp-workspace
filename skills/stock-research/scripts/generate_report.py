@@ -150,7 +150,7 @@ def call_minimax(prompt):
         data=data,
         headers={
             "Content-Type": "application/json",
-            'Authorization': f'Bearer {MINIMAX_TOKEN}',
+            'x-api-key': MINIMAX_TOKEN,
             "anthropic-version": "2023-06-01",
         },
     )
