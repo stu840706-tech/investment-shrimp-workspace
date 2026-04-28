@@ -49,7 +49,7 @@ def get_hour_arg():
 
 def load_processed(hour):
     """讀取 processed jsonl"""
-    today = datetime.now().strftime("%Y%m%d")
+    today = datetime.utcnow().strftime("%Y%m%d")
     timestamp = f"{today}-{hour}"
     f = MEMORY_DIR / f"processed-{timestamp}.jsonl"
     if not f.exists():
@@ -206,7 +206,7 @@ def main():
     # 格式化輸出
     print(f"\n[4] 格式化簡報...")
     lines = []
-    lines.append(f"📰 投資蝦晨報 {now.strftime('%m/%d %H:%M')}")
+    lines.append(f"📰 投資蝦{'晨報' if period=='AM' else '晚報'} {now.strftime('%m/%d %H:%M')}")
     lines.append(market_bg)
     lines.append(f"處理 {len(items)} 則 | 🔴高{len(high)} 🟡中{len(medium)}")
     lines.append("")
@@ -359,7 +359,10 @@ def main():
             "日期": {"title": [{"text": {"content": today_str}}]},
             "時段": {"select": {"name": period}},
             "高重要性則數": {"number": len(high)},
-            "完整簡報": {"rich_text": [{"type": "text", "text": {"content": text[:2000]}}]},
+            "完整簡報": {"rich_text": [
+ {"type": "text", "text": {"content": text[i:i+1800]}}
+ for i in range(0, min(len(text), 9000), 1800)
+ ]},
         }
     }
     
