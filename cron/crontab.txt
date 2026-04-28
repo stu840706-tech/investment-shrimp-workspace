@@ -23,5 +23,5 @@
 10 12 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/daily_dashboard.py >> state/cron-dashboard.log 2>&1
 0 1 * * 1-5 cd ~/.openclaw/workspace && python3 skills/report-calendar/scripts/fetch_calendar.py >> ~/.openclaw/logs/fetch_calendar.log 2>&1
 0 15 * * 1-5 cd ~/.openclaw/workspace && python3 skills/outcome-tracker/scripts/outcome_review.py >> ~/.openclaw/logs/outcome_review.log 2>&1
-23 07 * * 1-5 cd ~/.openclaw/workspace && python3 workflows/news_pipeline.py >> /tmp/news_morning.log 2>&1
-23 19 * * 1-5 cd ~/.openclaw/workspace && python3 workflows/news_pipeline.py >> /tmp/news_evening.log 2>&1
+0 23 * * 0-4 cd ~/.openclaw/workspace && python3 workflows/news_pipeline.py >> /tmp/news_morning.log 2>&1
+0 11 * * 1-5 cd ~/.openclaw/workspace && python3 workflows/news_pipeline.py >> /tmp/news_evening.log 2>&1
