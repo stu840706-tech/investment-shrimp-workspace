@@ -6,7 +6,7 @@ B3 上線。每日 23:30 cron 觸發。
 功能:
   1. 掃 memory/YYYY-MM-DD.md,> 30 天前的搬到 memory/archive/
   2. MEMORY.md > 12000 字元時 stdout 印警告(提醒 Kai 手動蒸餾)
-  3. (未來擴充)news-fingerprints.md 30 天 eviction
+  3. news-fingerprints.md 30 天 eviction（移除超過 30 天的指紋記錄）
 
 安全防護:
   - 搬檔前檢查目標位置已存在 → 不搬,印警告
@@ -147,6 +147,36 @@ def check_memory_size():
         print(f"[OK] MEMORY.md 字元數 {chars} / {MEMORY_CHAR_WARN}")
     return chars
 
+
+
+def evict_fingerprints(today, dry_run: bool):
+    """news-fingerprints.md: 移除 30 天前的指紋記錄"""
+    fp = WORKSPACE / "memory" / "news-fingerprints.md"
+    if not fp.exists():
+        print("[INFO] news-fingerprints.md 不存在，跳過 eviction")
+        return
+    lines = fp.read_text(encoding="utf-8").splitlines()
+    cutoff = today - timedelta(days=ARCHIVE_AGE_DAYS)
+    kept, removed = [], 0
+    for line in lines:
+        if not line.strip():
+            continue
+        parts = line.rsplit("\t", 1)
+        if len(parts) == 2:
+            try:
+                from datetime import datetime as _dt
+                record_date = _dt.strptime(parts[1].strip(), "%Y-%m-%d").date()
+                if record_date < cutoff:
+                    removed += 1
+                    continue
+            except ValueError:
+                pass
+        kept.append(line)
+    if dry_run:
+        print(f"  [DRY-RUN] fingerprints: 會移除 {removed} 筆，保留 {len(kept)} 筆")
+        return
+    fp.write_text("\n".join(kept) + "\n", encoding="utf-8")
+    print(f"  [OK] fingerprints eviction: 移除 {removed} 筆，保留 {len(kept)} 筆")
 
 def main():
     parser = argparse.ArgumentParser(description="L3 日誌自動歸檔 + MEMORY.md 字元數檢查")
