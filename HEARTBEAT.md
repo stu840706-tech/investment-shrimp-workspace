@@ -1,6 +1,5 @@
 # HEARTBEAT.md - 投資蝦心跳檢查清單
 
-_版本：v0.2.0（更新於 SYSTEM_ARCHITECTURE.md 建立後）_
 
 ---
 
@@ -89,4 +88,3 @@ _版本：v0.2.0（更新於 SYSTEM_ARCHITECTURE.md 建立後）_
 
 ---
 
-_這個檔案是投資蝦系統的一部分，遵守 SYSTEM_ARCHITECTURE.md 中的所有原則_
