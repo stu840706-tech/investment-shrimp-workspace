@@ -6,7 +6,7 @@ Layer 3: Publisher Agent
 Usage: python3 news_publisher.py [HH]
 """
 
-from _common import NOTION_KEY, NOTION_NEWS_DB, TELEGRAM_TOKEN, TELEGRAM_DM, TELEGRAM_GROUP
+from _common import NOTION_KEY, NOTION_NEWS_DB, TELEGRAM_TOKEN, TELEGRAM_DM, TELEGRAM_GROUP, today_tw_str
 import json, sys, re, time, requests
 
 COMPANY_NAMES = {
@@ -49,7 +49,7 @@ def get_hour_arg():
 
 def load_processed(hour):
     """讀取 processed jsonl"""
-    today = datetime.utcnow().strftime("%Y%m%d")
+    today = today_tw_str()
     timestamp = f"{today}-{hour}"
     f = MEMORY_DIR / f"processed-{timestamp}.jsonl"
     if not f.exists():
@@ -163,8 +163,11 @@ def cluster_sources(items):
 
 def main():
     hour = get_hour_arg()
-    period = "AM" if hour == "07" else "PM"
-    now = datetime.now()
+    from datetime import timezone, timedelta
+    TZ_TAIPEI = timezone(timedelta(hours=8))
+    now = datetime.now(tz=timezone.utc).astimezone(TZ_TAIPEI)
+    taipei_hour = (int(hour) + 8) % 24
+    period = "AM" if taipei_hour < 12 else "PM"
     today_str = now.strftime("%Y-%m-%d")
     
     print("=" * 55)
@@ -303,7 +306,7 @@ def main():
                 for c in companies[:2]:
                     name = COMPANY_NAMES.get(c, '')
                     if name:
-                        parts.append(f"{c}{name}")
+                        parts.append(f"{c} {name}" if name and name != c else c)
                     else:
                         parts.append(c)
                 label = "、".join(parts)
@@ -325,7 +328,7 @@ def main():
                 for c in companies[:2]:
                     name = COMPANY_NAMES.get(c, '')
                     if name:
-                        parts.append(f"{c}{name}")
+                        parts.append(f"{c} {name}" if name and name != c else c)
                     else:
                         parts.append(c)
                 label = "、".join(parts)
