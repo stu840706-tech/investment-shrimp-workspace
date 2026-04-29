@@ -149,6 +149,8 @@ def section_focus(scan_results):
     # 用「公司被多分類提到」當「命中標籤數」的代理（與既有 daily-notion 邏輯一致）
     company_hits = {}  # code -> {name, categories: set}
     for category, entries in results.items():
+        if not isinstance(entries, list):
+            continue
         for entry in entries:
             code = str(entry.get("code", "")).strip()
             if not code:
@@ -190,7 +192,9 @@ def section_industry_strength(scan_results):
 
     for i, entry in enumerate(industry_entries[:10], 1):
         industry = entry.get("industry", entry.get("name", "?"))
-        strength = entry.get("strength", entry.get("score", "?"))
+        strength = entry.get("industry_yoy", entry.get("yoy_pct", entry.get("strength", entry.get("score", "?"))))
+        if isinstance(strength, (int, float)):
+            strength = f"{strength:+.1f}%"
         blocks.append(bullet(f"{i}. {industry}  強度: {strength}"))
     return blocks
 
