@@ -161,6 +161,43 @@ def cluster_sources(items):
     """直接使用 processed 資料的 sources_list 和 source_count，不再重新計算"""
     return items  # processed already has all cluster info
 
+
+SENT_STATE_FILE = Path(__file__).parent.parent / "state" / "news_brief_sent.json"
+
+def check_already_sent(today_str: str, period: str) -> bool:
+    """檢查今天這個時段是否已發送過 Telegram 簡報"""
+    try:
+        if SENT_STATE_FILE.exists():
+            state = json.loads(SENT_STATE_FILE.read_text(encoding="utf-8"))
+            key = f"{today_str}-{period}"
+            if state.get(key):
+                print(f"[SKIP] 今天 {period} 簡報已發送過（{key}），跳過")
+                return True
+    except Exception as e:
+        print(f"[WARN] 讀取 sent state 失敗：{e}")
+    return False
+
+def mark_sent(today_str: str, period: str):
+    """記錄今天這個時段已發送"""
+    try:
+        state = {}
+        if SENT_STATE_FILE.exists():
+            state = json.loads(SENT_STATE_FILE.read_text(encoding="utf-8"))
+        key = f"{today_str}-{period}"
+        state[key] = True
+        # 只保留最近 30 天的記錄（每個時段2個key，所以60是30天的量）
+        if len(state) > 60:
+            keys = sorted(state.keys())
+            for old_key in keys[:-60]:
+                del state[old_key]
+        SENT_STATE_FILE.write_text(
+            __import__("json").dumps(state, ensure_ascii=False, indent=2),
+            encoding="utf-8"
+        )
+    except Exception as e:
+        print(f"[WARN] 寫入 sent state 失敗：{e}")
+
+
 def main():
     hour = get_hour_arg()
     from datetime import timezone, timedelta
@@ -343,7 +380,13 @@ def main():
     
     # 發送 Telegram
     print(f"\n[5] 發送 Telegram...")
+    # 防重複：檢查今天這個時段是否已發送過
+    if check_already_sent(today_str, period):
+        return
+
     ok, resp = send_telegram(text)
+    if ok:
+        mark_sent(today_str, period)
     # Notion 存檔（寫入「投資蝦晨報」資料庫）
     print(f"\n[6] Notion 存檔...")
     notion_headers = {
