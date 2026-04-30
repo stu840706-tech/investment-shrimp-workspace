@@ -18,6 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
+import re
 
 
 # 股票代碼中英文對照（從 news_publisher.py 同步）
@@ -550,8 +551,7 @@ def process_file(file_path: Path, secrets: dict):
                f"🔗 {page_url}")
     else:  # morning_brief
         # 存入今日晨報合併檔
-        TZ_TAIPEI = timezone(timedelta(hours=8))
-        today_str = datetime.now(tz=TZ_TAIPEI).strftime("%Y%m%d")
+        today_str = datetime.now().strftime("%Y%m%d")
         morning_file = WORKSPACE / "state" / f"broker_morning_{today_str}.txt"
         morning_file.parent.mkdir(parents=True, exist_ok=True)
         broker_name = result.get('broker_name', '')
