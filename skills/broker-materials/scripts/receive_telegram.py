@@ -549,19 +549,30 @@ def process_file(file_path: Path, secrets: dict):
                f"💬 {str(result.get('core_view',''))[:120]}\n"
                f"🔗 {page_url}")
     else:  # morning_brief
-        # 從 text 中正則取出股票代碼並顯示簡稱
+        # 存入今日晨報合併檔
+        TZ_TAIPEI = timezone(timedelta(hours=8))
+        today_str = datetime.now(tz=TZ_TAIPEI).strftime("%Y%m%d")
+        morning_file = WORKSPACE / "state" / f"broker_morning_{today_str}.txt"
+        morning_file.parent.mkdir(parents=True, exist_ok=True)
+        broker_name = result.get('broker_name', '')
+        report_date = result.get('report_date', '')
+        core_view = str(result.get('core_view', ''))
+        # 取出股票代碼清單
         found_codes = list(dict.fromkeys(re.findall(r'\b[12][0-9]{3}\b', text)))[:8]
         code_parts = []
         for c in found_codes:
             name = COMPANY_NAMES.get(c, '')
             code_parts.append(f"{c} {name}" if name else c)
         code_line = "、".join(code_parts) if code_parts else "（未偵測到代碼）"
-        msg = (f"📰 晨報收到（未存 Notion）\n"
-               f"🏦 {result.get('broker_name','')}\n"
-               f"📅 {result.get('report_date','')}\n"
-               f"📋 提及股票：{code_line}\n"
-               f"💬 {str(result.get('core_view',''))[:200]}")
-    notify_telegram(msg, secrets)
+        with open(morning_file, "a", encoding="utf-8") as f:
+            f.write(f"\n{'='*40}\n")
+            f.write(f"券商：{broker_name}\n")
+            f.write(f"日期：{report_date}\n")
+            f.write(f"股票：{code_line}\n")
+            f.write(f"核心觀點：{core_view}\n")
+            f.write(f"原文：{text[:3000]}\n")
+        # 一行確認
+        notify_telegram(f"✅ 已收晨報 {broker_name}｜股票：{code_line}", secrets)
 
     # Step 5b: 若 stock_report 有法說會日期，寫入 event_calendar
     if category == "stock_report":
