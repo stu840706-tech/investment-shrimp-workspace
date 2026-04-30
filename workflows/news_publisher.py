@@ -273,7 +273,7 @@ def main():
             # 公司代碼/名稱放第二行
             companies = list(dict.fromkeys(it.get('companies', [])))
             if companies:
-                company_label = "、".join([f"{c} {COMPANY_NAMES.get(c, c)}" for c in companies[:2]])
+                company_label = "、".join([f"{c} {COMPANY_NAMES[c]}" if c in COMPANY_NAMES else c for c in companies[:2]])
                 lines.append(f"  {company_label}")
             
             fact = it.get('fact', '')
@@ -312,7 +312,7 @@ def main():
             # 公司代碼放第二行
             companies = list(dict.fromkeys(it.get('companies', [])))
             if companies:
-                company_label = "、".join([f"{c} {COMPANY_NAMES.get(c, c)}" for c in companies[:2]])
+                company_label = "、".join([f"{c} {COMPANY_NAMES[c]}" if c in COMPANY_NAMES else c for c in companies[:2]])
                 lines.append(f"  {company_label}")
             
             fact = it.get('fact', '')

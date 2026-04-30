@@ -6,7 +6,7 @@ Layer 2: Aggregator Agent - 批次版
 - Impact 推論必須有內文依據
 """
 
-from _common import FINMIND_TOKEN, MINIMAX_API_KEY, TELEGRAM_TOKEN, TELEGRAM_DM, SECRETS, NOTION_KEY
+from _common import FINMIND_TOKEN, MINIMAX_API_KEY, TELEGRAM_TOKEN, TELEGRAM_DM, SECRETS, NOTION_KEY, today_tw_str
 import json, sys, time, re, requests
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -34,13 +34,13 @@ def get_hour_arg():
     return sys.argv[1].zfill(2) if len(sys.argv) >= 2 else datetime.now().strftime("%H")
 
 def check_raw_files(hour):
-    ts = f"{datetime.now().strftime('%Y%m%d')}-{hour}"
+    ts = f"{today_tw_str()}-{hour}"
     missing = [f"memory/raw-{c}-{ts}.jsonl" for c in ["tw","mops","intl","industry"]
                if not (MEMORY_DIR / f"raw-{c}-{ts}.jsonl").exists()]
     return missing
 
 def load_raw_files(hour):
-    ts = f"{datetime.now().strftime('%Y%m%d')}-{hour}"
+    ts = f"{today_tw_str()}-{hour}"
     all_items = []
     for cat in ["tw","mops","intl","industry"]:
         f = MEMORY_DIR / f"raw-{cat}-{ts}.jsonl"
@@ -560,7 +560,7 @@ def apply_signal_rules(clustered):
 
 def main():
     hour = get_hour_arg()
-    ts = f"{datetime.now().strftime('%Y%m%d')}-{hour}"
+    ts = f"{today_tw_str()}-{hour}"
 
     print("=" * 55)
     print(f"新聞彙總 Layer 2  {datetime.now().strftime('%Y-%m-%d %H:%M')} ({hour}:00)")
