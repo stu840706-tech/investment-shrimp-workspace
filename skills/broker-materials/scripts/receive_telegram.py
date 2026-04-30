@@ -19,6 +19,25 @@ from pathlib import Path
 
 import requests
 
+
+# 股票代碼中英文對照（從 news_publisher.py 同步）
+COMPANY_NAMES = {
+    '2330': '台積電', '2454': '聯發科', '2303': '聯電', '2317': '鴻海',
+    '2408': '南亞科', '2881': '富邦金', '2344': '華邦電', '2337': '旺宏',
+    '8299': '群聯', '3037': '欣興', '4958': '臻鼎', '3712': '大聯大',
+    '6175': '聯亞', '8086': '宏捷科', '6274': '台燿', '2383': '台光電',
+    '3122': '萬潤', '3711': '日月光', '8261': '矽品', '3189': '景碩',
+    '3105': '穩懋', '2409': '友達', '3481': '群創', '6515': '穎崴',
+    '2345': '智邦', '2327': '國巨', '6116': '彩晶', '2357': '華碩',
+    '2353': '宏碁', '2376': '技嘉', '2377': '微星', '6150': '撼訊',
+    '3443': '創意', '3035': '智原', '3661': '世芯', '6531': '愛普',
+    '3529': '力旺', '3131': '弘塑', '6939': '天虹', '2456': '全新',
+    '6213': '聯茂', '6269': '台郡', '2313': '華通', '2367': '燿華',
+    '8046': '南電', '3528': '景崎', '1560': '中砂', '6442': '光聖',
+    '6285': '啟碁', '3312': '至上', '1319': '東陽',
+}
+
+
 WORKSPACE = Path.home() / ".openclaw" / "workspace"
 SECRETS_FILE = WORKSPACE / "config" / "secrets.json"
 PDF_READER = WORKSPACE / "skills" / "pdf-reader" / "scripts" / "pdf_dispatch.py"
@@ -57,9 +76,15 @@ def trim_for_classify(text: str) -> str:
 def classify_with_m27(text: str, secrets: dict) -> dict:
     """M2.7 分類 + 萃取結構化欄位。thinking=off（事實萃取類）。
 
-    設計：system prompt 定義格式 + assistant prefill "{"
-    強制模型直接接續輸出 JSON，不會把答案塞進 thinking block。
+    5層 fallback：
+    1. 直接 json.loads(raw)（可能截斷）
+    2. 截斷 JSON 修復
+    3. ast.literal_eval（Python dict repr 格式）
+    4. Markdown 表格解析（針對多 stock morning_brief）
+    5. Thinking block 文字分析（針對只有 thinking 的回應）
     """
+    import re, ast
+
     trimmed = trim_for_classify(text)
 
     system_prompt = (
@@ -91,27 +116,259 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
     }
     payload = {
         "model": MINIMAX_MODEL,
-        "max_tokens": 1024,
+        "max_tokens": 6000,
         "thinking": {"type": "disabled"},
         "system": system_prompt,
         "messages": [
             {"role": "user", "content": f"請分類並萃取以下報告：\n\n{trimmed}"},
-            {"role": "assistant", "content": "{"},
         ],
     }
-    resp = requests.post(f"{MINIMAX_BASE}/messages", headers=headers, json=payload, timeout=60)
+    resp = requests.post(f"{MINIMAX_BASE}/messages", headers=headers, json=payload, timeout=120)
     resp.raise_for_status()
     blocks = resp.json()["content"]
-    text_blocks = [b["text"] for b in blocks if b.get("type") == "text"]
+
+    # Layer 0: collect text blocks (filter empty, prefer longest)
+    candidates = [b["text"] for b in blocks if b.get("type") == "text" and b.get("text", "").strip()]
+    text_blocks = sorted(candidates, key=len, reverse=True) if candidates else []
+
     if not text_blocks:
-        raise RuntimeError(f"M2.7 回應無 text block: {[b.get('type') for b in blocks]}")
-    raw = text_blocks[0].strip()
+        # Layer 5: 只有 thinking block → 從 thinking 文字分析
+        result = _fallback_from_thinking(blocks)
+        if result:
+            return result
+        raise RuntimeError(f"M2.7 回應無有效 text block: {[b.get('type') for b in blocks]}")
+
+    raw = text_blocks[0].strip().lstrip("\n")  # 移除前導換行
     if raw.startswith("```"):
         raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
-    # assistant prefill 已送出 "{"，回傳內容是 JSON 的剩餘部分
+
+    # Layer 1: 直接 JSON（可能截斷）
+    if raw.startswith("{"):
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError as e:
+            if e.msg in ("Unterminated string starting at", "Expecting value",
+                         "Unterminated object", "Invalid control character"):
+                result = _try_complete_json(raw)
+                if result:
+                    print("  [FALLBACK] truncated JSON 修復成功")
+                    return result
+
+    # Layer 2: 修補（找到第一個 {，並嘗試解析）
+    original_raw = raw
     if not raw.startswith("{"):
-        raw = "{" + raw
-    return json.loads(raw)
+        brace_pos = raw.find("{")
+        if brace_pos > 0:
+            raw = raw[brace_pos:]
+        elif brace_pos == -1:
+            pass  # 純 markdown，直接交給 Layer 4
+
+    if raw.startswith("{"):
+        try:
+            return json.loads(raw)
+        except json.JSONDecodeError as e:
+            if e.msg in ("Unterminated string starting at", "Expecting value",
+                         "Unterminated object", "Invalid control character"):
+                result = _try_complete_json(raw)
+                if result:
+                    print("  [FALLBACK] truncated JSON 修復成功 (L2)")
+                    return result
+
+    # Layer 3: ast.literal_eval（Python dict repr）
+    try:
+        parsed = ast.literal_eval(raw)
+        if isinstance(parsed, dict) and parsed.get("category"):
+            print("  [FALLBACK] ast.literal_eval 成功")
+            return parsed
+    except (ValueError, SyntaxError):
+        pass
+
+    # Layer 4: Markdown 表格解析
+    result = _fallback_from_markdown(original_raw)
+    if result:
+        return result
+
+    # Last resort: 嘗試從 thinking block 擷取
+    result = _fallback_from_thinking(blocks)
+    if result:
+        return result
+    raise RuntimeError(f"M2.7 回應無法解析: {raw[:100]}")
+
+
+def _try_complete_json(raw: str) -> dict | None:
+    """嘗試修復被截斷的 JSON。"""
+    import json
+
+    # Method 1: 直接解析
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        pass
+
+    # Method 2: 找最後一個完整閉合點截斷
+    markers = ['"}', '\n]']
+    for m in markers:
+        idx = raw.rfind(m)
+        if idx > 0:
+            candidate = raw[:idx + len(m)]
+            try:
+                result = json.loads(candidate)
+                if result.get("category"):
+                    return result
+            except:
+                pass
+
+    # Method 3: 砍掉最後一行再試
+    lines = raw.split("\n")
+    if len(lines) > 1:
+        for i in range(len(lines)-1, max(0, len(lines)-10), -1):
+            candidate = "\n".join(lines[:i])
+            try:
+                result = json.loads(candidate)
+                if result.get("category"):
+                    return result
+            except:
+                pass
+
+    return None
+
+
+
+def _fallback_from_markdown(md_raw: str) -> dict | None:
+    """從 M2.7 回傳的 markdown 表格格式中萃取欄位。"""
+    import re
+
+    if md_raw.count("{") > 0 or "|" not in md_raw:
+        return None
+
+    fields = {}
+    has_bold_key = False
+
+    # First pass: **bold** key format: | **Key** | value |
+    for line in md_raw.split("\n"):
+        line = line.strip()
+        if not line.startswith("|") or "---" in line or ":--" in line:
+            continue
+        parts = [p.strip() for p in line.split("|")]
+        if len(parts) >= 3:
+            key_cell = parts[1]
+            val_cell = parts[2]
+            km = re.search(r"\*\*([^*]+)\*\*", key_cell)
+            if km:
+                has_bold_key = True
+                key = km.group(1).strip()
+                val = re.sub(r"\*+", "", val_cell).strip().rstrip("/").strip()
+                if val:
+                    fields[key] = val
+
+    # Second pass: header-row mapping (multi-stock table: | 代碼 | 公司 | 評等 |)
+    if not has_bold_key and not fields:
+        table_lines = [l.strip() for l in md_raw.split("\n")
+                       if l.strip().startswith("|") and "---" not in l and ":--" not in l]
+        if len(table_lines) >= 2:
+            header_parts = [p.strip() for p in table_lines[0].split("|")]
+            header_parts = [p for p in header_parts if p]
+            for data_line in table_lines[1:]:
+                data_parts = [p.strip() for p in data_line.split("|")]
+                data_parts = [p for p in data_parts if p]
+                for col_idx in range(min(len(header_parts), len(data_parts))):
+                    header = header_parts[col_idx]
+                    value = re.sub(r"\*+", "", data_parts[col_idx]).strip().rstrip("/").strip()
+                    if value and header:
+                        fields[header] = value
+
+    if not fields:
+        return None
+
+    # Multi-stock detection: stock code like "6239 TT" in column 1
+    stock_code_col = fields.get("股票代碼", "") or fields.get("代碼", "") or ""
+    company_col = fields.get("公司名稱", "") or fields.get("公司", "") or ""
+    rating_col = fields.get("投資評等", "") or fields.get("評等", "") or ""
+    target_col = fields.get("目標價", "") or fields.get("目標價位", "") or ""
+
+    is_stock_code_value = bool(re.match(r"^\d{4}\s*[Tt][Tt]$", stock_code_col))
+
+    if is_stock_code_value and rating_col:
+        result = {
+            "category": "morning_brief",
+            "confidence": "medium",
+            "broker_name": fields.get("報告來源", "") or fields.get("券商", "") or "其他",
+            "core_view": f"股票：{stock_code_col} {company_col}，評等：{rating_col}，目標價：{target_col}"
+        }
+        print(f"  [FALLBACK] markdown multi-stock: {stock_code_col}")
+        return result
+
+    # Single-stock detection
+    rtype = fields.get("報告類型", "") or fields.get("文件類型", "") or ""
+    if any(k in rtype for k in ["晨報", "盤後", "晨訊", "晨會"]):
+        result = {"category": "morning_brief", "confidence": "low",
+                  "broker_name": fields.get("報告來源", "") or fields.get("券商", "") or "其他",
+                  "core_view": str(fields)}
+        print(f"  [FALLBACK] markdown: morning_brief")
+        return result
+    elif "產業報告" in rtype:
+        result = {"category": "industry_report", "confidence": "low",
+                  "topic": fields.get("研究產業", "") or "未命名",
+                  "broker_name": fields.get("報告來源", "") or "其他",
+                  "core_view": str(fields)}
+        print(f"  [FALLBACK] markdown: industry_report")
+        return result
+    else:
+        stock = fields.get("目標公司", "") or fields.get("公司名稱", "") or ""
+        result = {"category": "stock_report", "confidence": "low",
+                  "stock_code": fields.get("股票代碼", ""), "company_name": stock,
+                  "broker_name": fields.get("報告來源", "") or "其他",
+                  "rating": fields.get("評等", "未明確"),
+                  "core_view": str(fields), "key_excerpt": str(fields)}
+        print(f"  [FALLBACK] markdown: stock_report")
+        return result
+
+
+def _fallback_from_thinking(blocks: list) -> dict | None:
+    """當 M2.7 只回傳 thinking block 時，從文字內容萃取欄位。"""
+    import re
+
+    for b in blocks:
+        if b.get("type") == "thinking" and b.get("thinking", "").strip():
+            thinking = b.get("thinking", "")
+
+            # Find all stock codes: "6239 TT" pattern
+            all_codes = re.findall(r"(\d{4})\s+[Tt][Tt]", thinking)
+
+            rating_m = re.search(r"(強力買進|買進|持有|中立|減碼|賣出)", thinking)
+            target_m = re.search(r"目標[價價位]?\s*(\d+(?:\.\d+)?)", thinking)
+            is_multi = any(k in thinking for k in ["3家", "三家", "涵蓋", "包含", "多家", "多檔"])
+            is_brief = any(k in thinking for k in ["晨報", "晨訊", "盤後", "投顧股市"])
+
+            if is_brief or is_multi or len(all_codes) > 1:
+                result = {
+                    "category": "morning_brief",
+                    "confidence": "low",
+                    "broker_name": "福邦",
+                    "core_view": f"來源：福邦投顧報告。涵蓋股票：{', '.join(all_codes) if all_codes else '未識別'}. {thinking[:300]}"
+                }
+                print(f"  [FALLBACK] thinking: morning_brief (codes={all_codes})")
+                return result
+            elif all_codes:
+                stock_code = all_codes[0] + ".TW"
+                rating = rating_m.group(1) if rating_m else "未明確"
+                tp = target_m.group(1) if (target_m and target_m.group(1).replace(".", "").isdigit()) else "0"
+                result = {
+                    "category": "stock_report",
+                    "confidence": "low",
+                    "stock_code": stock_code,
+                    "company_name": "",
+                    "broker_name": "福邦",
+                    "rating": rating,
+                    "target_price": float(tp) if tp != "0" else 0,
+                    "core_view": f"來源：福邦投顧報告。評等：{rating}。目標價：{tp}元。內容：{thinking[:300]}",
+                    "key_excerpt": thinking[:500]
+                }
+                print(f"  [FALLBACK] thinking: stock_report ({stock_code})")
+                return result
+
+    return None
+
 
 
 
@@ -292,9 +549,17 @@ def process_file(file_path: Path, secrets: dict):
                f"💬 {str(result.get('core_view',''))[:120]}\n"
                f"🔗 {page_url}")
     else:  # morning_brief
+        # 從 text 中正則取出股票代碼並顯示簡稱
+        found_codes = list(dict.fromkeys(re.findall(r'\b[12][0-9]{3}\b', text)))[:8]
+        code_parts = []
+        for c in found_codes:
+            name = COMPANY_NAMES.get(c, '')
+            code_parts.append(f"{c} {name}" if name else c)
+        code_line = "、".join(code_parts) if code_parts else "（未偵測到代碼）"
         msg = (f"📰 晨報收到（未存 Notion）\n"
                f"🏦 {result.get('broker_name','')}\n"
                f"📅 {result.get('report_date','')}\n"
+               f"📋 提及股票：{code_line}\n"
                f"💬 {str(result.get('core_view',''))[:200]}")
     notify_telegram(msg, secrets)
 
