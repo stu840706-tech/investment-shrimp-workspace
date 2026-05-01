@@ -12,7 +12,6 @@ MANUAL = [
             "Layer 3 純敘事（多空對決、後市怎麼走）自動跳過",
         ],
         "notes": "手動觸發：python3 workflows/news_pipeline.py",
-        "skill": "daily-news-scan",
     },
     {
         "name": "📊 每日財務掃描 Dashboard",
@@ -23,7 +22,7 @@ MANUAL = [
             "20:10 後在 Notion 查看當日 Dashboard 頁面",
         ],
         "notes": "手動觸發：python3 workflows/daily-scan.py",
-        "skill": "daily-news-scan",
+        "skill": "daily-scan",
     },
     {
         "name": "📅 法說會行事曆",
