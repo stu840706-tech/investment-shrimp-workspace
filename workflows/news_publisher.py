@@ -42,15 +42,14 @@ BROWSER_HEADERS = {
 }
 
 def get_hour_arg():
-    if len(sys.argv) >= 2:
-        return sys.argv[1].zfill(2)
-    h = datetime.now().strftime("%H")
-    return "07" if int(h) < 12 else "19"
+    """Returns (hour, date_str)"""
+    hour = sys.argv[1].zfill(2) if len(sys.argv) >= 2 else (datetime.now().strftime("%H") if int(datetime.now().strftime("%H")) < 12 else "19")
+    date_str = sys.argv[2] if len(sys.argv) >= 3 else today_tw_str()
+    return hour, date_str
 
-def load_processed(hour):
+def load_processed(hour, date_str):
     """讀取 processed jsonl"""
-    today = today_tw_str()
-    timestamp = f"{today}-{hour}"
+    timestamp = f"{date_str}-{hour}"
     f = MEMORY_DIR / f"processed-{timestamp}.jsonl"
     if not f.exists():
         return None
@@ -199,13 +198,15 @@ def mark_sent(today_str: str, period: str):
 
 
 def main():
-    hour = get_hour_arg()
+    hour, date_str = get_hour_arg()
     from datetime import timezone, timedelta
     TZ_TAIPEI = timezone(timedelta(hours=8))
     now = datetime.now(tz=timezone.utc).astimezone(TZ_TAIPEI)
-    taipei_hour = (int(hour) + 8) % 24
-    period = "AM" if taipei_hour < 12 else "PM"
-    today_str = now.strftime("%Y-%m-%d")
+    # 優先使用 pipeline 傳入的 period 參數，避免重複 +8 換算
+    if len(sys.argv) >= 4:
+        period = sys.argv[3]  # "AM" or "PM" from pipeline
+    else:
+        period = "AM" if hour == "07" else "PM"
     
     print("=" * 55)
     print(f"新聞發布 Layer 3  {now.strftime('%Y-%m-%d %H:%M')} ({period})")
@@ -213,7 +214,7 @@ def main():
     
     # 讀取 processed
     print(f"\n[1] 讀取 processed 檔案...")
-    data = load_processed(hour)
+    data = load_processed(hour, date_str)
     if not data:
         print("  錯誤：找不到 processed 檔案")
         sys.exit(1)
