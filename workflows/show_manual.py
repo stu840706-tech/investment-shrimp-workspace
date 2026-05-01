@@ -97,6 +97,20 @@ MANUAL = [
         "notes": "書籍需為 txt 格式；PDF 請先用 pdf-reader skill 轉換",
         "skill": "book-notes",
     },
+
+    {
+        "name": "📋 券商報告日摘",
+        "trigger": "自動執行（平日 23:00 台北時間）",
+        "description": "彙整當日券商晨報摘要與個股報告，用 M2.7 產出三段式日摘（市場概況、個股動態、明日關注），發送 Telegram。",
+        "steps": [
+            "系統每日自動執行",
+            "需當日有券商報告才會有個股動態內容",
+            "晨報摘要來自 receive_telegram.py 存入的 broker_morning_{date}.txt",
+        ],
+        "notes": "手動觸發：python3 workflows/broker_digest.py",
+        "skill": "broker-materials",
+    },
+
     {
         "name": "🔬 策略回測",
         "trigger": "對話觸發：自然語言描述策略",
