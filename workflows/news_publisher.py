@@ -6,7 +6,7 @@ Layer 3: Publisher Agent
 Usage: python3 news_publisher.py [HH]
 """
 
-from _common import NOTION_KEY, NOTION_NEWS_DB, TELEGRAM_TOKEN, TELEGRAM_DM, TELEGRAM_GROUP, today_tw_str
+from _common import NOTION_KEY, NOTION_NEWS_DB, TELEGRAM_TOKEN, TELEGRAM_DM, TELEGRAM_GROUP, today_tw_str, SECRETS
 import json, sys, re, time, requests
 
 COMPANY_NAMES = {
@@ -31,7 +31,7 @@ from pathlib import Path
 MEMORY_DIR = Path(__file__).parent.parent / "memory"
 STATE_DIR = Path(__file__).parent.parent / "state"
 NOTION_TOKEN = NOTION_KEY
-NOTION_DB = NOTION_NEWS_DB
+NOTION_DB = SECRETS.get('notion_news_db', NOTION_NEWS_DB)
 NOTION_WORKSPACE = "阿凱投資亂糟糟"
 TELEGRAM_BOT_TOKEN = TELEGRAM_TOKEN
 
@@ -396,7 +396,7 @@ def main():
         "Notion-Version": "2022-06-28",
     }
     
-    NOTION_MORNING_DB = "342226f5-a398-81ab-bfeb-fefda2d30a68"
+    NOTION_MORNING_DB = SECRETS.get("notion_news_db", "342226f5-a398-81ab-bfeb-fefda2d30a68")
     period = "AM" if hour == "07" else "PM"
     today_str = now.strftime("%Y-%m-%d")
     
