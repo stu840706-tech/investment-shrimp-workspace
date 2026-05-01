@@ -312,9 +312,9 @@ def create_page_and_database(date_str, scan_results):
 
     # Step 1: 建立父頁面
     page_payload = {
-        "parent": {"database_id": PARENT_DB_ID},
+        "parent": {"type": "page_id", "page_id": PARENT_DB_ID},
         "properties": {
-            "日期": {"title": [{"text": {"content": f"{date_str[:4]}年{date_str[4:6]}月{date_str[6:8]}日"}}]}
+            "title": {"title": [{"text": {"content": f"{date_str[:4]}年{date_str[4:6]}月{date_str[6:8]}日"}}]}
         }  }
     page = notion_post("https://api.notion.com/v1/pages", page_payload)
     page_id = page.get('id')
@@ -414,7 +414,7 @@ def create_page_and_database(date_str, scan_results):
             props["重大訊息"] = {"rich_text": to_rich_text(news_text)}
 
         if detail_text:
-            props["詳細內容(前面所有標籤的實際內容)"] = {"rich_text": to_rich_text(detail_text)}
+            props["詳細內容"] = {"rich_text": to_rich_text(detail_text)}
 
         page_payload = {
             "parent": {"database_id": db_id},
