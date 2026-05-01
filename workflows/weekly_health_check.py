@@ -525,7 +525,7 @@ def main():
     report["stale"] = check_stale_state()
     print(f"    → {len(report['stale']['stale_files'])} 個問題")
 
-    print("[Notion] 寫入週刑警報告...")
+    print("[Notion] 寫入週健診報告...")
     notion_url = write_notion_report(report)
     report["notion_url"] = notion_url
     print(f"    → {notion_url}")
