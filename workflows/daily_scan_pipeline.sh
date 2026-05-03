@@ -28,9 +28,7 @@ echo "[Step 3] daily-scan-summary.py" | tee -a "$LOG_FILE"
 python3 daily-scan-summary.py 2>&1 | tee -a "$LOG_FILE"
 echo "[Step 3] 完成" | tee -a "$LOG_FILE"
 
-echo "[Step 4] daily_dashboard.py" | tee -a "$LOG_FILE"
-python3 daily_dashboard.py 2>&1 | tee -a "$LOG_FILE"
-echo "[Step 4] 完成" | tee -a "$LOG_FILE"
+
 
 echo "========================================" | tee -a "$LOG_FILE"
 echo "[$(date '+%Y-%m-%d %H:%M:%S UTC')] pipeline 全部完成" | tee -a "$LOG_FILE"

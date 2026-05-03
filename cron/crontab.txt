@@ -13,14 +13,19 @@
 # L3 memory 歸檔 + MEMORY.md 字元數檢查 — 每日 23:30 台灣時間 (15:30 UTC)
 30 15 * * * cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/memory_archive.py >> /tmp/memory_archive.log 2>&1
 
+# ───── 每日市場掃描 pipeline（daily-scan → daily-notion → daily-scan-summary → daily_dashboard）─────
+# 台北時間 20:00 (12:00 UTC)，工作日
+0 12 * * 1-5 cd /home/ubuntu/.openclaw/workspace/workflows && bash daily_scan_pipeline.sh >> /tmp/daily_scan_pipeline.log 2>&1
+
 # ───── 既有 job(B1 以前建立,B6 總檢查時會再 review)───────────────
 # 投資蝦每日市場掃描 — 每天 20:00 台灣時間 (12:00 UTC)
-0 12 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/daily-scan.py >> /tmp/daily-scan.log 2>&1
 
 
-10 12 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 workflows/daily_dashboard.py >> state/cron-dashboard.log 2>&1
 0 1 * * 1-5 cd ~/.openclaw/workspace && python3 skills/report-calendar/scripts/fetch_calendar.py >> ~/.openclaw/logs/fetch_calendar.log 2>&1
 0 15 * * 1-5 cd ~/.openclaw/workspace && python3 skills/outcome-tracker/scripts/outcome_review.py >> ~/.openclaw/logs/outcome_review.log 2>&1
-0 23 * * 0-4 cd ~/.openclaw/workspace && python3 workflows/news_pipeline.py >> /tmp/news_morning.log 2>&1
-0 11 * * 1-5 cd ~/.openclaw/workspace && python3 workflows/news_pipeline.py >> /tmp/news_evening.log 2>&1
-0 15 * * 1-5 cd ~/.openclaw/workspace && python3 workflows/broker_digest.py >> /tmp/broker_digest.log 2>&1
+0 23 * * * cd ~/.openclaw/workspace && python3 workflows/news_pipeline.py >> /tmp/news_morning.log 2>&1
+0 11 * * * cd ~/.openclaw/workspace && python3 workflows/news_pipeline.py >> /tmp/news_evening.log 2>&1
+0 15 * * * cd ~/.openclaw/workspace && python3 workflows/broker_digest.py >> /tmp/broker_digest.log 2>&1
+
+# 每日 Dashboard（所有任務完成後）— 台北 23:30（UTC 15:30）
+30 15 * * 1-5 cd ~/.openclaw/workspace/workflows && python3 daily_dashboard.py >> /tmp/daily_dashboard.log 2>&1
