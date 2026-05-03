@@ -28,4 +28,6 @@
 0 15 * * * cd ~/.openclaw/workspace && python3 workflows/broker_digest.py >> /tmp/broker_digest.log 2>&1
 
 # 每日 Dashboard（所有任務完成後）— 台北 23:30（UTC 15:30）
-30 15 * * 1-5 cd ~/.openclaw/workspace/workflows && python3 daily_dashboard.py >> /tmp/daily_dashboard.log 2>&1
+30 15 * * * cd ~/.openclaw/workspace/workflows && python3 daily_dashboard.py >> /tmp/daily_dashboard.log 2>&1
+# 週稽查（台灣時間週日 09:00，UTC 週日 01:00）
+0 1 * * 0 cd ~/.openclaw/workspace && python3 workflows/weekly_health_check.py >> /tmp/weekly_health_check.log 2>&1
