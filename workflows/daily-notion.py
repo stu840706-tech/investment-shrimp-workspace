@@ -230,35 +230,62 @@ def calc_financial_tags(code, financial_history, industry):
 
 def calc_chip_tags(code, scan_results, insider_history, insti_history):
     """
-    籌碼面標籤：優先從 scan_results['三大法人'] 取，
-    同時補充 insider_history 和 insti_history。
+    籌碼面標籤：從 scan_results['三大法人'] 取，涵蓋：
+    - 法人買超（外資/投信/合計）
+    - 法人連續買超
+    - 內部人警示（董監申報轉讓）
+    - 董監事公開市場買進
+    - 融資高水位 / 融資暴增 / 融券暴增（FinMind）
     """
     tags = []
     details = []
 
-    # 從 scan_results 三大法人分類取
     for entry in scan_results.get('results', {}).get('三大法人', []):
         if str(entry.get('code', '')) != str(code):
             continue
         etype = entry.get('type', '')
         detail_str = entry.get('detail', '')
+
         if etype == '內部人警示' or '申報轉讓' in detail_str or '持股減少' in detail_str:
             tags.append("董監事或大股東申報轉讓 > 持股 5%")
             details.append(f"⚠️{detail_str}")
+
+        elif etype == '法人連續買超':
+            tags.append("外資連續買超")
+            details.append(f"連續買超: {detail_str}")
+
         elif etype == '法人買超' or '買超' in detail_str:
-            tags.append("外援 OR 投信連續買超 >= 5 天 AND 買超張數 > 該股日均量 5%")
+            if '外資' in detail_str:
+                tags.append("外資買超")
+            elif '投信' in detail_str:
+                tags.append("投信買超")
+            else:
+                tags.append("三大法人合計買超")
             details.append(detail_str)
+
         elif '買進' in detail_str:
             tags.append("董監事公開市場買進")
             details.append(detail_str)
 
-    # 補充 insider_history（如果 scan_results 沒有）
+        elif etype == '融資高水位':
+            tags.append("融資高水位")
+            details.append(f"⚠️融資高水位: {detail_str}")
+
+        elif etype == '融資暴增':
+            tags.append("融資暴增")
+            details.append(f"⚠️融資暴增: {detail_str}")
+
+        elif etype == '融券暴增':
+            tags.append("融券暴增")
+            details.append(f"⚠️融券暴增: {detail_str}")
+
+    # insider_history 補充（當三大法人無資料時的備援）
     if str(code) in insider_history and not tags:
         records = insider_history[str(code)].get('records', [])
         if records:
             latest = records[-1].get('change_pct', 0)
             if latest > 0:
-                tags.append("董監事公開市場買進")
+                tags.append("董監持股增")
                 details.append(f"董監事買進: +{latest:.2f}%")
             elif latest < -5:
                 tags.append("董監事或大股東申報轉讓 > 持股 5%")

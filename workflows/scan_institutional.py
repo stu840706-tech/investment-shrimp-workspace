@@ -17,6 +17,120 @@ from pathlib import Path
 from collections import defaultdict
 import time, json
 
+
+def scan_margin_short(token, anomalies_out):
+    """
+    融資融券異常掃描（FinMind TaiwanStockMarginPurchaseShortSale）
+    三種訊號：
+    1. 融資高水位：MarginPurchaseTodayBalance / MarginPurchaseLimit > 80%
+    2. 融資單日暴增：今日 MarginPurchaseBuy > 前5日均值 * 2（且 > 500 張）
+    3. 融券暴增：今日 ShortSaleSell > 前5日均值 * 2（且 > 200 張）
+    結果 append 進 anomalies_out（type: 融資高水位 / 融資暴增 / 融券暴增）
+    """
+    import urllib.request, json
+    from datetime import datetime, timedelta
+    from collections import defaultdict
+
+    print(" [FinMind] 抓取融資融券資料...")
+    today = datetime.now()
+    start_date = (today - timedelta(days=10)).strftime("%Y-%m-%d")
+
+    url = (
+        "https://api.finmindtrade.com/api/v4/data"
+        "?dataset=TaiwanStockMarginPurchaseShortSale"
+        f"&start_date={start_date}"
+        f"&token={token}"
+    )
+    try:
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except Exception as e:
+        print(f" -> FinMind 融資融券抓取失敗: {e}")
+        return
+
+    if data.get("status") != 200:
+        print(f" -> FinMind 回傳非 200: {data.get('status')}")
+        return
+
+    all_rows = data.get("data", [])
+    if not all_rows:
+        print(" -> 融資融券：無資料（可能休市）")
+        return
+
+    stock_rows = defaultdict(list)
+    for row in all_rows:
+        stock_rows[row["stock_id"]].append(row)
+
+    def is_stock(code):
+        return code.isdigit() and len(code) == 4
+
+    found = 0
+    for code, rows in stock_rows.items():
+        if not is_stock(code):
+            continue
+        rows_sorted = sorted(rows, key=lambda x: x["date"])
+        if len(rows_sorted) < 2:
+            continue
+
+        latest = rows_sorted[-1]
+        prev_rows = rows_sorted[:-1]
+
+        # 1. 融資高水位
+        try:
+            balance = float(latest.get("MarginPurchaseTodayBalance", 0) or 0)
+            limit = float(latest.get("MarginPurchaseLimit", 1) or 1)
+            if limit > 0 and balance / limit > 0.8:
+                pct = balance / limit * 100
+                anomalies_out.append({
+                    "code": code,
+                    "name": code,
+                    "type": "融資高水位",
+                    "detail": f"融資使用率 {pct:.1f}%（餘額{balance:.0f}/限額{limit:.0f}張）",
+                    "source": "FinMind",
+                })
+                found += 1
+                continue
+        except Exception:
+            pass
+
+        # 2. 融資單日暴增
+        try:
+            today_buy = float(latest.get("MarginPurchaseBuy", 0) or 0)
+            prev_buys = [float(r.get("MarginPurchaseBuy", 0) or 0) for r in prev_rows[-5:]]
+            avg_buy = sum(prev_buys) / len(prev_buys) if prev_buys else 0
+            if today_buy > 500 and avg_buy > 0 and today_buy > avg_buy * 2:
+                anomalies_out.append({
+                    "code": code,
+                    "name": code,
+                    "type": "融資暴增",
+                    "detail": f"融資買入{today_buy:.0f}張，前5日均值{avg_buy:.0f}張，倍率{today_buy/avg_buy:.1f}x",
+                    "source": "FinMind",
+                })
+                found += 1
+        except Exception:
+            pass
+
+        # 3. 融券暴增
+        try:
+            today_short = float(latest.get("ShortSaleSell", 0) or 0)
+            prev_shorts = [float(r.get("ShortSaleSell", 0) or 0) for r in prev_rows[-5:]]
+            avg_short = sum(prev_shorts) / len(prev_shorts) if prev_shorts else 0
+            if today_short > 200 and avg_short > 0 and today_short > avg_short * 2:
+                anomalies_out.append({
+                    "code": code,
+                    "name": code,
+                    "type": "融券暴增",
+                    "detail": f"融券賣出{today_short:.0f}張，前5日均值{avg_short:.0f}張，倍率{today_short/avg_short:.1f}x",
+                    "source": "FinMind",
+                })
+                found += 1
+        except Exception:
+            pass
+
+    print(f" -> 融資融券異常：{found} 筆")
+
+
 def scan_3insti_chip():
     """
     三大法人日成交統計 + 5日連續買超追蹤 + 內部人持股異動
@@ -72,19 +186,19 @@ def scan_3insti_chip():
                     return 0.0
 
             fore_buy = parse_num(row.get('外資買進股數', 0))
-            fore_sell = parse_num(row.get('外援賣出股數', 0))
-            fore_net = parse_num(row.get('外援買賣超股數', 0))
+            fore_sell = parse_num(row.get('外資賣出股數', 0))
+            fore_net = parse_num(row.get('外資買賣超股數', 0))
             sec_buy = parse_num(row.get('投信買進股數', 0))
             sec_sell = parse_num(row.get('投信賣出股數', 0))
             sec_net = parse_num(row.get('投信買賣超股數', 0))
 
-            # 單日門檻：外援>500萬股 OR 投信>100萬股
+            # 單日門檻：外資>500萬股 OR 投信>100萬股
             fore_threshold = 5_000_000  # 500萬股
             sec_threshold = 1_000_000  # 100萬股
 
             reason = []
             if fore_net > fore_threshold:
-                reason.append(f'外援買超{fore_net/10_000:.0f}張')
+                reason.append(f'外資買超{fore_net/10_000:.0f}張')
             if sec_net > sec_threshold:
                 reason.append(f'投信買超{sec_net/10_000:.0f}張')
 
@@ -114,7 +228,7 @@ def scan_3insti_chip():
 
             reason = []
             if fore_net > 5_000_000:
-                reason.append(f'外援買超{fore_net/10_000:.0f}張')
+                reason.append(f'外資買超{fore_net/10_000:.0f}張')
             if sec_net > 1_000_000:
                 reason.append(f'投信買超{sec_net/10_000:.0f}張')
 
@@ -227,7 +341,14 @@ def scan_3insti_chip():
     except Exception as e:
         print(f" → 董監事資料取得失敗: {e}")
 
-    print(f" → 發現 {len(anomalies)} 筆法人交易")
+    # 融資融券異常掃描（FinMind）
+    try:
+        from _common import FINMIND_TOKEN
+        scan_margin_short(FINMIND_TOKEN, anomalies)
+    except Exception as e:
+        print(f" → 融資融券掃描失敗（不影響其他結果）: {e}")
+
+    print(f" → 發現 {len(anomalies)} 筆法人/融資融券交易")
     return anomalies
 
 # ==================== Step 4: 季財報掃描（僅財報季執行） ====================
