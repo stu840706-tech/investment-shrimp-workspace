@@ -7,7 +7,6 @@ import json
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
 
-# 將父目錄加入 path，使 workflows/ 可以 import config
 _WORKSPACE_ROOT = Path(__file__).parent.parent
 if str(_WORKSPACE_ROOT) not in sys.path:
     sys.path.insert(0, str(_WORKSPACE_ROOT))
@@ -19,44 +18,27 @@ from config import (
     MINIMAX_API_KEY, BRAVE_API_KEY, SECRETS,
 )
 
-# 台北時區
 TW_TZ = timezone(timedelta(hours=8))
 
 def now_tw():
-    """回傳 Taipei 時區的 datetime"""
     return datetime.now(TW_TZ)
 
 def today_tw_str(fmt="%Y%m%d"):
-    """回傳 Taipei 時區的今日字串"""
     return now_tw().strftime(fmt)
 
 
-# ── 長內容寫入工具 ──────────────────────────────────────────
+# ── Long content sender ────────────────────────────────────────
+# 自動判斷長度，長內容（>2000字）直接發 Telegram 附件，短內容回傳文字
+# 回傳格式：(success: bool, mode: str, message: str)
+#   mode='file': 發送成功/失敗都回傳路徑字串
+#   mode='text': 短內容直接回傳
 
 OUT_DIR = _WORKSPACE_ROOT / "state" / "direct_output"
+SECRETS = _WORKSPACE_ROOT / "config" / "secrets.json"
 
-
-def echo_to_file(content: str, title: str = "output") -> str:
-    """
-    將長內容寫入 state/direct_output/，回傳路徑。
-    超過 2000 字時自動使用此函式。
-    """
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    ts = now_tw().strftime("%H%M%S")
-    safe = title.replace("/", "_").replace(" ", "_")
-    filename = f"{today_tw_str()}_{ts}_{safe}.txt"
-    filepath = OUT_DIR / filename
-    filepath.write_text(content, encoding="utf-8")
-    return str(filepath)
-
-
-
-# ── Long content sender ────────────────────────────────────────
-OUT_DIR = _WORKSPACE_ROOT / 'state' / 'direct_output'
 
 def _send_telegram_doc(filepath, filename):
-    import urllib.request, json
-    SECRETS = _WORKSPACE_ROOT / 'config' / 'secrets.json'
+    import urllib.request
     secrets = json.loads(SECRETS.read_text(encoding='utf-8'))
     token = secrets['telegram_bot_token']
     dm = secrets['telegram_dm']
@@ -82,20 +64,20 @@ def _send_telegram_doc(filepath, filename):
         print('[Telegram send fail] ' + str(e))
         return False
 
-def echo_to_file(content, title='output'):
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    ts = now_tw().strftime('%H%M%S')
-    safe = title.replace('/', '_').replace(' ', '_')
-    filename = today_tw_str() + '_' + ts + '_' + safe + '.txt'
-    filepath = OUT_DIR / filename
-    filepath.write_text(content, encoding='utf-8')
-    if len(content) > 2000:
-        _send_telegram_doc(str(filepath), filename)
-    return filepath
 
 def echo_to_telegram(content, title='output'):
+    """
+    將內容發送到 Telegram（長內容自動附件，短內容直接文字）。
+    回傳值直接作為 OpenClaw 回覆內容。
+    """
     if len(content) > 2000:
-        path = echo_to_file(content, title)
-        print('[sent as attachment] ' + str(path))
+        ts = now_tw().strftime('%H%M%S')
+        safe = title.replace('/', '_').replace(' ', '_')
+        filename = today_tw_str() + '_' + ts + '_' + safe + '.txt'
+        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        filepath = OUT_DIR / filename
+        filepath.write_text(content, encoding='utf-8')
+        ok = _send_telegram_doc(str(filepath), filename)
+        return '[附件已發送] ' + str(filepath)
     else:
-        print(content)
+        return content
