@@ -31,16 +31,19 @@ def send_telegram(text):
     except: pass
 
 def get_hour_arg():
-    return sys.argv[1].zfill(2) if len(sys.argv) >= 2 else datetime.now().strftime("%H")
+    """Returns (hour, date_str)"""
+    hour = sys.argv[1].zfill(2) if len(sys.argv) >= 2 else datetime.now().strftime("%H")
+    date_str = sys.argv[2] if len(sys.argv) >= 3 else today_tw_str()
+    return hour, date_str
 
-def check_raw_files(hour):
-    ts = f"{today_tw_str()}-{hour}"
+def check_raw_files(hour, date_str):
+    ts = f"{date_str}-{hour}"
     missing = [f"memory/raw-{c}-{ts}.jsonl" for c in ["tw","mops","intl","industry"]
                if not (MEMORY_DIR / f"raw-{c}-{ts}.jsonl").exists()]
     return missing
 
-def load_raw_files(hour):
-    ts = f"{today_tw_str()}-{hour}"
+def load_raw_files(hour, date_str):
+    ts = f"{date_str}-{hour}"
     all_items = []
     for cat in ["tw","mops","intl","industry"]:
         f = MEMORY_DIR / f"raw-{cat}-{ts}.jsonl"
@@ -559,22 +562,22 @@ def apply_signal_rules(clustered):
 # ============================================================
 
 def main():
-    hour = get_hour_arg()
-    ts = f"{today_tw_str()}-{hour}"
+    hour, date_str = get_hour_arg()
+    ts = f"{date_str}-{hour}"
 
     print("=" * 55)
     print(f"新聞彙總 Layer 2  {datetime.now().strftime('%Y-%m-%d %H:%M')} ({hour}:00)")
     print("=" * 55)
 
     # 檢查 raw 檔案
-    missing = check_raw_files(hour)
+    missing = check_raw_files(hour, date_str)
     if missing:
         msg = f"⚠️ 缺少：{', '.join(missing)}"
         print(msg); send_telegram(msg); sys.exit(1)
 
     # Step 1: 讀取 raw
     print(f"\n[1] 讀取 raw 檔案...")
-    all_items = load_raw_files(hour)
+    all_items = load_raw_files(hour, date_str)
     print(f"  總計：{len(all_items)} 筆")
 
     # Step 2: 第一階段去重

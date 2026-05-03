@@ -58,6 +58,9 @@ def load_secrets():
 
 
 def pdf_to_text(pdf_path: Path) -> str:
+    # 純文字檔案直接讀取，不走 pdf-reader
+    if pdf_path.suffix.lower() == ".txt":
+        return pdf_path.read_text(encoding="utf-8", errors="replace")
     result = subprocess.run(
         [sys.executable, str(PDF_READER), str(pdf_path)],
         capture_output=True, text=True, timeout=120,
@@ -477,6 +480,7 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
     else:  # morning_brief
         return ""
 
+    props["digest_mark"] = {"rich_text": [{"text": {"content": "processed"}}]}
     body = {"parent": {"database_id": db_id}, "properties": props}
     resp = requests.post(f"{NOTION_API}/pages", headers=headers, json=body, timeout=30)
     resp.raise_for_status()
@@ -551,7 +555,9 @@ def process_file(file_path: Path, secrets: dict):
                f"🔗 {page_url}")
     else:  # morning_brief
         # 存入今日晨報合併檔
-        today_str = datetime.now().strftime("%Y%m%d")
+        # 使用台北時間（UTC+8），與 broker_digest.py 的 date_compact 一致
+        TPE = timezone(timedelta(hours=8))
+        today_str = datetime.now(TPE).strftime("%Y%m%d")
         morning_file = WORKSPACE / "state" / f"broker_morning_{today_str}.txt"
         morning_file.parent.mkdir(parents=True, exist_ok=True)
         broker_name = result.get('broker_name', '')
@@ -592,12 +598,21 @@ def main():
     parser = argparse.ArgumentParser(description="Telegram 券商材料接收")
     parser.add_argument("--once", action="store_true", help="單次處理（OpenClaw 整合用）")
     parser.add_argument("--test-file", help="直接測試本地 PDF 檔案")
+    parser.add_argument("--text", help="直接處理本地純文字檔案（.txt）")
     args = parser.parse_args()
 
     secrets = load_secrets()
 
     if args.test_file:
         file_path = Path(args.test_file).expanduser().resolve()
+        if not file_path.exists():
+            print(f"[ERROR] 檔案不存在: {file_path}", file=sys.stderr)
+            return 1
+        process_file(file_path, secrets)
+        return 0
+
+    if args.text:
+        file_path = Path(args.text).expanduser().resolve()
         if not file_path.exists():
             print(f"[ERROR] 檔案不存在: {file_path}", file=sys.stderr)
             return 1

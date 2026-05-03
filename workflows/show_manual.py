@@ -22,7 +22,6 @@ MANUAL = [
             "20:10 後在 Notion 查看當日 Dashboard 頁面",
         ],
         "notes": "手動觸發：python3 workflows/daily-scan.py",
-        "skill": "daily-scan",
     },
     {
         "name": "📅 法說會行事曆",
@@ -33,7 +32,6 @@ MANUAL = [
             "只追蹤 stock_tracking 中持有／看好／感興趣的個股",
             "Notion event_calendar 可查看未來 14 天事件",
         ],
-        "skill": "report-calendar",
     },
     {
         "name": "✅ Outcome Review",
@@ -44,7 +42,6 @@ MANUAL = [
             "到期時收到 Telegram 通知",
             "回報驗證結果後寫入 outcome_log（已驗證符合／部分符合／已驗證反證）",
         ],
-        "skill": "outcome-tracker",
     },
     {
         "name": "📈 個股追蹤",
@@ -56,7 +53,6 @@ MANUAL = [
             "確認後寫入 Notion stock_tracking",
         ],
         "notes": "狀態選項：持有 / 未持有_看好 / 未持有_感興趣",
-        "skill": "stock-tracker",
     },
     {
         "name": "📋 券商報告批次處理",
@@ -68,7 +64,6 @@ MANUAL = [
             "OpenClaw 批次處理，回傳每份分類結果",
         ],
         "notes": "PDF 由 pdf-reader skill 自動轉文字，無需手動轉換",
-        "skill": "broker-materials",
     },
     {
         "name": "📊 個股研究報告",
@@ -81,7 +76,6 @@ MANUAL = [
             "等待約 2-3 分鐘，回傳報告摘要",
         ],
         "notes": "年報 PDF 需手動提供（TWSE DNS 在 VM 無法解析）",
-        "skill": "stock-research",
     },
     {
         "name": "📚 書籍概念萃取",
@@ -95,22 +89,18 @@ MANUAL = [
             "等待萃取完成（依書長約 3-10 分鐘）",
         ],
         "notes": "書籍需為 txt 格式；PDF 請先用 pdf-reader skill 轉換",
-        "skill": "book-notes",
     },
-
     {
-        "name": "📋 券商報告日摘",
-        "trigger": "自動執行（平日 23:00 台北時間）",
-        "description": "彙整當日券商晨報摘要與個股報告，用 M2.7 產出三段式日摘（市場概況、個股動態、明日關注），發送 Telegram。",
+        "name": "📋 券商日摘",
+        "trigger": "自動執行（每日 23:00 台北時間）",
+        "description": "彙整當日券商晨報摘要與個股報告，用 M2.7 產出三段式日摘（晨訊重點／個股匯整／產業報告），發送 Telegram。有什麼內容就發什麼，三段都空的話才跳過。",
         "steps": [
             "系統每日自動執行",
-            "需當日有券商報告才會有個股動態內容",
+            "三段內容：有晨報→晨訊重點，有個股報告→個股匯整，有產業報告→產業報告",
             "晨報摘要來自 receive_telegram.py 存入的 broker_morning_{date}.txt",
         ],
         "notes": "手動觸發：python3 workflows/broker_digest.py",
-        "skill": "broker-materials",
     },
-
     {
         "name": "🔬 策略回測",
         "trigger": "對話觸發：自然語言描述策略",
@@ -121,7 +111,6 @@ MANUAL = [
             "確認後執行回測（約 5-15 分鐘）",
             "回傳績效摘要，寫入 Notion backtest_results",
         ],
-        "skill": "backtest",
     },
 ]
 
@@ -132,29 +121,49 @@ IDLE_SKILLS = [
     "us-stock-analysis", "web-scraping",
 ]
 
-def main():
+def build():
     lines = []
-    lines.append("=" * 52)
+    lines.append("======================================================================")
     lines.append("🦐 投資蝦 OpenClaw 使用手冊")
     lines.append(f"共 {len(MANUAL)} 個功能")
-    lines.append("=" * 52)
+    lines.append("======================================================================")
 
     for i, item in enumerate(MANUAL, 1):
         lines.append(f"\n{i}. {item['name']}")
-        lines.append(f"  觸發：{item['trigger']}")
-        lines.append(f"  說明：{item['description']}")
+        lines.append(f"觸發：{item['trigger']}")
+        lines.append(f"說明：{item['description']}")
         if item.get("steps"):
-            lines.append("  步驟：")
+            lines.append("步驟：")
             for step in item["steps"]:
-                lines.append(f"    • {step}")
+                lines.append(f" • {step}")
         if item.get("notes"):
-            lines.append(f"  注意：{item['notes']}")
+            lines.append(f"注意：{item['notes']}")
 
-    lines.append("\n" + "=" * 52)
+    lines.append(f"\n======================================================================")
     lines.append(f"閒置 skills（不使用）：{', '.join(IDLE_SKILLS)}")
-    lines.append("=" * 52)
+    lines.append("======================================================================")
+    return "\n".join(lines)
 
-    print("\n".join(lines))
+def send_telegram(text):
+    import json, urllib.request
+    secrets = json.load(open("/home/ubuntu/.openclaw/workspace/config/secrets.json"))
+    token = secrets["telegram_bot_token"]
+    chat_id = secrets["telegram_dm"]
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    payload = json.dumps({
+        "chat_id": chat_id,
+        "text": f"<pre>{text}</pre>",
+        "parse_mode": "HTML"
+    }).encode()
+    req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req) as r:
+        return json.loads(r.read().decode())["result"]["message_id"]
 
 if __name__ == "__main__":
-    main()
+    import sys
+    text = build()
+    if "--telegram" in sys.argv:
+        msg_id = send_telegram(text)
+        print(f"Sent to Telegram: message_id={msg_id}")
+    else:
+        print(f"<pre>{text}</pre>")

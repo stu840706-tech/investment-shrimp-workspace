@@ -201,6 +201,7 @@ def main():
     hour, date_str = get_hour_arg()
     from datetime import timezone, timedelta
     TZ_TAIPEI = timezone(timedelta(hours=8))
+    today_str = date_str
     now = datetime.now(tz=timezone.utc).astimezone(TZ_TAIPEI)
     # 優先使用 pipeline 傳入的 period 參數，避免重複 +8 換算
     if len(sys.argv) >= 4:
@@ -397,8 +398,6 @@ def main():
     }
     
     NOTION_MORNING_DB = SECRETS.get("notion_news_db", "342226f5-a398-81ab-bfeb-fefda2d30a68")
-    period = "AM" if hour == "07" else "PM"
-    today_str = now.strftime("%Y-%m-%d")
     
     page_payload = {
         "parent": {"database_id": NOTION_MORNING_DB},
