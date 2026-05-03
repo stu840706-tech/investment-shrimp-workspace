@@ -407,87 +407,217 @@ def build_telegram_msg(report):
 
     return "\n".join(lines)
 
-def write_notion_report(report):
-    md_lines = [
-        f"# 投資蝦週健診 {WEEK_STR}",
-        f"執行時間：{NOW_TW.strftime('%Y-%m-%d %H:%M')} 台北時間",
-        "",
-        "---",
-        "",
-        "## A. Crontab 完整性",
-        f"- 狀態：{'✅ 正常' if report['crontab']['ok'] else '❌ 有缺漏'}",
-        f"- 找到的腳本：{', '.join(report['crontab']['cron_scripts_found'])}",
-        f"- 缺少的腳本：{', '.join(report['crontab']['missing_from_cron']) or '無'}",
-        "",
-        "## B. Log 健康度",
-    ]
-    for task, v in report["logs"].items():
-        status = "✅" if v.get("ok") else "⚠️"
-        detail = v.get("last_success_line") or v.get("detail") or "無成功記錄"
-        days = v.get("last_modified_days_ago", "?")
-        md_lines.append(f"- {status} {task}：最後修改 {days} 天前 | {detail[:60]}")
+def _status_icon(ok):
+    """把布林值或字串轉成 Notion select 選項名稱"""
+    if isinstance(ok, bool):
+        return "✅" if ok else "⚠️"
+    if isinstance(ok, str):
+        return ok
+    return "✅"
 
-    md_lines += ["", "## C. Notion DB 本週新增筆數"]
-    for name, v in report["notion_dbs"].items():
-        if "error" in v.get("status", ""):
-            md_lines.append(f"- ❌ {name}：查詢失敗")
-        else:
-            warns = v.get("warnings", [])
-            status = "⚠️" if warns else "✅"
-            md_lines.append(f"- {status} {name}：{v.get('weekly_new', '?')} 筆" +
-                            (f" → {'; '.join(warns)}" if warns else ""))
 
-    md_lines += ["", "## D. 孤兒檔案"]
-    md_lines.append(f"- workflow 孤兒：{', '.join(report['orphans']['workflow_orphans']) or '無'}")
-    md_lines.append(f"- skill 孤島：{', '.join(report['orphans']['skill_orphans']) or '無'}")
+def _count_warnings(report):
+    """計算本週警告數量"""
+    count = 0
+    for v in report.get("logs", {}).values():
+        if isinstance(v, dict) and not v.get("ok", True):
+            count += 1
+    for v in report.get("notion_dbs", {}).values():
+        if isinstance(v, dict) and v.get("warn"):
+            count += 1
+    for v in report.get("stale", {}).values():
+        if isinstance(v, dict) and v.get("warn"):
+            count += 1
+    return count
 
-    md_lines += ["", "## E. Syntax Check"]
-    if report["syntax"]["ok"]:
-        md_lines.append(f"- ✅ 全部 {report['syntax']['total_checked']} 個 py 檔通過")
+
+def _build_blocks(report):
+    """把健診報告組裝成 Notion blocks（分段，不截斷）"""
+    def h2(text):
+        return {"object": "block", "type": "heading_2",
+                "heading_2": {"rich_text": [{"type": "text", "text": {"content": text[:2000]}}]}}
+
+    def para(text):
+        chunks = [text[i:i+1900] for i in range(0, len(text), 1900)]
+        return [{"object": "block", "type": "paragraph",
+                 "paragraph": {"rich_text": [{"type": "text", "text": {"content": c}}]}}
+                for c in chunks]
+
+    def bullet(text):
+        return {"object": "block", "type": "bulleted_list_item",
+                "bulleted_list_item": {"rich_text": [{"type": "text",
+                "text": {"content": text[:1900]}}]}}
+
+    def divider():
+        return {"object": "block", "type": "divider", "divider": {}}
+
+    blocks = []
+
+    # A. Crontab
+    cron = report.get("crontab", {})
+    blocks.append(h2("A. Crontab 完整性"))
+    ok = cron.get("ok", True)
+    blocks.append(bullet(f"狀態：{'✅ 正常' if ok else '⚠️ 異常'}"))
+    missing = cron.get("missing_from_cron", [])
+    if missing:
+        blocks.append(bullet(f"缺少腳本：{', '.join(missing)}"))
+    extra = cron.get("extra_in_cron", [])
+    if extra:
+        blocks.append(bullet(f"多餘腳本：{', '.join(extra)}"))
+    blocks.append(divider())
+
+    # B. Log 健康度
+    logs = report.get("logs", {})
+    blocks.append(h2("B. Log 健康度"))
+    for name, info in logs.items():
+        if isinstance(info, dict):
+            status = "✅" if info.get("ok") else "⚠️"
+            detail = info.get("last_success_line") or info.get("detail") or ""
+            blocks.append(bullet(f"{status} {name}：{detail[:100]}"))
+    blocks.append(divider())
+
+    # C. Notion DB 筆數
+    dbs = report.get("notion_dbs", {})
+    blocks.append(h2("C. Notion DB 本週新增筆數"))
+    for name, info in dbs.items():
+        if isinstance(info, dict):
+            status = "⚠️" if info.get("warn") else "✅"
+            count = info.get("count", "?")
+            blocks.append(bullet(f"{status} {name}：{count} 筆"))
+    blocks.append(divider())
+
+    # D. 孤兒檔案
+    orphans = report.get("orphans", {})
+    blocks.append(h2("D. 孤兒檔案"))
+    wf = orphans.get("workflow_orphans", [])
+    sk = orphans.get("skill_orphans", [])
+    if not wf and not sk:
+        blocks.append(bullet("✅ 無"))
     else:
-        for err in report["syntax"]["errors"]:
-            md_lines.append(f"- ❌ {err['file']}：{err['error']}")
+        for f in wf:
+            blocks.append(bullet(f"⚠️ workflow 孤兒：{f}"))
+        for f in sk:
+            blocks.append(bullet(f"⚠️ skill 孤島：{f}"))
+    blocks.append(divider())
 
-    md_lines += ["", "## F. 過期 State 檔案"]
-    stale = report["stale"]["stale_files"]
-    if stale:
-        for s in stale:
-            md_lines.append(f"- ⚠️ {s}")
+    # E. Syntax Check
+    syntax = report.get("syntax", {})
+    blocks.append(h2("E. Syntax Check"))
+    total = syntax.get("total_checked", 0)
+    errors = syntax.get("errors", [])
+    if not errors:
+        blocks.append(bullet(f"✅ 全部 {total} 個 py 檔通過"))
     else:
-        md_lines.append("- ✅ 無")
+        blocks.append(bullet(f"⚠️ {len(errors)}/{total} 個檔案有語法錯誤"))
+        for e in errors:
+            blocks.append(bullet(f" ❌ {e}"))
+    blocks.append(divider())
 
-    md_lines += [
-        "",
-        "---",
-        "",
-        "## 原始 JSON",
-        "```json",
-        json.dumps(report, ensure_ascii=False, indent=2)[:3000],
-        "```",
-        "",
-        "**診斷方式：把本頁面 URL 貼給 Claude，Claude 會讀取後給出修復指令。**",
-    ]
+    # F. 過期 State
+    stale = report.get("stale", {})
+    blocks.append(h2("F. 過期 State 檔案"))
+    found_stale = False
+    for name, info in stale.items():
+        if isinstance(info, dict) and info.get("warn"):
+            found_stale = True
+            size = info.get("size") or info.get("lines") or "?"
+            blocks.append(bullet(f"⚠️ {name}：{size}"))
+    if not found_stale:
+        blocks.append(bullet("✅ 無過期 State 檔案"))
+    blocks.append(divider())
 
-    content = "\n".join(md_lines)
+    # 原始 JSON（分批，避免截斷）
+    blocks.append(h2("原始 JSON"))
+    raw_json = json.dumps(report, ensure_ascii=False, indent=2)
+    for chunk in [raw_json[i:i+1800] for i in range(0, len(raw_json), 1800)]:
+        blocks.extend(para(chunk))
 
-    resp = notion_request("POST", "pages", {
-        "parent": {"type": "page_id", "page_id": HUB_PAGE_ID},
-        "properties": {
-            "title": [{"text": {"content": f"週健診 {WEEK_STR}"}}]
-        },
-        "children": [{
-            "object": "block",
-            "type": "paragraph",
-            "paragraph": {
-                "rich_text": [{"type": "text", "text": {"content": content[:2000]}}]
-            }
-        }]
+    return blocks
+
+
+def check_existing_health_record(week_str):
+    """查詢週健診 DB 中是否已有本週記錄，有則回傳 page_id，沒有回傳 None"""
+    HEALTH_DB_ID = "f0b59e91-4193-41c3-a23a-1a8c5b84f8a1"
+    resp = notion_request("POST", f"databases/{HEALTH_DB_ID}/query", {
+        "filter": {"property": "週次", "title": {"equals": week_str}},
+        "page_size": 1,
     })
+    pages = resp.get("results", [])
+    return pages[0]["id"] if pages else None
 
-    if "id" in resp:
-        page_id = resp["id"].replace("-", "")
-        return f"https://notion.so/{page_id}"
-    return ""
+
+def write_notion_report(report):
+    """
+    寫入週稽查記錄到 🏥 週稽查記錄 DB。
+    - properties：結構化欄位（整體狀態、各模組 ✅/⚠️、警告數量）
+    - 頁面內容：六個區塊 + 原始 JSON（分批寫入，不截斷）
+    - 防重複：同一週次已有記錄則更新，沒有才新建
+    """
+    HEALTH_DB_ID = "f0b59e91-4193-41c3-a23a-1a8c5b84f8a1"
+
+    cron = report.get("crontab", {})
+    logs = report.get("logs", {})
+    dbs = report.get("notion_dbs", {})
+    orphans = report.get("orphans", {})
+    syntax = report.get("syntax", {})
+    stale = report.get("stale", {})
+
+    warn_count = _count_warnings(report)
+
+    # 判斷各模組狀態
+    def safeness(v, key):
+        val = v.get(key, {}) if isinstance(v, dict) else {}
+        return val if isinstance(val, dict) else {}
+
+    cron_ok = "✅" if cron.get("ok", True) else "⚠️"
+    log_ok = "✅" if all(v.get("ok", True) for v in logs.values() if isinstance(v, dict)) else "⚠️"
+    db_ok = "✅" if not any(v.get("warn") for v in dbs.values() if isinstance(v, dict)) else "⚠️"
+    orphan_ok = "✅" if (not orphans.get("workflow_orphans") and not orphans.get("skill_orphans")) else "⚠️"
+    syntax_ok = "✅" if not syntax.get("errors") else "❌"
+    stale_ok = "✅" if not any(v.get("warn") for v in stale.values() if isinstance(v, dict)) else "⚠️"
+
+    overall = "✅ 正常" if warn_count == 0 else ("❌ 失敗" if syntax_ok == "❌" else "⚠️ 警告")
+
+    props = {
+        "週次": {"title": [{"text": {"content": WEEK_STR}}]},
+        "執行日期": {"date": {"start": NOW_TW.strftime("%Y-%m-%d")}},
+        "整體狀態": {"select": {"name": overall}},
+        "Crontab": {"select": {"name": cron_ok}},
+        "Log健康度": {"select": {"name": log_ok}},
+        "DB新增筆數": {"select": {"name": db_ok}},
+        "孤兒檔案": {"select": {"name": orphan_ok}},
+        "Syntax Check": {"select": {"name": syntax_ok}},
+        "過期State": {"select": {"name": stale_ok}},
+        "警告數量": {"number": warn_count},
+    }
+
+    blocks = _build_blocks(report)
+
+    # 防重複：查詢是否已有本週記錄
+    existing_id = check_existing_health_record(WEEK_STR)
+
+    if existing_id:
+        print(f" [週稽查] 本週記錄已存在（{existing_id}），更新 properties...")
+        notion_request("PATCH", f"pages/{existing_id}", {"properties": props})
+        for i in range(0, len(blocks), 100):
+            notion_request("PATCH", f"blocks/{existing_id}/children",
+                          {"children": blocks[i:i+100]})
+        page_id = existing_id
+    else:
+        print(f" [週稽查] 新建本週記錄...")
+        resp = notion_request("POST", "pages", {
+            "parent": {"database_id": HEALTH_DB_ID},
+            "properties": props,
+            "children": blocks[:100],
+        })
+        page_id = resp.get("id", "")
+        for i in range(100, len(blocks), 100):
+            notion_request("PATCH", f"blocks/{page_id}/children",
+                          {"children": blocks[i:i+100]})
+
+    url = f"https://notion.so/{page_id.replace('-', '')}"
+    print(f" [週稽查] Notion 記錄：{url}")
+    return url
 
 # ── 主程序 ────────────────────────────────────────────────────────────────────
 
