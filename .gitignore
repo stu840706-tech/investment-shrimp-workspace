@@ -34,3 +34,9 @@ state/*.log
 
 # Memory daily logs (L3)
 memory/[0-9]*.md
+
+# 測試與臨時輸出（不進 git）
+state/direct_output/
+state/scan_results_*.json
+*.bak*
+/tmp/

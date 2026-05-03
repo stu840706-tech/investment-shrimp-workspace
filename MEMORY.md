@@ -22,6 +22,7 @@
 - revenue_history.json 已在 2026-04-18 執行三輪標準化修正
 - Notion rich_text 上限 2000 字元/block，to_rich_text() 已切分處理
 - scan_results 的 flags 欄位在 detail 字串裡（不在 flags array）
+- **exec + cat 會截斷大檔案**：超過約100行會變成 `⚠️ [... middle content omitted ...]`，從此只用 `read` 工具讀檔
 
 ## API 重要資訊
 
@@ -36,6 +37,7 @@
 - 報告格式：先結論，再數字，最後 next action
 - 通知原則：有實質內容才發 Telegram，例行無異常 → HEARTBEAT_OK
 - 禁止：假設知道、模糊估計、未查證的數字
+- **檔案讀取**：大檔案（>100行）一律用 `read` 工具，禁用 exec+cat
 
 ## 投資組合（追蹤中的 thesis）
 
