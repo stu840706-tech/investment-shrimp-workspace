@@ -76,6 +76,15 @@ if __name__ == "__main__":
     print(f"=== 新聞管線 UTC {utc_h} → Taipei {period}（{taipei_h}） UTC date: {utc_date} ===")
 
     # 三層統一用 taipei_h，避免 UTC hour 和 raw filename hour 混用
+    # 防重複：同一 hour 已跑過 Layer 1 則跳過
+    from pathlib import Path
+    state_dir = Path.home() / ".openclaw" / "workspace" / "state"
+    lock_file = state_dir / f"news_pipeline_ran_{taipei_h}_{utc_date}.lock"
+    if lock_file.exists():
+        print(f"[SKIP] 今日 {taipei_h} 時已執行過 pipeline，跳過")
+        return
+    lock_file.touch()
+
     run(["python3", "workflows/news_fetcher.py", "all", taipei_h])
 
     # Aggregator: UTC date + taipei_h (to match fetcher's file naming)
