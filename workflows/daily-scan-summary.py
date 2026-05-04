@@ -424,7 +424,7 @@ def main():
     print(f"daily-scan-summary.py 執行中 {now_tw().strftime('%Y-%m-%d %H:%M')}")
     print("=" * 60)
 
-    date_str = args.date or (datetime.now() - timedelta(days=1)).strftime("%Y%m%d")
+    date_str = args.date or next((f.stem.replace("scan_results_","") for f in sorted(Path("/home/ubuntu/.openclaw/workspace/state").glob("scan_results_*.json"), reverse=True)), (datetime.now() - timedelta(days=1)).strftime("%Y%m%d"))
     print(f"目標日期: {date_str}")
 
     scan_results = load_scan_results(date_str)

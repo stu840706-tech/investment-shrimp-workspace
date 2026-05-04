@@ -477,7 +477,7 @@ def main():
     if args.date:
         date_str = args.date.replace('/', '').replace('-', '')
     else:
-        date_str = (datetime.now() - timedelta(days=1)).strftime("%Y%m%d")
+        date_str = next((f.stem.replace("scan_results_","") for f in sorted(Path("/home/ubuntu/.openclaw/workspace/state").glob("scan_results_*.json"), reverse=True)), (datetime.now() - timedelta(days=1)).strftime("%Y%m%d"))
 
     scan_results = load_scan_results(date_str)
     if not scan_results:
