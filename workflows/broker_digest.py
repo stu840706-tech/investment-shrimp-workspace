@@ -599,8 +599,7 @@ def main():
     print("[4] 智能合併晨報（M2.7 per 主題組）...")
     merged_morning = merge_morning_briefs(morning_text, secrets) if morning_text.strip() else morning_text
 
-    print("[4b] 生成晨訊最終摘要（M2.7）...")
-    morning_summary = summarize_morning(merged_morning, secrets)
+    morning_summary = merged_morning  # 直接用 merge_morning_briefs 輸出，不再二次壓縮
 
     print("[5] 生成產業報告摘要（M2.7）...")
     industry_summary = summarize_industry(industry_reports, secrets)
