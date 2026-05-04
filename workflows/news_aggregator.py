@@ -76,7 +76,8 @@ _TRACKING_CODES = None
 
 def load_tracking_codes():
     import urllib.request, json
-    db_id = SECRETS.get("notion_stock_tracking_db", "")
+    from config import SECRETS as _secrets_dict
+    db_id = _secrets_dict.get("notion_stock_tracking_db", "") if isinstance(_secrets_dict, dict) else json.load(open(_secrets_dict)).get("notion_stock_tracking_db", "")
     if not db_id:
         return set()
     payload = json.dumps({
