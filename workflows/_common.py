@@ -34,12 +34,21 @@ def today_tw_str(fmt="%Y%m%d"):
 #   mode='text': 短內容直接回傳
 
 OUT_DIR = _WORKSPACE_ROOT / "state" / "direct_output"
-SECRETS = _WORKSPACE_ROOT / "config" / "secrets.json"
 
+# Load secrets dict for telegram helpers (not for general use—use SECRETS from config)
+_SECRETS_PATH = _WORKSPACE_ROOT / "config" / "secrets.json"
+_secrets_cache = None
+
+def _load_secrets():
+    global _secrets_cache
+    if _secrets_cache is None:
+        with open(_SECRETS_PATH, encoding='utf-8') as f:
+            _secrets_cache = json.load(f)
+    return _secrets_cache
 
 def _send_telegram_doc(filepath, filename):
     import urllib.request
-    secrets = json.loads(SECRETS.read_text(encoding='utf-8'))
+    secrets = _load_secrets()
     token = secrets['telegram_bot_token']
     dm = secrets['telegram_dm']
     url = 'https://api.telegram.org/bot' + token + '/sendDocument'

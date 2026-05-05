@@ -82,7 +82,7 @@ if __name__ == "__main__":
     lock_file = state_dir / f"news_pipeline_ran_{taipei_h}_{utc_date}.lock"
     if lock_file.exists():
         print(f"[SKIP] 今日 {taipei_h} 時已執行過 pipeline，跳過")
-        return
+        sys.exit(0)
     lock_file.touch()
 
     run(["python3", "workflows/news_fetcher.py", "all", taipei_h])
