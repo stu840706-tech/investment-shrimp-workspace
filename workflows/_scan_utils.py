@@ -15,7 +15,7 @@ Shared utilities for all scan modules.
 - Notion + Telegram 輸出
  """
 
-from _common import NOTION_KEY, NOTION_LEGACY_DB, TELEGRAM_TOKEN, TELEGRAM_DM
+from _common import NOTION_KEY, TELEGRAM_TOKEN, TELEGRAM_DM
 from pathlib import Path
 from datetime import datetime, timedelta
 import time

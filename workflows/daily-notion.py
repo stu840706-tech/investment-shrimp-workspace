@@ -33,7 +33,7 @@ STATE_DIR = Path("/home/ubuntu/.openclaw/workspace/state")
 
 from _common import now_tw,  FINMIND_TOKEN, NOTION_KEY, SECRETS
 NOTION_VERSION = "2022-06-28"
-PARENT_DB_ID = SECRETS["notion_parent_db_id"]  # 來自 https://www.notion.so/341226f5a39880198606d2ce990675b0
+PARENT_DB_ID = SECRETS["notion_parent_db_id"]  # 來自 https://www.notion.so/34e226f5a39880198606d2ce990675b0
 SCAN_RESULTS_DB_ID = SECRETS["notion_scan_results_db"]  # B7: 固定 DB，不再動態建立
 
 # ==================== Notion API ====================
