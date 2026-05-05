@@ -40,3 +40,16 @@ state/direct_output/
 state/scan_results_*.json
 *.bak*
 /tmp/
+
+# 自動備份
+*.bak*
+*.bak_*
+
+# logs
+logs/
+
+# 本地工具腳本
+batch_process_reports.sh
+
+# 本地 skill（不進版控）
+skills/user-manual/
