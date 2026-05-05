@@ -22,7 +22,7 @@ from _common import now_tw, NOTION_KEY, SECRETS
 NOTION_VERSION = "2022-06-28"
 
 # 「📊 每日掃描結果」DB 的父頁面 ID（摘要子頁面掛在這裡）
-SCAN_RESULTS_PAGE_ID = "34e226f5-a398-816e-93ca-c2f0d5a2456a"
+SCAN_RESULTS_PAGE_ID = "34e226f5-a398-802f-bf27-fa7a4fa19970"
 
 # ==================== Notion API ====================
 

@@ -152,7 +152,7 @@ def check_dashboard_exists(token, date_str):
     """查詢 Dashboard DB 當天是否已有記錄，有則回傳 page_id，沒有回傳 None"""  
     pages = query_db(token, DASHBOARD_DB_ID, filter_payload={  
         "property": "日期",  
-        "title": {"equals": date_str}  
+        "date": {"equals": date_str}  
     }, page_size=1)  
     return pages[0]["id"] if pages else None  
   
@@ -200,7 +200,7 @@ def section_broker_digest(token, date_str):
     try:  
         pages = query_db(token, DIGEST_DB_ID, filter_payload={  
             "property": "日期",  
-            "title": {"equals": date_str}  
+            "date": {"equals": date_str}  
         }, page_size=1)  
         if not pages:  
             blocks.append(para("今日券商日摘尚未產出（broker_digest 未執行或無新報告）"))  
