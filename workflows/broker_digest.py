@@ -58,7 +58,7 @@ def notion_query_unprocessed(db_id, token):
     payload = {
         "filter": {
             "property": "digest_mark",
-            "rich_text": {"is_empty": True}
+            "rich_text": {"equals": "processed"}
         },
         "page_size": 100,
     }
@@ -333,9 +333,14 @@ def summarize_industry(reports, secrets):
         for r in reports
     ])
     prompt = f"""以下是今日券商產業報告摘要。
-請用繁體中文整理，每份報告 3-5 句重點，帶具體數字，格式：
+請用繁體中文整理，每份報告 3-5 句重點，格式：
 【產業主題】券商名稱
 重點內容...
+
+嚴格規則：
+1. 只能使用報告資料中明確提供的數字，禁止自行推算或補充任何數字
+2. 若「關鍵數字」欄位為空，只整理文字觀點，不要捏造數字
+3. 沒有的資訊不要填，寧可省略也不要猜測
 
 報告資料：
 {text[:6000]}"""
@@ -348,13 +353,15 @@ def format_stock_section(reports):
     if not reports:
         return "（今日無個股報告）"
 
-    # 按股票代碼分組
+    # 按股票代碼分組（標準化：取數字部分，忽略 .TW/.TT 後綴）
+    import re as _re
     stocks = {}
     for r in reports:
-        code = r["code"]
-        if code not in stocks:
-            stocks[code] = {"name": r["name"], "reports": []}
-        stocks[code]["reports"].append(r)
+        raw_code = r["code"]
+        norm_code = _re.sub(r"\.(TW|TT|TWO)$", "", raw_code, flags=_re.IGNORECASE)
+        if norm_code not in stocks:
+            stocks[norm_code] = {"name": r["name"], "reports": []}
+        stocks[norm_code]["reports"].append(r)
 
     lines = []
     for code, data in sorted(stocks.items()):
