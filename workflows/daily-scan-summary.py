@@ -454,18 +454,41 @@ def main():
     notion_url = f"https://notion.so/{page_id.replace('-', '')}"
 
     # ── 排序輔助（複用 section 函式內的邏輯）──
+    # ── 排序輔助（複用 section 函式內的邏輯）──
     def ranked_list(key, n, neg=False):
         sign = 1 if neg else -1
-        items = [(c, d) for c, d in companies.items() if d.get(key, 0) > 0]
-        items.sort(key=lambda x: sign * (len(x[1][key]) if isinstance(x[1][key], list) else x[1][key]))
+        def _val(d):
+            v = d.get(key, 0)
+            return len(v) if isinstance(v, list) else (v or 0)
+        items = [(c, d) for c, d in companies.items() if _val(d) > 0]
+        items.sort(key=lambda x: sign * _val(x[1]))
         return items[:n]
+    POS_TAG_FIELDS = [("rev_tags","💰"),("fin_tags","📊"),("chip_pos_tags","🧩"),("ind_tags","🏭")]
+    NEG_TAG_FIELDS = [("chip_neg_tags","⚠️")]
 
-    def fmt_rows(items, key):
+    def fmt_rows(items, key, neg=False):
         lines = []
+        tag_fields = NEG_TAG_FIELDS if neg else POS_TAG_FIELDS
         for i, (code, d) in enumerate(items, 1):
             val = d.get(key, 0)
             cnt = len(val) if isinstance(val, list) else val
-            lines.append(f"{i}. {d.get('name', code)}/{code}（{cnt}）")
+            header = f"{i}. {d.get('name', code)}/{code}（{cnt}）"
+            if isinstance(val, list) and val:
+                # 單一維度（fin_tags / rev_tags 等）：直接換行列標籤
+                tag_lines = "\n ".join(val)
+                lines.append(f"{header}\n {tag_lines}")
+            else:
+                # 綜合計數（all_pos_count / all_neg_count）：各維度換行
+                breakdown = []
+                for tk, emoji in tag_fields:
+                    tv = d.get(tk, [])
+                    if tv:
+                        tag_lines = "\n ".join(tv)
+                        breakdown.append(f" {emoji} {tag_lines}")
+                if breakdown:
+                    lines.append(header + "\n" + "\n".join(breakdown))
+                else:
+                    lines.append(header)
         return "\n".join(lines) if lines else "（無資料）"
 
     pos15 = ranked_list("all_pos_count", 15)

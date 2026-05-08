@@ -74,19 +74,25 @@ def scan_quarterly_financials():
             name = row.get('公司名稱', row.get('CompanyName', code))
             ym = str(row.get('資料年月', '')).strip()
 
-            # 轉換為 YYYYQ 格式（財報季）
+            # 轉換為 ROC年_季 格式（如 114_4）
             if len(ym) == 5:
                 roc_y = int(ym[:3])
                 m = int(ym[3:])
+                q = (m - 1) // 3 + 1
             elif len(ym) == 6:
                 roc_y = int(ym[:3])
                 m = int(ym[3:])
+                q = (m - 1) // 3 + 1
             else:
-                continue
+                # TWSE 新格式：直接有「年度」和「季別」欄位
+                roc_y_raw = str(row.get('年度', '')).strip()
+                q_raw = str(row.get('季別', '')).strip()
+                if not roc_y_raw or not q_raw:
+                    continue
+                roc_y = int(roc_y_raw)
+                q = int(q_raw)
 
-            year = roc_y + 1911
-            q = (m - 1) // 3 + 1
-            yq = f"{year}Q{q}"
+            yq = f"{roc_y}_{q}"
 
             revenue = to_float(row.get('營業收入', 0))
             gross_profit = to_float(row.get('營業毛利', 0))
@@ -106,35 +112,60 @@ def scan_quarterly_financials():
         except Exception as e:
             continue
 
-    # 異常偵測
+    # 先更新歷史，再用完整歷史做異常偵測
+    for code, info in company_fin.items():
+        if code not in fin_history:
+            fin_history[code] = {'name': info['name'], 'quarters': {}}
+        for yq, qdata in info['quarters'].items():
+            fin_history[code]['quarters'][yq] = qdata
+    save_json(fin_history_file, fin_history)
+
+    # 異常偵測（用 fin_history）
     stats = {'checked': 0, 'cond1': 0, 'cond2': 0, 'cond3': 0, 'cond4': 0, 'triggered': 0}
 
-    for code, info in company_fin.items():
+    for code, info in fin_history.items():
         quarters = info['quarters']
         if len(quarters) < 2:
             continue
 
         sorted_yqs = sorted(quarters.keys())
         cur_yq = sorted_yqs[-1]
-        cur = quarters[cur_yq]
 
-        revenue = cur['revenue']
-        gross_profit = cur['gross_profit']
-        operating_profit = cur['operating_profit']
-        net_profit = cur['net_profit']
-        eps = cur['eps']
+        # key 正規化：支援 FinMind 大寫和 TWSE snake_case 兩種格式
+        def norm_q(q):
+            km = {
+                'Revenue': 'revenue',
+                'GrossProfit': 'gross_profit',
+                'OperatingIncome': 'operating_profit', # FinMind 用 OperatingIncome
+                'OperatingProfit': 'operating_profit',
+                'OperatingExpenses': 'operating_expenses',
+                'IncomeAfterTaxes': 'net_profit', # FinMind 用 IncomeAfterTaxes
+                'NetProfit': 'net_profit',
+                'EPS': 'eps',
+            }
+            return {km.get(k, k): v for k, v in q.items()}
+
+        cur = norm_q(quarters[cur_yq])
+
+        revenue = cur.get('revenue', 0) or 0
+        gross_profit = cur.get('gross_profit', 0) or 0
+        operating_profit = cur.get('operating_profit', 0) or 0
+        net_profit = cur.get('net_profit', 0) or 0
+        eps = cur.get('eps', 0) or 0
 
         # 前一季
         prev_yq_idx = sorted_yqs.index(cur_yq) - 1
         prev_yq = sorted_yqs[prev_yq_idx] if prev_yq_idx >= 0 else None
-        prev_q = quarters[prev_yq] if prev_yq else None
+        prev_q = norm_q(quarters[prev_yq]) if prev_yq else None
 
         # 去年同期（4季前）
-        cur_year = int(cur_yq[:4])
-        cur_q = int(cur_yq[5])
+        cur_parts = cur_yq.split('_')
+        cur_year = int(cur_parts[0])
+        cur_q = int(cur_parts[1])
         yoy_y = cur_year - 1
-        yoy_q_str = f"{yoy_y}Q{cur_q}"
-        yoy_q = quarters.get(yoy_q_str)
+        yoy_q_str = f"{yoy_y}_{cur_q}"
+        yoy_q_raw = quarters.get(yoy_q_str)
+        yoy_q = norm_q(yoy_q_raw) if yoy_q_raw else None
 
         # ==== 條件1a：三率齊升 ====
         cond1a = False
@@ -178,10 +209,11 @@ def scan_quarterly_financials():
         # ==== 條件4：EPS 加速 ====
         cond4 = False
         if len(sorted_yqs) >= 5 and eps > 0:
-            prev_4qs = [quarters[yq]['eps'] for yq in sorted_yqs[-5:-1] if quarters[yq]['eps'] > 0]
+            prev_4qs = [norm_q(quarters[yq]).get('eps', 0) for yq in sorted_yqs[-5:-1]
+                         if (norm_q(quarters[yq]).get('eps') or 0) > 0]
             if prev_4qs:
                 avg_4q_eps = sum(prev_4qs) / len(prev_4qs)
-                yoy_eps = safe_div(eps, yoy_q['eps']) - 1 if yoy_q and yoy_q['eps'] > 0 else 0
+                yoy_eps = safe_div(eps, yoy_q.get('eps', 0)) - 1 if yoy_q and yoy_q.get('eps', 0) > 0 else 0
                 if eps > avg_4q_eps * 1.2 and yoy_eps > 0:
                     cond4 = True
                     stats['cond4'] += 1
@@ -213,14 +245,6 @@ def scan_quarterly_financials():
                 'source': 'TWSE',
             })
 
-    # 更新歷史
-    for code, info in company_fin.items():
-        if code not in fin_history:
-            fin_history[code] = {'name': info['name'], 'quarters': {}}
-        for yq, qdata in info['quarters'].items():
-            fin_history[code]['quarters'][yq] = qdata
-
-    save_json(fin_history_file, fin_history)
     print(f" → 三率齊升: {stats['cond1']} | 毛利跳升: {stats['cond2']} | 業外偏高: {stats['cond3']} | EPS加速: {stats['cond4']}")
     print(f" → 符合觸發: {stats['triggered']} 筆")
 
