@@ -329,13 +329,15 @@ def main():
     
     # Summary
     print(f"\n完成！")
+    total_articles = 0
     for src in sources_to_fetch:
         f = MEMORY_DIR / f"raw-{src}-{timestamp}.jsonl"
         if f.exists():
             count = sum(1 for _ in open(f, encoding='utf-8'))
+            total_articles += count
             print(f"  {src}: {count} 筆")
     
-    return 0 if not all_errors else 1
+    return 0 if (not all_errors or total_articles >= 50) else 1
 
 if __name__ == "__main__":
     sys.exit(main())
