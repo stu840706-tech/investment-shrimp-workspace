@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 # 門檻:pdfplumber 輸出字元 <= 此值 → 視為可能是掃描件,fallback OCR
-MIN_TEXT_CHARS = 100
+MIN_TEXT_CHARS = 500
 
 
 def main():

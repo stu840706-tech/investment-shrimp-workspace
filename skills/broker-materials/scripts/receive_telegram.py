@@ -61,6 +61,33 @@ def pdf_to_text(pdf_path: Path) -> str:
     # 純文字檔案直接讀取，不走 pdf-reader
     if pdf_path.suffix.lower() == ".txt":
         return pdf_path.read_text(encoding="utf-8", errors="replace")
+    
+    # Step 1: 嘗試 pdfplumber，若文字層內容豐富則直接使用
+    script_dir = PDF_READER.parent.resolve()
+    sys.path.insert(0, str(script_dir))
+    try:
+        from extract_pdfplumber import extract_with_pdfplumber
+        text, _ = extract_with_pdfplumber(pdf_path)
+        # 計算有意義字元（排除 page separators）
+        import re
+        cleaned = re.sub(r"--- Page \d+ ---", "", text)
+        cleaned = re.sub(r"\s+", "", cleaned)
+        meaningful_chars = len(cleaned)
+        if meaningful_chars >= 300:
+            return text  # 文字層充足，直接用
+    except Exception:
+        pass
+    
+    # Step 2: 文字層不足，改走 OCR
+    try:
+        from extract_ocr import extract_with_ocr
+        text, _ = extract_with_ocr(pdf_path)
+        if len(text.strip()) > 0:
+            return text
+    except Exception:
+        pass
+    
+    # Fallback: dispatch（最後手段）
     result = subprocess.run(
         [sys.executable, str(PDF_READER), str(pdf_path)],
         capture_output=True, text=True, timeout=120,

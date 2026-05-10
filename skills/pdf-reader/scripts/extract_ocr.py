@@ -25,16 +25,15 @@ OCR_DPI = 200
 OCR_LANG = "chi_tra+eng"
 
 
-def extract_with_ocr(pdf_path: Path):
-    """OCR 整份 PDF,回傳 (full_text, page_count)。"""
+def extract_with_ocr(pdf_path: Path, max_pages: int = 10, dpi: int = 150):
+    """OCR PDF(最多 max_pages 頁,降低 DPI 加速),回傳 (full_text, page_count)。"""
     from pdf2image import convert_from_path
     import pytesseract
 
-    # 轉 PNG(pdf2image 需要 poppler)
     try:
-        images = convert_from_path(str(pdf_path), dpi=OCR_DPI)
+        images = convert_from_path(str(pdf_path), dpi=dpi, first_page=1, last_page=max_pages)
     except Exception as e:
-        raise RuntimeError(f"pdf2image 轉圖失敗(可能 poppler 未安裝): {e}")
+        raise RuntimeError(f"pdf2image 轉圖失敗: {e}")
 
     page_count = len(images)
     pages_text = []
@@ -42,10 +41,7 @@ def extract_with_ocr(pdf_path: Path):
         try:
             page_text = pytesseract.image_to_string(img, lang=OCR_LANG)
         except pytesseract.TesseractNotFoundError:
-            raise RuntimeError(
-                "tesseract 未安裝或不在 PATH。"
-                "請執行:sudo apt-get install -y tesseract-ocr tesseract-ocr-chi-tra tesseract-ocr-eng"
-            )
+            raise RuntimeError("tesseract 未安裝或不在 PATH。")
         except Exception as e:
             print(f"[WARN] page {i} OCR 失敗: {e}", file=sys.stderr)
             page_text = ""
