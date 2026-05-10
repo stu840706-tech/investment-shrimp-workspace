@@ -47,22 +47,20 @@ HUB_PAGE_ID = SECRETS.get("notion_parent_db_id", "34e226f5-a398-802f-bf27-fa7a4f
 # 需要 cron 的白名單（不在這裡的 .py 不算孤兒）
 CRON_REQUIRED = {
     "memory_archive.py",
-    "daily-scan.py",
+ "daily_scan_pipeline.sh",
     "daily_dashboard.py",
     "fetch_calendar.py",
     "outcome_review.py",
     "news_pipeline.py",
     "broker_digest.py",
-    "daily-notion.py",
 }
 
 # log 設定：{ 任務名: (log路徑, 成功關鍵字, 檢查天數) }
 LOG_CHECKS = {
-    "daily-scan":       ("/tmp/daily-scan.log",          "掃描完成",   7),
-    "daily-notion":     ("/tmp/daily-notion.log",         "完成!",      7),
-    "daily-dashboard":  ("state/cron-dashboard.log",      "完成",       7),
-    "news-morning":     ("/tmp/news_morning.log",          "SUCCESS",    5),
-    "news-evening":     ("/tmp/news_evening.log",          "SUCCESS",    5),
+    "daily-scan":       ("/tmp/daily_scan_pipeline.log", "pipeline 全部完成",   7),
+    "daily-dashboard":  ("/tmp/daily_dashboard.log", "完成",       7),
+    "news-morning":     ("/tmp/news_morning.log", "管線完成",    5),
+    "news-evening":     ("/tmp/news_evening.log", "管線完成",    5),
     "broker-digest":    ("/tmp/broker_digest.log",         "完成",       5),
     "fetch-calendar":   ("~/.openclaw/logs/fetch_calendar.log", "完成",   7),
     "outcome-review":   ("~/.openclaw/logs/outcome_review.log", "完成",   7),
