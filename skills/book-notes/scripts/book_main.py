@@ -238,19 +238,28 @@ def main():
     all_concepts = []
     for i, chunk in enumerate(chunks):
         print(f"\n[book_main] 處理第 {i+1}/{len(chunks)} 段（{len(chunk):,} 字元）...")
-        try:
-            concepts = extract_concepts(chunk, args.title, i, len(chunks), dry_run=args.dry_run)
-            print(f" 萃取到 {len(concepts)} 個概念")
+        for attempt in range(3):
+            try:
+                concepts = extract_concepts(chunk, args.title, i, len(chunks), dry_run=args.dry_run)
+                if concepts is None:
+                    concepts = []
+                break
+            except Exception as e:
+                print(f"  RETRY {attempt+1}/3 第 {i+1} 段: {e}")
+                if attempt < 2:
+                    time.sleep(5 * (attempt + 1))
+                else:
+                    concepts = []
+        if concepts is None:
+            concepts = []
+        print(f" 萃取到 {len(concepts)} 個概念")
+        for c in concepts:
+            print(f" - [{c.get('重要度','?')}] {c.get('概念名稱','?')}")
+        all_concepts.extend(concepts)
+        if not args.dry_run:
             for c in concepts:
-                print(f" - [{c.get('重要度','?')}] {c.get('概念名稱','?')}")
-            all_concepts.extend(concepts)
-            if not args.dry_run:
-                for c in concepts:
-                    write_concept_card(c, book_page_id)
-                    time.sleep(0.3)
-        except Exception as e:
-            print(f"  ERROR 第 {i+1} 段: {e}")
-            time.sleep(1)
+                write_concept_card(c, book_page_id)
+                time.sleep(0.3)
 
     print(f"\n{'='*60}")
     print(f"✅ 完成！共萃取 {len(all_concepts)} 個概念卡")
