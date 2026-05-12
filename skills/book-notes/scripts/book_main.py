@@ -2,6 +2,7 @@
 """book_main.py - 書籍概念萃取主流程"""
 import sys, json, time, urllib.request, argparse, re
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / 'workflows'))
 from _common import SECRETS, NOTION_KEY, MINIMAX_API_KEY as MINIMAX_TOKEN
@@ -235,23 +236,31 @@ def main():
     else:
         book_page_id = "dry-run"
 
-    all_concepts = []
-    for i, chunk in enumerate(chunks):
+    def extract_one(i, chunk):
         print(f"\n[book_main] 處理第 {i+1}/{len(chunks)} 段（{len(chunk):,} 字元）...")
         for attempt in range(3):
             try:
                 concepts = extract_concepts(chunk, args.title, i, len(chunks), dry_run=args.dry_run)
                 if concepts is None:
                     concepts = []
-                break
+                return i, concepts
             except Exception as e:
                 print(f"  RETRY {attempt+1}/3 第 {i+1} 段: {e}")
                 if attempt < 2:
                     time.sleep(5 * (attempt + 1))
-                else:
-                    concepts = []
-        if concepts is None:
-            concepts = []
+        return i, []
+
+    results = {}
+    with ThreadPoolExecutor(max_workers=3) as executor:
+        futures = {executor.submit(extract_one, i, chunk): i for i, chunk in enumerate(chunks)}
+        for future in as_completed(futures):
+            i, concepts = future.result()
+            results[i] = concepts
+            print(f" 段 {i+1} 完成：{len(concepts)} 個概念")
+
+    all_concepts = []
+    for i in range(len(chunks)):
+        concepts = results.get(i, [])
         print(f" 萃取到 {len(concepts)} 個概念")
         for c in concepts:
             print(f" - [{c.get('重要度','?')}] {c.get('概念名稱','?')}")
