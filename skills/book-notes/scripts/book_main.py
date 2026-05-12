@@ -9,7 +9,12 @@ from _common import SECRETS, NOTION_KEY, MINIMAX_API_KEY as MINIMAX_TOKEN
 NOTION_VERSION = "2022-06-28"
 BOOK_NOTES_DB = SECRETS["notion_book_notes_db"]
 BOOK_CONCEPTS_DB = SECRETS["notion_book_concepts_db"]
+
+#  Carole: 30000 chars per chunk（約 7-8K tokens），M2.7 可正常處理
 CHUNK_SIZE = 30000
+#  臨界檔案大小（超過此值才會切片）
+SIZE_SKIP_SPLIT = 200000  # 20萬字元（約 50K tokens）以上才啟用章節/段落切片
+SIZE_WARN = 500000        # 50萬字元以上警告（可能需數十分鐘）
 
 def notion_post(url, payload, method='POST'):
     data = json.dumps(payload).encode('utf-8')
@@ -31,23 +36,48 @@ def to_rich_text(text, limit=1990):
     return [{"text": {"content": text[i:i+limit]}} for i in range(0, len(text), limit)]
 
 def split_text(text, chunk_size=CHUNK_SIZE):
+    MIN_CHUNK = 2000
     chapter_pattern = re.compile(
-        r'(?=第[一二三四五六七八九十百\d]+[章節篇部]|Chapter\s+\d+|CHAPTER\s+\d+)',
+        r'(第[一二三四五六七八九十百\d]+[章節篇部][^\n]*\n|Chapter\s+\d+[^\n]*\n|CHAPTER\s+\d+[^\n]*\n)',
         re.IGNORECASE
     )
-    parts = chapter_pattern.split(text)
-    parts = [p.strip() for p in parts if p.strip()]
-    if len(parts) < 3:
-        parts = [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
-    result = []
-    for part in parts:
-        if len(part) > chunk_size:
-            for i in range(0, len(part), chunk_size):
-                result.append(part[i:i+chunk_size])
+    tokens = chapter_pattern.split(text)
+    parts = []
+    i = 0
+    if tokens and not chapter_pattern.match(tokens[0]):
+        if tokens[0].strip():
+            parts.append(tokens[0])
+        i = 1
+    while i < len(tokens):
+        chunk = tokens[i]
+        if i + 1 < len(tokens):
+            chunk += tokens[i + 1]
+            i += 2
         else:
-            result.append(part)
+            i += 1
+        if chunk.strip():
+            parts.append(chunk)
+    if len(parts) < 2:
+        parts = [text[j:j+chunk_size] for j in range(0, len(text), chunk_size)]
+    result = []
+    buffer = ""
+    for part in parts:
+        buffer += part
+        if len(buffer) >= MIN_CHUNK:
+            if len(buffer) > chunk_size:
+                for j in range(0, len(buffer), chunk_size):
+                    sub = buffer[j:j+chunk_size]
+                    if sub.strip():
+                        result.append(sub)
+            else:
+                result.append(buffer)
+            buffer = ""
+    if buffer.strip():
+        if result and len(result[-1]) + len(buffer) <= chunk_size:
+            result[-1] = result[-1] + buffer
+        else:
+            result.append(buffer)
     return result
-
 def extract_concepts(chunk, book_title, chunk_idx, total_chunks, dry_run=False):
     if dry_run:
         print(f"  [DRY-RUN] 跳過 LLM 萃取（模擬 3 個概念）")
@@ -169,7 +199,7 @@ def main():
     parser.add_argument("title", help="書名")
     parser.add_argument("author", help="作者")
     parser.add_argument("category", help="類別")
-    parser.add_argument("txt_path", help="書籍 txt 檔案路徑")
+    parser.add_argument("file_path", help="書籍檔案路徑（支援 .txt / .md）")
     parser.add_argument("--dry-run", action="store_true", help="只萃取不寫入 Notion")
     args = parser.parse_args()
 
@@ -178,12 +208,24 @@ def main():
     print(f"作者：{args.author} | 類別：{args.category}")
     print(f"{'='*60}\n")
 
-    txt_path = Path(args.txt_path)
-    if not txt_path.exists():
-        print(f"ERROR: 找不到檔案 {txt_path}")
+    file_path = Path(args.file_path)
+    if not file_path.exists():
+        print(f"ERROR: 找不到檔案 {file_path}")
         sys.exit(1)
-    text = txt_path.read_text(encoding="utf-8", errors="ignore")
-    print(f"[book_main] 讀取完成，共 {len(text):,} 字元")
+
+    # 支援 .txt 和 .md
+    suffix = file_path.suffix.lower()
+    if suffix not in (".txt", ".md"):
+        print(f"ERROR: 不支援的檔案格式 '{suffix}'，僅支援 .txt 和 .md")
+        sys.exit(1)
+
+    text = file_path.read_text(encoding="utf-8", errors="replace")
+    size = len(text)
+    print(f"[book_main] 讀取完成，共 {size:,} 字元（{size/1000:.0f}K）")
+
+    # 警告超大檔案（預估處理時間）
+    if size > SIZE_WARN:
+        print(f"[WARN] 檔案超大（{size/1000:.0f}K 字元），預估處理時間 {size//CHUNK_SIZE * 2:.0f}+ 分鐘")
 
     chunks = split_text(text)
     print(f"[book_main] 分成 {len(chunks)} 段處理")
