@@ -129,7 +129,7 @@ def extract_concepts(chunk, book_title, chunk_idx, total_chunks, dry_run=False):
             "anthropic-version": "2023-06-01",
         },
     )
-    with urllib.request.urlopen(req, timeout=120) as r:
+    with urllib.request.urlopen(req, timeout=180) as r:
         resp = json.loads(r.read().decode())
 
         text_blocks = [b for b in resp.get("content", []) if b.get("type") == "text"]
@@ -251,7 +251,7 @@ def main():
         return i, []
 
     results = {}
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         futures = {executor.submit(extract_one, i, chunk): i for i, chunk in enumerate(chunks)}
         for future in as_completed(futures):
             i, concepts = future.result()
