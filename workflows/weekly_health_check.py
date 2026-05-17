@@ -119,7 +119,7 @@ def check_crontab():
         if line.startswith("#") or not line:
             continue
         for part in line.split():
-            if part.endswith(".py"):
+            if part.endswith(".py") or part.endswith(".sh"):
                 cron_scripts.add(Path(part).name)
 
     missing = CRON_REQUIRED - cron_scripts
@@ -143,7 +143,7 @@ def check_logs():
         if log_path.startswith("/"):
             full_path = Path(log_path)
         else:
-            full_path = Path.home() / log_path
+            full_path = Path(os.path.expanduser(log_path))
 
         if not full_path.exists():
             results[task] = {"status": "MISSING", "detail": "log 檔不存在"}
@@ -238,6 +238,7 @@ def check_orphans():
         "scan_news.py", "scan_quarterly.py", "scan_revenue.py",
         "setup_notion_databases.py", "show_manual.py",
         "weekly_health_check.py",  # 本腳本
+ "daily-scan-summary.py", # 由 pipeline.sh 呼叫，不直接進 crontab
     }
 
     orphan_candidates = all_py - CRON_REQUIRED - no_cron_ok
@@ -271,6 +272,7 @@ def check_orphans():
                 "stock-study", "trading-devbox", "tushare-stock-skill",
                 "tw-revenue-backfill", "tw-stock-info",
                 "us-stock-analysis", "web-scraping",
+ "user-manual", # 僅有 SKILL.md，無本體，保留備用
             }
             if skill_name not in idle_skills:
                 skill_orphans.append(skill_name)
@@ -417,14 +419,19 @@ def _status_icon(ok):
 def _count_warnings(report):
     """計算本週警告數量"""
     count = 0
+    if not report.get("crontab", {}).get("ok", True):
+        count += 1
     for v in report.get("logs", {}).values():
         if isinstance(v, dict) and not v.get("ok", True):
             count += 1
     for v in report.get("notion_dbs", {}).values():
-        if isinstance(v, dict) and v.get("warn"):
+        if isinstance(v, dict) and v.get("warnings"):
             count += 1
-    for v in report.get("stale", {}).values():
-        if isinstance(v, dict) and v.get("warn"):
+    if not report.get("orphans", {}).get("ok", True):
+        count += 1
+    if not report.get("syntax", {}).get("ok", True):
+            count += 1
+    if not report.get("stale", {}).get("ok", True):
             count += 1
     return count
 
@@ -479,8 +486,8 @@ def _build_blocks(report):
     blocks.append(h2("C. Notion DB 本週新增筆數"))
     for name, info in dbs.items():
         if isinstance(info, dict):
-            status = "⚠️" if info.get("warn") else "✅"
-            count = info.get("count", "?")
+            status = "⚠️" if info.get("warnings") else "✅"
+            count = info.get("weekly_new", "?")
             blocks.append(bullet(f"{status} {name}：{count} 筆"))
     blocks.append(divider())
 
@@ -514,14 +521,12 @@ def _build_blocks(report):
     # F. 過期 State
     stale = report.get("stale", {})
     blocks.append(h2("F. 過期 State 檔案"))
-    found_stale = False
-    for name, info in stale.items():
-        if isinstance(info, dict) and info.get("warn"):
-            found_stale = True
-            size = info.get("size") or info.get("lines") or "?"
-            blocks.append(bullet(f"⚠️ {name}：{size}"))
-    if not found_stale:
+    stale_files = stale.get("stale_files", [])
+    if not stale_files:
         blocks.append(bullet("✅ 無過期 State 檔案"))
+    else:
+        for item in stale_files:
+            blocks.append(bullet(f"⚠️ {item}"))
     blocks.append(divider())
 
     # 原始 JSON（分批，避免截斷）
@@ -569,10 +574,10 @@ def write_notion_report(report):
 
     cron_ok = "✅" if cron.get("ok", True) else "⚠️"
     log_ok = "✅" if all(v.get("ok", True) for v in logs.values() if isinstance(v, dict)) else "⚠️"
-    db_ok = "✅" if not any(v.get("warn") for v in dbs.values() if isinstance(v, dict)) else "⚠️"
+    db_ok = "✅" if not any(v.get("warnings") for v in dbs.values() if isinstance(v, dict)) else "⚠️"
     orphan_ok = "✅" if (not orphans.get("workflow_orphans") and not orphans.get("skill_orphans")) else "⚠️"
     syntax_ok = "✅" if not syntax.get("errors") else "❌"
-    stale_ok = "✅" if not any(v.get("warn") for v in stale.values() if isinstance(v, dict)) else "⚠️"
+    stale_ok = "✅" if stale.get("ok", True) else "⚠️"
 
     overall = "✅ 正常" if warn_count == 0 else ("❌ 失敗" if syntax_ok == "❌" else "⚠️ 警告")
 
