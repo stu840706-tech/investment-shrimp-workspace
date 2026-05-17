@@ -59,7 +59,7 @@ def load_secrets():
 
 def pdf_to_text(pdf_path: Path) -> str:
     # 純文字檔案直接讀取，不走 pdf-reader
-    if pdf_path.suffix.lower() == ".txt":
+    if pdf_path.suffix.lower() in (".txt", ".md"):
         return pdf_path.read_text(encoding="utf-8", errors="replace")
     
     # Step 1: 嘗試 pdfplumber，若文字層內容豐富則直接使用
@@ -528,6 +528,28 @@ def notify_telegram(message: str, secrets: dict):
         print(f"[WARN] Telegram 通知失敗: {e}", file=sys.stderr)
 
 
+
+
+def classify_with_m27_with_retry(text: str, secrets: dict) -> dict:
+    """classify_with_m27 包裝，最多重試 3 次（Timeout/ConnError/5xx）。"""
+    import time as _t
+    _attempts, _delay = 3, 20
+    for _i in range(_attempts):
+        try:
+            return classify_with_m27(text, secrets)
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as _e:
+            if _i < _attempts - 1:
+                print(f" [RETRY] M2.7 連線失敗，{_delay}s 後重試 ({_i+1}/{_attempts-1})...")
+                _t.sleep(_delay)
+            else:
+                raise
+        except requests.exceptions.HTTPError as _e:
+            if _e.response.status_code >= 500 and _i < _attempts - 1:
+                print(f" [RETRY] M2.7 伺服器錯誤 ({_e.response.status_code})，{_delay}s 後重試...")
+                _t.sleep(_delay)
+            else:
+                raise
+
 def process_file(file_path: Path, secrets: dict):
     print(f"[START] 處理: {file_path.name}")
 
@@ -538,7 +560,7 @@ def process_file(file_path: Path, secrets: dict):
 
     # Step 2: M2.7 分類 + 萃取
     print("[2/4] M2.7 分類中...")
-    result = classify_with_m27(text, secrets)
+    result = classify_with_m27_with_retry(text, secrets)
     category = result.get("category", "unknown")
     confidence = result.get("confidence", "low")
     print(f"  → category={category}, confidence={confidence}")
@@ -625,7 +647,7 @@ def main():
     parser = argparse.ArgumentParser(description="Telegram 券商材料接收")
     parser.add_argument("--once", action="store_true", help="單次處理（OpenClaw 整合用）")
     parser.add_argument("--test-file", help="直接測試本地 PDF 檔案")
-    parser.add_argument("--text", help="直接處理本地純文字檔案（.txt）")
+    parser.add_argument("--text", help="直接處理本地純文字檔案（.txt/.md）")
     args = parser.parse_args()
 
     secrets = load_secrets()
