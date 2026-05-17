@@ -12,7 +12,7 @@ description: 處理券商報告 PDF（個股/產業/晨報三類）。當 Kai �
 
 ## 執行方式
 ```bash
-python3 skills/broker-materials/scripts/receive_telegram.py --file <pdf路徑>
+python3 skills/broker-materials/scripts/receive_telegram.py --test-file <pdf路徑>
 ```
 
 流程：

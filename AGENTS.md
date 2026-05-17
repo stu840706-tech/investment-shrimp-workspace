@@ -71,7 +71,7 @@ commit message 格式：`<批次/任務>: <一句話說明>`
 | S-1 | 06:00 執行營收掃描，發現異常主動發送 Telegram |
 | S-2 | 09:00 檢查當日重大事件，有追蹤中個股相關事件主動通知 |
 | S-3 | 處理 Telegram Group -5290205228 傳來的券商材料（M2.7 自動分類） |
-| S-4 | Kai 傳來 PDF 檔案時，立即呼叫 python3 skills/broker-materials/scripts/receive_telegram.py --file <路徑> 處理，完成後回報分類結果。其他資料主動回報。 |
+| S-4 | Kai 傳來 PDF 檔案時，立即呼叫 python3 skills/broker-materials/scripts/receive_telegram.py --test-file <路徑> 處理，完成後回報分類結果。其他資料主動回報。 |
 | S-5 | 每 30 分鐘 Heartbeat 檢查 API 額度與待處理任務 |
 | S-6 | Workflow 失敗觸發 escalation 時立即通知 Kai |
 | S-7 | 每日 23:00 掃 stock_tracking，outcome_review_date 到期項目自動執行 Outcome Review |
