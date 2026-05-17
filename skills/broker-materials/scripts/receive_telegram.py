@@ -451,7 +451,7 @@ def write_investor_meeting(stock_code: str, meeting_date: str, secrets: dict):
 def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
     """寫入對應 Notion DB，回傳 page URL。morning_brief 不寫 Notion，回傳空字串。"""
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    report_date = fields.get("report_date") or today
+    _rd = str(fields.get("report_date") or ""); report_date = _rd if re.match(r"^\d{4}-\d{2}-\d{2}$", _rd) else today
     headers = {
         "Authorization": f"Bearer {secrets['notion_key']}",
         "Notion-Version": NOTION_VERSION,
@@ -463,8 +463,8 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
         props = {
             "股票代碼": {"title": rt(fields.get("stock_code", "未知"))},
             "公司名稱": {"rich_text": rt(fields.get("company_name", ""))},
-            "券商名稱": {"select": {"name": str(fields.get("broker_name", "其他"))[:100]}},
-            "評等": {"select": {"name": str(fields.get("rating", "未明確"))}},
+            "券商名稱": {"select": {"name": (str(fields.get("broker_name") or "其他"))[:100]}},
+            "評等": {"select": {"name": str(fields.get("rating") or "未明確")}},
             "報告日期": {"date": {"start": report_date}},
             "核心觀點": {"rich_text": rt(fields.get("core_view", ""))},
             "原始內文": {"rich_text": rt(fields.get("key_excerpt", ""))},
@@ -490,7 +490,7 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
         db_id = secrets["notion_industry_reports_db"]
         props = {
             "產業主題": {"title": rt(fields.get("topic", "未命名產業報告"))},
-            "券商名稱": {"select": {"name": str(fields.get("broker_name", "其他"))[:100]}},
+            "券商名稱": {"select": {"name": (str(fields.get("broker_name") or "其他"))[:100]}},
             "報告日期": {"date": {"start": report_date}},
             "核心觀點": {"rich_text": rt(fields.get("core_view", ""))},
             "關鍵數字": {"rich_text": rt(fields.get("key_numbers", ""))},
