@@ -33,7 +33,7 @@ def send_telegram(text):
 def get_hour_arg():
     """Returns (hour, date_str)"""
     hour = sys.argv[1].zfill(2) if len(sys.argv) >= 2 else datetime.now().strftime("%H")
-    date_str = sys.argv[2] if len(sys.argv) >= 3 else today_tw_str()
+    date_str = sys.argv[2] if len(sys.argv) >= 3 else datetime.now().strftime("%Y%m%d")
     return hour, date_str
 
 def check_raw_files(hour, date_str):

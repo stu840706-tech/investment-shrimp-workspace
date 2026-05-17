@@ -1,46 +1,35 @@
 # Active Context
-_最後更新：2026-05-04_
+_最後更新：2026-05-10_
 
 ## 當前狀態
 B1-B8 + Task 4/6/7/8 + Dreaming + B6增強 全部完成。
 後期維護階段，無進行中的重構任務。
 
-## 新聞管線重大 bug（2026-05-04 23:42 已修復）
+## 新聞管線重大 bug（已知問題）
 
-### 問題
-news_pipeline.py 行 85：`return` 語句寫在 `if __name__ == "__main__"` 區塊內（非 function 內）。
-Python 不允許在 script top-level 使用 `return`，導致每次 cron 執行都因 SyntaxError 失敗。
+### 問題：UTC vs 台北日期錯位（2026-05-04 發現）
+cron UTC 23:00 執行 pipeline，`datetime.now().strftime("%Y%m%d")` 取 **UTC 日期**，而非台北日期。
+當 UTC 日與台北日不同時，aggregator 找不到 raw 檔案，pipeline 失敗。
 
-### 修復
-```python
-# 修復前（SyntaxError）
-if lock_file.exists():
-    print(f"[SKIP] 今日 {taipei_h} 時已執行過 pipeline，跳過")
-    return  # ← 錯誤：不在 function 內
+**觸發條件：**
+- UTC 23:00 = 台北 07:00（次日晨報）
+- 若 UTC 日 ≠ 台北日，則 `utc_date` 落後一天
 
-# 修復後
-if lock_file.exists():
-    print(f"[SKIP] 今日 {taipei_h} 時已執行過 pipeline，跳過")
-    sys.exit(0)
-```
+**繞過方式：** aggregator 支援 `python3 workflows/news_aggregator.py <hour> <date>` 手動指定日期
+- 例如：`python3 workflows/news_aggregator.py 07 20260510`
 
-### 觀察到的失敗模式
-- `returncode=1` + `SyntaxError: 'return' outside function`
-- 導致 pipeline 在早上 07:00/19:00 自動執行時失敗
-- 今天手動補了：
-  - `python3 workflows/news_aggregator.py 07 20260504`（成功，111則，高2/中27）
-  - `python3 workflows/news_publisher.py 07 20260504 AM`（成功，Telegram+Notion）
-- sent state 已更新：`2026-05-04-AM: true`
+**待修復：**
+- [ ] `news_pipeline.py`：UTC date 改台北 date（`datetime.now(tz=timezone(timedelta(hours=8))).strftime("%Y%m%d")`）
 
-### 待觀察
-- [ ] 明日 07:00 UTC cron 是否正常（修復後第一次真正考驗）
-- [ ] lock file 機制是否真的生效
+## 執行紀錄
+- 2026-05-10 23:22：手動指定 `07 20260510` 執行成功，232 raw → 231 unique → 9 new news
 
 ## 暫緩任務
 - news_aggregator cluster dedup 改善（同一 story 重複出現）
 - T3 批次大小重跑
 - NotebookLM 整合
 - Task 4 自動化（待 port 8888 開放）
-- 晨晚報數量差異過大問題（需研究 raw data 是否正常）
+- 晨晚報數量差異過大問題
+- Pending 信號過多（150/233）
 
 ## 無進行中任務

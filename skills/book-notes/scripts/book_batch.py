@@ -81,7 +81,7 @@ def run_book(fpath, title, author, category):
         try:
             result = subprocess.run(
                 cmd, capture_output=True, text=True,
-                cwd=str(WORKSPACE), timeout=2400
+                cwd=str(WORKSPACE), timeout=5400
             )
             if result.returncode == 0:
                 return True, ""
