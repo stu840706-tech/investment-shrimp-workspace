@@ -25,6 +25,38 @@ COMPANY_NAMES = {
     '8046': '南電', '3528': '景崎', '1560': '中砂', '6442': '光聖',
     '6285': '啟碁', '3312': '至上', '1319': '東陽',
 }
+
+
+SOURCE_ABBREV = {
+    'Google新聞': 'Google', 'TechCrunch': 'TC', 'Bloomberg': 'BBG',
+    'DigiTimes': 'DigiTimes', 'CNBC': 'CNBC', 'Reuters': 'Reuters',
+    'Investing.com': 'Invest', 'Investing': 'Invest',
+}
+
+def abbrev_source(src):
+    return SOURCE_ABBREV.get(src, src[:10])
+
+def fmt_hdr(it):
+    companies = list(dict.fromkeys(it.get('companies', [])))
+    if companies:
+        parts = ['{} {}'.format(c, COMPANY_NAMES[c]) if c in COMPANY_NAMES else c for c in companies[:3]]
+        return '▸ ' + ' / '.join(parts)
+    return '▸ ' + it.get('title', '')[:40]
+
+def make_concl(impact, max_len=40):
+    if not impact:
+        return ''
+    for sep in ['。', '，', '；']:
+        idx = impact.find(sep)
+        if 4 < idx <= max_len:
+            return impact[:idx]
+    return impact[:max_len]
+
+def fix_yr(text, year):
+    if not text:
+        return text
+    return re.sub(r'202[0-4]年', str(year) + '年', text)
+
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -44,7 +76,7 @@ BROWSER_HEADERS = {
 def get_hour_arg():
     """Returns (hour, date_str)"""
     hour = sys.argv[1].zfill(2) if len(sys.argv) >= 2 else (datetime.now().strftime("%H") if int(datetime.now().strftime("%H")) < 12 else "19")
-    date_str = sys.argv[2] if len(sys.argv) >= 3 else today_tw_str()
+    date_str = sys.argv[2] if len(sys.argv) >= 3 else datetime.now().strftime("%Y%m%d")
     return hour, date_str
 
 def load_processed(hour, date_str):
@@ -249,137 +281,99 @@ def main():
     
     print(f"  高：{len(high)}，中：{len(medium)}，低：{len(low)}")
     
+
+    _seen_keys = set()
+    def _dedup(lst):
+        out = []
+        for it in lst:
+            k = it.get('title', '')[:40]
+            if k in _seen_keys: continue
+            _seen_keys.add(k)
+            out.append(it)
+        return out
+    high = _dedup(high)
+    medium = _dedup(medium)
+
     # 格式化輸出
     print(f"\n[4] 格式化簡報...")
+    SEP = "─" * 22
+    CUR_YEAR = now.year
+    period_label = '晨報' if period == 'AM' else '晚報'
     lines = []
-    lines.append(f"📰 投資蝦{'晨報' if period=='AM' else '晚報'} {now.strftime('%m/%d %H:%M')}")
+    lines.append(f"📰 投資蝦{period_label} {now.strftime('%m/%d %H:%M')}")
     lines.append(market_bg)
     lines.append(f"處理 {len(items)} 則 | 🔴高{len(high)} 🟡中{len(medium)}")
-    lines.append("")
-    
-    # 來源總結
+
+    if high:
+        lines.append("")
+        lines.append(f"🔴 高重要性（{len(high)}則）")
+        lines.append(SEP)
+        for it in high[:8]:
+            lines.append(fmt_hdr(it))
+            impact = fix_yr(it.get('impact', ''), CUR_YEAR)
+            fact = fix_yr(it.get('fact', ''), CUR_YEAR)
+            concl = make_concl(impact)
+            if concl:
+                lines.append(f"💡 {concl}")
+            if fact and fact not in ('無具體數字', ''):
+                lines.append(f"核心事實：{fact}")
+            if impact:
+                lines.append(f"影響：{impact}")
+            if it.get('cluster_count', 1) >= 2:
+                lines.append(f"✅ {it['cluster_count']}個來源")
+            elif it.get('paywall'):
+                lines.append("⚠️ 需人工確認全文")
+            lines.append("")
+
+    if medium:
+        lines.append(f"🟡 中重要性（{len(medium)}則）")
+        lines.append(SEP)
+        for it in medium[:8]:
+            lines.append(fmt_hdr(it))
+            impact = fix_yr(it.get('impact', ''), CUR_YEAR)
+            fact = fix_yr(it.get('fact', ''), CUR_YEAR)
+            concl = make_concl(impact)
+            if concl:
+                lines.append(f"💡 {concl}")
+            if fact and fact not in ('無具體數字', ''):
+                lines.append(f"核心事實：{fact}")
+            if impact:
+                lines.append(f"影響：{impact}")
+            lines.append("")
+
+    pending_items = [it for it in clustered if it.get('signal') == 'pending']
+    valid_low = [it for it in low if len(it.get('title', '')) >= 15]
+    compact_items = _dedup(pending_items + valid_low)[:9]
+    if compact_items:
+        lines.append(SEP)
+        lines.append("⚪ 待驗證 / 低重要")
+        for it in compact_items:
+            companies = list(dict.fromkeys(it.get('companies', [])))
+            if companies:
+                c = companies[0]
+                name = COMPANY_NAMES.get(c, '')
+                label = f"{c} {name}" if name else c
+            else:
+                label = it.get('title', '')[:30]
+            fact = it.get('fact', '')
+            if fact and fact not in ('無具體數字', '有具體數字', ''):
+                lines.append(f"• {label}｜{fact[:45]}")
+            else:
+                lines.append(f"• {label}")
+
+        lines.append("")
+        lines.append(SEP)
+
     source_count = {}
     for it in active_items:
-        src = it.get('source','')
+        src = it.get('source', '')
         if src:
             source_count[src] = source_count.get(src, 0) + 1
     if source_count:
-        src_parts = [f"{k}*{v}" for k, v in sorted(source_count.items(), key=lambda x: -x[1])]
-        lines.append(f"📊 來源：{' '.join(src_parts)}")
-        lines.append("")
-    
-    # 高重要性
-    seen_titles = set()
-    if high[:8]:
-        lines.append("🔴 高重要性")
-        for it in high[:8]:
-            # 顯示新聞標題（[:50]）而不是公司代碼
-            title_label = it.get('title', '')[:50]
-            lines.append(f"• {title_label}")
-            # 公司代碼/名稱放第二行
-            companies = list(dict.fromkeys(it.get('companies', [])))
-            if companies:
-                company_label = "、".join([f"{c} {COMPANY_NAMES[c]}" if c in COMPANY_NAMES else c for c in companies[:2]])
-                lines.append(f"  {company_label}")
-            
-            fact = it.get('fact', '')
-            if fact and fact != '無具體數字':
-                lines.append(f"  核心事實：{fact}")
-            else:
-                lines.append(f"  核心事實：無具體數字")
-            
-            impact = it.get('impact', '')
-            if impact:
-                lines.append(f"  影響：{impact}")
-            
-            # 來源
-            sources_list = it.get('sources_list', [it.get('source','')])
-            if sources_list:
-                src_parts = [f"{s}*{sources_list.count(s)}" for s in sorted(set(sources_list))]
-                lines.append(f"  來源：{len(sources_list)}個來源：{'、'.join(src_parts)}")
-            
-            # Cluster badge
-            if it.get('cluster_count', 1) >= 2:
-                lines.append(f"  ✅{it.get('cluster_count')}來源")
-            
-            # Paywall warning
-            if it.get('paywall'):
-                lines.append(f"  ⚠️需人工確認全文")
-            lines.append("")
-        lines.append("")
-    
-    # 中重要性
-    if medium[:5]:
-        lines.append("🟡 中重要性")
-        for it in medium[:5]:
-            # 顯示新聞標題
-            title_label = it.get('title', '')[:50]
-            lines.append(f"• {title_label}")
-            # 公司代碼放第二行
-            companies = list(dict.fromkeys(it.get('companies', [])))
-            if companies:
-                company_label = "、".join([f"{c} {COMPANY_NAMES[c]}" if c in COMPANY_NAMES else c for c in companies[:2]])
-                lines.append(f"  {company_label}")
-            
-            fact = it.get('fact', '')
-            if fact and fact != '無具體數字':
-                lines.append(f"  核心事實：{fact}")
-            else:
-                lines.append(f"  核心事實：無具體數字")
-            
-            impact = it.get('impact', '')
-            if impact:
-                lines.append(f"  影響：{impact}")
-            
-            lines.append(f"  來源：{it.get('source','')}*1")
-            lines.append("")
-    
-    # 待驗證（單一來源的高價值項目）
-    pending_items = [it for it in clustered if it.get('signal') == 'pending']
-    if pending_items[:5]:
-        lines.append("⚪ 待驗證（單一來源）")
-        for it in pending_items[:5]:
-            title_key = it.get('title', '')[:20]
-            if title_key in seen_titles:
-                continue
-            seen_titles.add(title_key)
-            companies = list(dict.fromkeys(it.get('companies', [])))
-            if companies:
-                parts = []
-                for c in companies[:2]:
-                    name = COMPANY_NAMES.get(c, '')
-                    if name:
-                        parts.append(f"{c} {name}" if name and name != c else c)
-                    else:
-                        parts.append(c)
-                label = "、".join(parts)
-            else:
-                label = it.get('title', '')[:15]
-            lines.append(f"• {label}")
-            fact = it.get('fact', '')
-            if fact and fact not in ['無具體數字', '有具體數字', '']:
-                lines.append(f"  核心事實：{fact[:50]}")
+        src_parts = [f"{abbrev_source(k)}*{v}" for k, v in sorted(source_count.items(), key=lambda x: -x[1])]
+        lines.append(f"📡 {' '.join(src_parts)}")
+    lines.append(f"⏰ {now.strftime('%H:%M')}")
 
-    # 低重要性（跳過標題<15字的截斷項目）
-    valid_low = [it for it in low if len(it.get('title', '')) >= 15]
-    if valid_low[:3]:
-        lines.append("⚪ 低重要性")
-        for it in valid_low[:3]:
-            companies = list(dict.fromkeys(it.get('companies', [])))
-            if companies:
-                parts = []
-                for c in companies[:2]:
-                    name = COMPANY_NAMES.get(c, '')
-                    if name:
-                        parts.append(f"{c} {name}" if name and name != c else c)
-                    else:
-                        parts.append(c)
-                label = "、".join(parts)
-            else:
-                label = it.get('title', '')[:15]
-            lines.append(f"• {label}")
-    
-    lines.extend(["", f"⏰ {now.strftime('%H:%M')} | 📡 台灣+國際+DigiTimes+MOPS"])
     
     text = "\n".join(lines)
     print("\n" + text[:1500])
