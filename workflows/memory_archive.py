@@ -218,6 +218,10 @@ def main():
     print(f"\n[STEP 2] 檢查 MEMORY.md 字元數")
     check_memory_size()
 
+    # 3. 指紋 eviction
+    print(f"\n[STEP 3] news-fingerprints.md eviction（保留 {ARCHIVE_AGE_DAYS} 天內）")
+    evict_fingerprints(today, args.dry_run)
+
     print(f"\n=== 完成 ===")
     return 0
 

@@ -321,8 +321,8 @@ def check_stale_state():
     fp_count = 0
     if fingerprint.exists():
         fp_count = fingerprint.read_text(errors="replace").count("\n")
-        if fp_count > 1000:
-            issues.append(f"news-fingerprints.md 有 {fp_count} 行（警戒值 1000）")
+        if fp_count > 2000:
+            issues.append(f"news-fingerprints.md 有 {fp_count} 行（警戒值 2000）")
 
     return {
         "stale_files": issues,
