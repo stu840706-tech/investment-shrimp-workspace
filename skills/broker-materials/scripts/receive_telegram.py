@@ -52,6 +52,12 @@ MINIMAX_MODEL = "MiniMax-M2.7"
 NOTION_API = "https://api.notion.com/v1"
 NOTION_VERSION = "2022-06-28"
 
+LOG_FILE = Path("/tmp/receive_telegram.log")
+
+def _write_log(msg: str):
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(msg + "\n")
+
 
 def load_secrets():
     return json.loads(SECRETS_FILE.read_text(encoding="utf-8"))
@@ -551,7 +557,7 @@ def classify_with_m27_with_retry(text: str, secrets: dict) -> dict:
                 raise
 
 def process_file(file_path: Path, secrets: dict):
-    print(f"[START] 處理: {file_path.name}")
+    line = f"[START] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {file_path.name}"; print(line); _write_log(line)
 
     # Step 1: PDF → text
     print("[1/4] pdf-reader 轉文字...")
@@ -640,7 +646,7 @@ def process_file(file_path: Path, secrets: dict):
             except Exception as e:
                 print(f"  [WARN] 法說會寫入失敗: {e}")
 
-    print(f"[DONE] {category} 處理完成")
+    line = f"[DONE] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {category}"; print(line); _write_log(line)
 
 
 def main():
