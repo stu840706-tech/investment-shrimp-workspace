@@ -482,7 +482,7 @@ def write_dashboard(token, date_str, blocks, stock_count=0):
         "日期": {"title": [{"text": {"content": date_str}}]},  
         "掃描日期": {"date": {"start": date_str}},  
         "個股掃描數": {"number": stock_count},  
-        "狀態": {"select": {"name": "完整"}},  
+        "狀態": {"select": {"name": "完整" if stock_count > 0 else "異常"}},  
     }  
     headers_ = {  
         "Authorization": f"Bearer {token}",  
@@ -582,10 +582,11 @@ def main():
     print(f"=== daily_dashboard.py {date_str} ===")  
   
     # 讀取今日掃描筆數（供 properties 用）  
-    scan_date_compact = date_str.replace("-", "")  
-    scan_file = STATE_DIR / f"scan_results_{scan_date_compact}.json"  
-    stock_count = 0  
-    if scan_file.exists():  
+    # 取最新的 scan_results（scan 在 20:00 跑，dashboard 在 23:30 跑，用 glob 避免日期差）
+    _scan_candidates = sorted(STATE_DIR.glob("scan_results_*.json"), reverse=True)
+    scan_file = _scan_candidates[0] if _scan_candidates else None
+    stock_count = 0
+    if scan_file and scan_file.exists():  
         try:  
             data = json.loads(scan_file.read_text())  
             codes = set()  
