@@ -334,18 +334,8 @@ def collect_major_news(code, scan_results):
 
 def create_page_and_database(date_str, scan_results):
     print(f"\n{'='*60}")
-    print(f"建立 Notion 頁面: {date_str}")
     print(f"{'='*60}")
 
-    # Step 1: 建立父頁面
-    page_payload = {
-        "parent": {"type": "page_id", "page_id": PARENT_DB_ID},
-        "properties": {
-            "title": {"title": [{"text": {"content": f"{date_str[:4]}年{date_str[4:6]}月{date_str[6:8]}日"}}]}
-        }  }
-    page = notion_post("https://api.notion.com/v1/pages", page_payload)
-    page_id = page.get('id')
-    print(f" [+] 頁面建立: {page_id}")
 
         # Step 2: B7 改用固定 scan_results DB（不再動態建立子 DB）
     db_id = SCAN_RESULTS_DB_ID
@@ -460,7 +450,7 @@ def create_page_and_database(date_str, scan_results):
         time.sleep(0.35)
 
     print(f"\n [✓] 完成! 共填入 {added} 間公司")
-    return page_id, db_id
+    return db_id
 
 # ==================== 主程式 ====================
 
@@ -495,11 +485,10 @@ def main():
     for cat in ['月營收異常', '重大訊息', '三大法人', '產業強度']:
         print(f"  {cat}: {len(results.get(cat, []))} 筆")
 
-    page_id, db_id = create_page_and_database(date_str, scan_results)
+    db_id = create_page_and_database(date_str, scan_results)
 
     print(f"\n{'='*60}")
     print(f"完成!")
-    print(f"頁面: https://notion.so/{page_id.replace('-', '')}")
     print(f"資料庫: https://notion.so/{db_id.replace('-', '')}")
     print(f"{'='*60}")
 
