@@ -659,6 +659,13 @@ def main():
 
     print("=== broker_digest.py 完成 ===")
 
+    # 清理 broker_morning 檔（保留最近 7 天）
+    import time as _time
+    for f in STATE_DIR.glob("broker_morning_*.txt"):
+        if f.stat().st_mtime < _time.time() - 86400 * 7:
+            f.unlink()
+            print(f"  [CLEAN] 刪除過期晨報: {f.name}")
+
 
 if __name__ == "__main__":
     sys.exit(main())
