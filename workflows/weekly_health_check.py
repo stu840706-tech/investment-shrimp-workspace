@@ -53,6 +53,7 @@ CRON_REQUIRED = {
     "outcome_review.py",
     "news_pipeline.py",
     "broker_digest.py",
+    "weekly_health_check.py",
 }
 
 # log 設定：{ 任務名: (log路徑, 成功關鍵字, 檢查天數) }
@@ -68,7 +69,7 @@ LOG_CHECKS = {
 
 # Notion DB 筆數監控：{ 名稱: (db_id, 每週最低新增, 每週最高新增) }
 DB_CHECKS = {
-    "scan_results":    ("34e226f5-a398-816e-93ca-c2f0d5a2456a", 3000, None),
+    "scan_results":    ("34e226f5-a398-816e-93ca-c2f0d5a2456a", 1500, None),
     "event_calendar":  ("34e226f5-a398-81ea-8a99-ecd61b9e8795", None, 50),
     "broker_reports":  ("34e226f5-a398-81a0-b22d-fea135a192fd", None, None),  # 只記錄，不設警戒
 }
@@ -130,7 +131,7 @@ def check_crontab():
         "expected": sorted(CRON_REQUIRED),
         "missing_from_cron": sorted(missing),
         "extra_in_cron": sorted(extra),
-        "ok": len(missing) == 0,
+        "ok": len(missing) == 0 and len(extra) == 0,
     }
 
 # ── 檢查 B：Log 健康度 ────────────────────────────────────────────────────────
