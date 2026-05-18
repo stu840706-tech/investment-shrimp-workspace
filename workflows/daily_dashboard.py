@@ -178,7 +178,7 @@ def section_scan_summary(token, date_str):
                 t.get("plain_text", "")  
                 for t in props.get("title", {}).get("title", [])  
             )  
-            if title in page_title or date_iso in page_title:  
+            if page_title == title:  
                 url = page.get("url", "")  
                 blocks.append(callout(f"今日掃描摘要已產出，包含六個 Top N 分析", "📊"))  
                 if url:  
