@@ -67,7 +67,8 @@ if __name__ == "__main__":
 
     # Fetcher uses datetime.now() (UTC) → UTC date + hour
     # Aggregator must match: use UTC date + taipei_h
-    utc_date = datetime.now().strftime("%Y%m%d")
+    TW_TZ = timezone(timedelta(hours=8))
+    utc_date = datetime.now(TW_TZ).strftime("%Y%m%d")
 
     print(f"=== 新聞管線 UTC {utc_h} → Taipei run hour {taipei_h} (UTC date: {utc_date}) ===")
 
