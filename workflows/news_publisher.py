@@ -92,7 +92,7 @@ def load_processed(hour, date_str):
     return None
 
 def get_market_data():
-    """取得台股背景數據"""
+    """取得台股加權指數背景數據"""
     try:
         import urllib.request
         req = urllib.request.Request(
@@ -101,13 +101,19 @@ def get_market_data():
         )
         with urllib.request.urlopen(req, timeout=10) as resp:
             data = json.loads(resp.read().decode('utf-8'))
-            if data:
-                idx = data[0]
-                direction = idx.get('漲跌', '+')
-                change = idx.get('漲跌點數', 'N/A')
-                pct = idx.get('漲跌百分比', 'N/A')
-                return f"今日台股 {direction}{change}點 ({pct}%)"
-    except:
+            taiex = next((d for d in data if '發行量加權股價指數' in d.get('指數','')), None)
+            if not taiex:
+                return "今日台股 N/A"
+            roc = taiex.get('日期', '')
+            if len(roc) == 7:
+                date_str = f"{int(roc[:3])+1911}/{roc[3:5]}/{roc[5:7]}"
+            else:
+                date_str = roc
+            sign = taiex.get('漲跌', '+')
+            change = taiex.get('漲跌點數', 'N/A')
+            pct = taiex.get('漲跌百分比', 'N/A')
+            return f"台股({date_str}) {sign}{change}點 ({pct}%)"
+    except Exception:
         pass
     return "今日台股 N/A"
 
