@@ -192,6 +192,17 @@ def section_scan_summary(token, date_str, scan_date_for_summary=None):
   
 # ── 區塊二：券商日摘 ─────────────────────────────────────────  
   
+def _check_page_exists_by_date(token, db_id, date_str):
+    """Query a DB for a page whose title equals date_str. Returns True/False."""
+    try:
+        result = query_db(token, db_id, filter_payload={
+            "property": "日期",
+            "title": {"equals": date_str}
+        }, page_size=1)
+        return len(result) > 0
+    except Exception:
+        return False
+
 def section_broker_digest(token, date_str):  
     """從 📰 券商日摘 DB 讀今日記錄"""  
     blocks = [h2("📰 券商日摘")]  
@@ -473,7 +484,7 @@ def build_blocks(token, secrets, date_str):
     return blocks  
   
   
-def write_dashboard(token, date_str, blocks, stock_count=0):  
+def write_dashboard(token, secrets, date_str, blocks, stock_count=0):  
     """寫入 Dashboard DB，有防重複機制"""  
     existing_id = check_dashboard_exists(token, date_str)  
     props = {  
@@ -481,6 +492,9 @@ def write_dashboard(token, date_str, blocks, stock_count=0):
         "掃描日期": {"date": {"start": date_str}},  
         "個股掃描數": {"number": stock_count},  
         "狀態": {"select": {"name": "完整" if stock_count > 0 else "異常"}},  
+        "券商日摘": {"checkbox": _check_page_exists_by_date(token, DIGEST_DB_ID, date_str)},
+        "新聞晨報": {"checkbox": _check_page_exists_by_date(token, secrets.get("notion_news_db"), date_str)},
+        "新聞晚報": {"checkbox": _check_page_exists_by_date(token, secrets.get("notion_news_db"), date_str)},
     }  
     headers_ = {  
         "Authorization": f"Bearer {token}",  
@@ -610,7 +624,7 @@ def main():
     print(f"  共 {len(blocks)} 個 blocks")  
   
     print("  寫入 Notion...")  
-    notion_url = write_dashboard(token, date_str, blocks, stock_count)  
+    notion_url = write_dashboard(token, secrets, date_str, blocks, stock_count)  
   
     print("  發送 Telegram 通知...")  
     send_telegram(secrets, date_str, notion_url)  
