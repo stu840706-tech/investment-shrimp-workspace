@@ -226,11 +226,11 @@ def garbage_filter(items):
 # LLM 呼叫（批次模式）
 # ============================================================
 
-LLM_PROMPT = """請以繁體中文輸出所有內容。
+LLM_PROMPT = """【強制規定】所有輸出欄位（fact、impact、company_names）必須使用繁體中文，嚴禁出現任何簡體字（如：的→的、导→導、买→買、显→顯、该→該）。
 你是台股新聞分析師。請分析以下 N 則新聞，對每則輸出信號等級、事實、影響、公司代碼和事件指紋。
 
 【輸出格式】只輸出 JSON array，不要任何說明文字或 markdown：
-[{"id":1,"signal":"high/medium/low","fact":"核心數字事實","impact":"一句話影響","companies":["代號"],"cluster_id":"公司_數字_事件"},{"id":2,...}]
+[{"id":1,"signal":"high/medium/low","fact":"核心數字事實（繁體中文）：原文中的具體數字、比較基準、事件主體。禁止改寫或重複新聞標題的句子。需補充標題未提及的背景、比較基準或來源依據。","impact":"投資含義（繁體中文）：此事件對股價估值/EPS預期/競爭格局/供應鏈的二階後果。禁止重複 fact 的任何句子。禁止以「直接反映」「顯示」「代表」開頭。要說明「所以接下來會怎樣」而非「這件事說明了什麼」。","companies":["2330","2303"],"company_names":{"2330":"台積電","2303":"聯電"},"cluster_id":"公司_數字_事件"},{"id":2,...}]
 
 【Signal 評級規則】必須同時滿足以下條件才能進 high：
 (A) 新聞有具體個股代碼或公司名稱，且事件直接影響該公司營運、獲利、或股價
@@ -281,8 +281,8 @@ def call_llm_batch(items, retries=2):
     news_list = [
         {
             "id": i + 1,
-            "title": it.get('title', '')[:60],
-            "body": (it.get('body_snippet', '') or '')[:100],
+            "title": it.get('title', '')[:120],
+            "body": (it.get('body_snippet', '') or '')[:200],
             "source": it.get('source', '')
         }
         for i, it in enumerate(items)
@@ -641,7 +641,7 @@ def main():
                         "source": item.get('source', ''),
                         "_sources": item.get('_sources', [item.get('source', '')]),
                         "published_at": item.get('published_at', ''),
-                        "fact": (lr.get('fact', '') or '無具體數字')[:60],
+                        "fact": (lr.get('fact', '') or '無具體數字')[:120],
                         "impact": (lr.get('impact', '') or ''),
                         "signal": lr.get('signal', 'low'),
                         "companies": [c for c in (lr.get('companies', []) or []) if re.match(r'^\d{4}$', str(c))],

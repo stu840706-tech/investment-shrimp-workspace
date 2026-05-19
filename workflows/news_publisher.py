@@ -357,7 +357,7 @@ def main():
             companies = list(dict.fromkeys(it.get('companies', [])))
             if companies:
                 c = companies[0]
-                name = COMPANY_NAMES.get(c, '')
+                name = it.get('company_names', {}).get(c, '') or COMPANY_NAMES.get(c, '')
                 label = f"{c} {name}" if name else c
             else:
                 label = it.get('title', '')[:30]
