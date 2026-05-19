@@ -76,7 +76,9 @@ def fetch_tracking_stocks(secrets):
             code = title[0].get("text", {}).get("content", "").strip()
             if code:
                 stock_id = code.replace(".TW", "").replace(".TWO", "").strip()
-                stocks.append({"code": code, "stock_id": stock_id})
+                name_arr = props.get("公司名稱", {}).get("rich_text", [])
+                company_name = name_arr[0].get("text", {}).get("content", "") if name_arr else ""
+                stocks.append({"code": code, "stock_id": stock_id, "company_name": company_name})
     return stocks
 
 
@@ -184,6 +186,8 @@ def write_event(stock_code, event, secrets, dry_run=False):
     props = {
         "預計日期": {"title": [{"text": {"content": event["date"]}}]},
         "股票代碼": {"rich_text": rt(stock_code)},
+ "公司名稱": {"rich_text": rt(event.get("company_name", ""))},
+        "公司名稱": {"rich_text": rt(event.get("company_name", ""))},
         "事件類型": {"select": {"name": event["event_type"]}},
         "重要性":   {"select": {"name": "高"}},
         "已提醒":   {"checkbox": False},
@@ -240,9 +244,11 @@ def main():
     new_events = []
     for s in stocks:
         code, stock_id = s["code"], s["stock_id"]
+        company_name = s.get("company_name", "")
         print(f"  處理: {code}")
         try:
             for ev in fetch_month_revenue_dates(stock_id, token, today, end_date):
+                ev["company_name"] = company_name
                 if write_event(code, ev, secrets, args.dry_run):
                     new_events.append((code, ev))
             time.sleep(0.5)
