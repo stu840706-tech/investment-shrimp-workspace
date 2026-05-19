@@ -64,7 +64,7 @@ def load_scan_results(date_str):
 
 # ==================== 計分邏輯 ====================
 
-NEGATIVE_TAGS = {"董監事或大股東申報轉讓 > 持股 5%"}
+NEGATIVE_TAGS = {"董監事或大股東申報轉讓 > 持股 5%", "營收下滑"}
 
 def build_company_scores(scan_results):
     """
@@ -152,7 +152,9 @@ def build_company_scores(scan_results):
             len(d["chip_pos_tags"]) +
             len(d["ind_tags"])
         )
-        d["all_neg_count"] = len(d["chip_neg_tags"])
+        rev_neg_tags = [t for t in rev_tags if t in NEGATIVE_TAGS]
+        rev_tags = [t for t in rev_tags if t not in NEGATIVE_TAGS]
+        d["all_neg_count"] = len(d["chip_neg_tags"]) + len(rev_neg_tags)
 
     return companies
 
@@ -372,6 +374,18 @@ def append_blocks(page_id, blocks):
         if len(blocks) > 100:
             time.sleep(0.5)
 
+
+def query_topn_today(headers, db_id, date_str):
+    """Query Top N DB for existing record with given date. Returns page_id or None."""
+    import requests as _rq
+    r = _rq.post(
+        f"https://api.notion.com/v1/databases/{db_id}/query",
+        headers=headers,
+        json={"filter": {"property": "日期", "title": {"equals": date_str}}}
+    )
+    results = r.json().get("results", [])
+    return results[0]["id"] if results else None
+
 def create_summary_page(date_str, companies):
     date_iso = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
     title = f"📋 掃描摘要 {date_iso}"
@@ -464,7 +478,7 @@ def main():
         items.sort(key=lambda x: sign * _val(x[1]))
         return items[:n]
     POS_TAG_FIELDS = [("rev_tags","💰"),("fin_tags","📊"),("chip_pos_tags","🧩"),("ind_tags","🏭")]
-    NEG_TAG_FIELDS = [("chip_neg_tags","⚠️")]
+    NEG_TAG_FIELDS = [("chip_neg_tags","⚠️"), ("rev_neg_tags","📉")]
 
     def fmt_rows(items, key, neg=False):
         lines = []

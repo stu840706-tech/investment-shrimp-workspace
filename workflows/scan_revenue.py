@@ -235,12 +235,15 @@ def scan_monthly_revenue():
             stats['cond4'] += 1
 
         # 觸發：任一條件
-        any_trigger = cond1 or cond2_all or cond2_2y or cond4
+        cond_neg = yoy_pct is not None and yoy_pct < -10
+        any_trigger = cond1 or cond2_all or cond2_2y or cond4 or cond_neg
         if any_trigger:
             stats['triggered'] += 1
             flag_parts = []
             if cond1:
                 flag_parts.append('雙增')
+            if cond_neg:
+                flag_parts.append('營收下滑')
             if cond2_all:
                 flag_parts.append('上市新高')
             if cond2_2y:
