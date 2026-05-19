@@ -159,13 +159,11 @@ def check_dashboard_exists(token, date_str):
   
 # ── 區塊一：市場掃描摘要 ──────────────────────────────────────  
   
-def section_scan_summary(token, date_str):  
-    """連結到 daily-scan-summary 子頁面（搜尋今日掃描摘要）"""  
-    blocks = [h2("📊 市場掃描摘要")]  
-    try:  
-        # 搜尋今日掃描摘要頁面  
-        date_iso = date_str  # YYYY-MM-DD  
-        title = f"📋 掃描摘要 {date_iso}"  
+def section_scan_summary(token, date_str, scan_date_for_summary=None):
+    blocks = [h2("📊 市場掃描摘要")]
+    try:
+        date_iso = scan_date_for_summary if scan_date_for_summary else date_str
+        title = f"📋 掃描摘要 {date_iso}"
         result = npost(token, f"{NOTION_API}/search", {  
             "query": title,  
             "filter": {"value": "page", "property": "object"},  
@@ -455,7 +453,7 @@ def build_blocks(token, secrets, date_str):
     blocks.append(divider())  
   
     sections = [  
-        ("市場掃描摘要", section_scan_summary,    (token, date_str)),  
+        ("市場掃描摘要", section_scan_summary,    (token, date_str, scan_date_for_summary)),  
         ("券商日摘",     section_broker_digest,   (token, date_str)),  
         ("追蹤個股",     section_tracking,        (token, secrets, date_str)),  
         ("法說行事曆",   section_events,          (token, secrets)),  
@@ -586,6 +584,14 @@ def main():
     _scan_candidates = sorted(STATE_DIR.glob("scan_results_*.json"), reverse=True)
     scan_file = _scan_candidates[0] if _scan_candidates else None
     stock_count = 0
+    # 從 scan_results 檔名反解掃描日期（YYYYMMDD → YYYY-MM-DD）
+    scan_date_for_summary = None
+    if scan_file:
+        import re
+        m = re.search(r'scan_results_(\d{8})\.json', scan_file.name)
+        if m:
+            d = m.group(1)
+            scan_date_for_summary = f"{d[:4]}-{d[4:6]}-{d[6:8]}"
     if scan_file and scan_file.exists():  
         try:  
             data = json.loads(scan_file.read_text())  
