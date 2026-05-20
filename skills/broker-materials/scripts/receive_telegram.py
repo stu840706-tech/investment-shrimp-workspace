@@ -68,6 +68,47 @@ def pdf_to_text(pdf_path: Path) -> str:
     if pdf_path.suffix.lower() in (".txt", ".md"):
         return pdf_path.read_text(encoding="utf-8", errors="replace")
     
+    # Word 檔（.docx / .doc）
+    if pdf_path.suffix.lower() in (".docx", ".doc"):
+        try:
+            from docx import Document
+            doc = Document(str(pdf_path))
+            parts = [p.text for p in doc.paragraphs if p.text.strip()]
+            for tbl in doc.tables:
+                for row in tbl.rows:
+                    r = " | ".join(c.text.strip() for c in row.cells if c.text.strip())
+                    if r: parts.append(r)
+            t = "\n".join(parts)
+            if not t.strip(): raise RuntimeError("Word 內容為空")
+            return t
+        except ImportError:
+            raise RuntimeError("需安裝 python-docx: pip install python-docx --break-system-packages")
+        except Exception as e:
+            raise RuntimeError(f"Word 讀取失敗: {e}")
+
+    # ZIP 壓縮檔
+    if pdf_path.suffix.lower() == ".zip":
+        import zipfile, tempfile; texts = []
+        try:
+            with zipfile.ZipFile(pdf_path, "r") as z:
+                ms = [
+                    n for n in z.namelist()
+                    if not n.endswith("/")
+                    and Path(n).suffix.lower() in (".pdf",".docx",".doc",".txt",".md")]
+                if not ms: raise RuntimeError("ZIP 內無可讀檔案")
+                for name in ms:
+                    tp = Path(tempfile.mktemp(suffix=Path(name).suffix.lower()))
+                    try:
+                        with z.open(name) as fz: tp.write_bytes(fz.read())
+                        ft = pdf_to_text(tp)
+                        if ft.strip(): texts.append(f"=== {Path(name).name} ===\n{ft}")
+                    except Exception as ie: texts.append(f"=== {Path(name).name} === [失敗:{ie}]")
+                    finally:
+                        if tp.exists(): tp.unlink()
+        except zipfile.BadZipFile as e: raise RuntimeError(f"ZIP 損壞:{e}")
+        if not texts: raise RuntimeError("ZIP 內所有檔案讀取失敗")
+        return "\n\n".join(texts)
+
     # Step 1: 嘗試 pdfplumber，若文字層內容豐富則直接使用
     script_dir = PDF_READER.parent.resolve()
     sys.path.insert(0, str(script_dir))
@@ -361,6 +402,16 @@ def _fallback_from_markdown(md_raw: str) -> dict | None:
         return result
 
 
+def _extract_broker_name(thinking: str) -> str:
+    """從 thinking 文字萃取券商名稱，找不到回傳 '未知'。"""
+    for kw in ["富邦","元大","國泰","凱基","統一","永豐金","群益","兆豐",
+                "中信","日盛","華南","台新","第一金","玉山","遠東","福邦",
+                "大和","野村","麥格理","美林","摩根","高盛","瑞銀","德意志",
+                "匯豐","花旗","法巴","巴克萊"]:
+        if kw in thinking: return kw
+    return "未知"
+
+
 def _fallback_from_thinking(blocks: list) -> dict | None:
     """當 M2.7 只回傳 thinking block 時，從文字內容萃取欄位。"""
     import re
@@ -381,8 +432,8 @@ def _fallback_from_thinking(blocks: list) -> dict | None:
                 result = {
                     "category": "morning_brief",
                     "confidence": "low",
-                    "broker_name": "福邦",
-                    "core_view": f"來源：福邦投顧報告。涵蓋股票：{', '.join(all_codes) if all_codes else '未識別'}. {thinking[:300]}"
+                    "broker_name": _extract_broker_name(thinking),
+                    "core_view": f"來源：{_extract_broker_name(thinking)}報告。涵蓋股票：{', '.join(all_codes) if all_codes else '未識別'}. {thinking[:300]}"
                 }
                 print(f"  [FALLBACK] thinking: morning_brief (codes={all_codes})")
                 return result
@@ -395,10 +446,10 @@ def _fallback_from_thinking(blocks: list) -> dict | None:
                     "confidence": "low",
                     "stock_code": stock_code,
                     "company_name": "",
-                    "broker_name": "福邦",
+                    "broker_name": _extract_broker_name(thinking),
                     "rating": rating,
                     "target_price": float(tp) if tp != "0" else 0,
-                    "core_view": f"來源：福邦投顧報告。評等：{rating}。目標價：{tp}元。內容：{thinking[:300]}",
+                    "core_view": f"來源：{_extract_broker_name(thinking)}報告。評等：{rating}。目標價：{tp}元。內容：{thinking[:300]}",
                     "key_excerpt": thinking[:500]
                 }
                 print(f"  [FALLBACK] thinking: stock_report ({stock_code})")
@@ -452,6 +503,21 @@ def write_investor_meeting(stock_code: str, meeting_date: str, secrets: dict):
         timeout=15,
     )
     resp.raise_for_status()
+
+
+def _make_content_blocks(core_view: str, key_excerpt: str) -> list:
+    """生成 Notion 頁面內文 blocks（核心觀點 + 關鍵摘錄）。"""
+    blocks = [
+        {"object":"block","type":"heading_2","heading_2":{"rich_text":[{"text":{"content":"📊 核心觀點"}}]}},
+        {"object":"block","type":"paragraph","paragraph":{"rich_text":[{"text":{"content":core_view[:2000]}}]}},
+        {"object":"block","type":"divider","divider":{}},
+    ]
+    if key_excerpt.strip():
+        blocks += [
+            {"object":"block","type":"heading_2","heading_2":{"rich_text":[{"text":{"content":"📄 關鍵摘錄"}}]}},
+            {"object":"block","type":"paragraph","paragraph":{"rich_text":[{"text":{"content":key_excerpt[:2000]}}]}},
+        ]
+    return blocks
 
 
 def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
@@ -510,11 +576,30 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
             if stocks:
                 props[nkey] = {"multi_select": [{"name": str(s)[:100]} for s in stocks[:10]]}
 
-    else:  # morning_brief
-        return ""
+    elif category == "morning_brief":
+        db_id = secrets["notion_industry_reports_db"]
+        broker = str(fields.get("broker_name") or "未知")
+        rt = lambda s: {"rich_text": [{"text": {"content": s}}]}
+        props = {
+            "產業主題": {"title": rt(f"晨報｜{broker}")},
+            "券商名稱": {"select": {"name": broker[:100]}},
+            "報告日期": {"date": {"start": report_date}},
+            "核心觀點": rt(fields.get("core_view", "")),
+            "關鍵數字": rt(""),
+            "原始內文_關鍵段落": rt(fields.get("core_view", "")),
+            "產業分類": {"multi_select": [{"name": "晨報"}]},
+        }
+        stocks = fields.get("beneficiary_stocks") or []
+        if stocks:
+            props["受惠標的"] = {"multi_select": [{"name": str(s)[:100]} for s in stocks[:10]]}
+        else:
+            return ""
+        # fall through to write
+
 
     props["digest_mark"] = {"rich_text": [{"text": {"content": "processed"}}]}
-    body = {"parent": {"database_id": db_id}, "properties": props}
+    children = _make_content_blocks(str(fields.get("core_view","")), str(fields.get("key_excerpt","")))
+    body = {"parent": {"database_id": db_id}, "properties": props, "children": children}
     resp = requests.post(f"{NOTION_API}/pages", headers=headers, json=body, timeout=30)
     resp.raise_for_status()
     return resp.json().get("url", "")
@@ -585,8 +670,12 @@ def process_file(file_path: Path, secrets: dict):
                f"分類: {category}\n"
                f"摘要: {json.dumps(result, ensure_ascii=False)[:400]}")
         notify_telegram(msg, secrets)
-        print("[INFO] 信心低，通知 Kai，停止寫入 Notion")
-        return
+        result["core_view"] = "[待確認] " + str(result.get("core_view", ""))
+        print("[INFO] 信心低，標記 [待確認] 後繼續寫 Notion")
+
+    # morning_brief: 注入股票代碼清單供 write_to_notion 使用
+    if category == "morning_brief":
+        result["beneficiary_stocks"] = list(dict.fromkeys(re.findall(r'\b[12][0-9]{3}\b', text)))[:8]
 
     # Step 4: 寫入 Notion
     print("[3/4] 寫入 Notion...")
@@ -633,7 +722,7 @@ def process_file(file_path: Path, secrets: dict):
             f.write(f"核心觀點：{core_view}\n")
             f.write(f"原文：{text[:3000]}\n")
         # 一行確認
-        notify_telegram(f"✅ 已收晨報 {broker_name}｜股票：{code_line}", secrets)
+        notify_telegram(f"✅ 已收晨報 {broker_name}｜股票：{code_line}\n🔗 {page_url}", secrets)
 
     # Step 5b: 若 stock_report 有法說會日期，寫入 event_calendar
     if category == "stock_report":
