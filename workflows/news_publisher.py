@@ -55,9 +55,9 @@ def make_concl(impact, max_len=40):
 def fix_yr(text, year):
     if not text:
         return text
-    return re.sub(r'202[0-4]年', str(year) + '年', text)
+    return re.sub(r'202[01]年', str(year) + '年', text)
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 MEMORY_DIR = Path(__file__).parent.parent / "memory"
@@ -75,7 +75,11 @@ BROWSER_HEADERS = {
 
 def get_hour_arg():
     """Returns (hour, date_str)"""
-    hour = sys.argv[1].zfill(2) if len(sys.argv) >= 2 else (datetime.now().strftime("%H") if int(datetime.now().strftime("%H")) < 12 else "19")
+    if len(sys.argv) >= 2:
+        hour = sys.argv[1].zfill(2)
+    else:
+        _tw = datetime.now(tz=timezone.utc).astimezone(timezone(timedelta(hours=8)))
+        hour = "07" if _tw.hour < 12 else "19"
     date_str = sys.argv[2] if len(sys.argv) >= 3 else datetime.now().strftime("%Y%m%d")
     return hour, date_str
 
@@ -228,7 +232,7 @@ def mark_sent(today_str: str, period: str):
             for old_key in keys[:-60]:
                 del state[old_key]
         SENT_STATE_FILE.write_text(
-            __import__("json").dumps(state, ensure_ascii=False, indent=2),
+            json.dumps(state, ensure_ascii=False, indent=2),
             encoding="utf-8"
         )
     except Exception as e:
@@ -277,7 +281,7 @@ def main():
     
     # 彙總相同 cluster
     print(f"\n[3] 彙總 cluster...")
-    clustered = cluster_sources(active_items)
+    clustered = active_items
     print(f"  彙總後：{len(clustered)} 筆")
     
     # 分類
@@ -300,6 +304,11 @@ def main():
     high = _dedup(high)
     medium = _dedup(medium)
 
+    # 去重項目分離：signal=medium 但 fact 含去重字串 → 降到 ⚪
+    DEDUP_MARKER = "7天內已出現"
+    medium_clean = [it for it in medium if DEDUP_MARKER not in it.get("fact", "")]
+    medium_dup = [it for it in medium if DEDUP_MARKER in it.get("fact", "")]
+
     # 格式化輸出
     print(f"\n[4] 格式化簡報...")
     SEP = "─" * 22
@@ -308,7 +317,7 @@ def main():
     lines = []
     lines.append(f"📰 投資蝦{period_label} {now.strftime('%m/%d %H:%M')}")
     lines.append(market_bg)
-    lines.append(f"處理 {len(items)} 則 | 🔴高{len(high)} 🟡中{len(medium)}")
+    lines.append(f"處理 {len(items)} 則 | 🔴高{len(high)} 🟡中{len(medium_clean)}")
 
     if high:
         lines.append("")
@@ -331,10 +340,10 @@ def main():
                 lines.append("⚠️ 需人工確認全文")
             lines.append("")
 
-    if medium:
-        lines.append(f"🟡 中重要性（{len(medium)}則）")
+    if medium_clean:
+        lines.append(f"🟡 中重要性（{len(medium_clean)}則）")
         lines.append(SEP)
-        for it in medium[:8]:
+        for it in medium_clean[:8]:
             lines.append(fmt_hdr(it))
             impact = fix_yr(it.get('impact', ''), CUR_YEAR)
             fact = fix_yr(it.get('fact', ''), CUR_YEAR)
@@ -349,7 +358,7 @@ def main():
 
     pending_items = [it for it in clustered if it.get('signal') == 'pending']
     valid_low = [it for it in low if len(it.get('title', '')) >= 15]
-    compact_items = _dedup(pending_items + valid_low)[:9]
+    compact_items = _dedup(pending_items + valid_low + medium_dup)[:9]
     if compact_items:
         lines.append(SEP)
         lines.append("⚪ 待驗證 / 低重要")
@@ -360,7 +369,7 @@ def main():
                 name = it.get('company_names', {}).get(c, '') or COMPANY_NAMES.get(c, '')
                 label = f"{c} {name}" if name else c
             else:
-                label = it.get('title', '')[:30]
+                label = it.get('title', '')[:45]
             fact = it.get('fact', '')
             if fact and fact not in ('無具體數字', '有具體數字', ''):
                 lines.append(f"• {label}｜{fact[:45]}")
