@@ -94,7 +94,22 @@ def get_twse_3insti(date_str):
         records = []
         for row in data['data']:
             rec = dict(zip(fields, [c.strip() for c in row]))
+            # 正規化：TWSE T86 欄位名稱相容舊名稱
+            if '證券代號' in rec:
+                rec.setdefault('股票代號', rec['證券代號'])
+                rec.setdefault('股票名稱', rec.get('證券名稱', ''))
+            # 動態找出「外陸資」買進/賣出/買賣超欄位（欄位名含括號後綴）
+            fore_buy_key = next((k for k in rec if "外陸資買進" in k), None)
+            fore_sell_key = next((k for k in rec if "外陸資賣出" in k), None)
+            fore_net_key = next((k for k in rec if "外陸資買賣超" in k), None)
+            if fore_buy_key:
+                rec.setdefault('外援買進股數', rec[fore_buy_key])
+            if fore_sell_key:
+                rec.setdefault('外援賣出股數', rec[fore_sell_key])
+            if fore_net_key:
+                rec.setdefault('外援買賣超股數', rec[fore_net_key])
             records.append(rec)
+        return records
         return records
     return []
 
