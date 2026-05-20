@@ -414,14 +414,14 @@ def query_topn_today(headers, db_id, date_str):
     results = r.json().get("results", [])
     return results[0]["id"] if results else None
 
-def create_summary_page(date_str, companies):
+def create_summary_page(date_str, companies, parent_page_id=None):
     date_iso = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
     title = f"📋 掃描摘要 {date_iso}"
     now_str = now_tw().strftime("%Y-%m-%d %H:%M")
 
     # 建立頁面（先空白）
     page_payload = {
-        "parent": {"type": "page_id", "page_id": SCAN_RESULTS_PAGE_ID},
+        "parent": {"type": "page_id", "page_id": parent_page_id or SCAN_RESULTS_PAGE_ID},
         "properties": {
             "title": {"title": [{"text": {"content": title}}]}
         }
@@ -492,7 +492,29 @@ def main():
         archive_page(existing_id)
         time.sleep(1)
 
-    page_id = create_summary_page(date_str, companies)
+    _topn_headers = {
+        "Authorization": f"Bearer {SECRETS['notion_key']}",
+        "Notion-Version": "2022-06-28",
+        "Content-Type": "application/json",
+    }
+    _date_iso = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
+    _topn_db = "bea3f040-7da1-4b6b-8acc-63f0b8e4f453"
+    topn_page_id = query_topn_today(_topn_headers, _topn_db, _date_iso)
+    if topn_page_id is None:
+        import requests as _rq_topn
+        _r0 = _rq_topn.post(
+            "https://api.notion.com/v1/pages",
+            headers=_topn_headers,
+            json={"parent": {"database_id": _topn_db},
+                  "properties": {"日期": {"title": [{"text": {"content": _date_iso}}]}}},
+            timeout=10
+        )
+        topn_page_id = _r0.json().get("id", "")
+        print(f"[Notion] Top N DB 新建 record: {topn_page_id[:8]}...")
+    else:
+        print(f"[Notion] Top N DB 已有 {_date_iso} record: {topn_page_id[:8]}...")
+
+    page_id = create_summary_page(date_str, companies, parent_page_id=topn_page_id)
     notion_url = f"https://notion.so/{page_id.replace('-', '')}"
 
     # ── 排序輔助（複用 section 函式內的邏輯）──

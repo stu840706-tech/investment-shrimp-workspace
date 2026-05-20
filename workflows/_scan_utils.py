@@ -103,11 +103,11 @@ def get_twse_3insti(date_str):
             fore_sell_key = next((k for k in rec if "外陸資賣出" in k), None)
             fore_net_key = next((k for k in rec if "外陸資買賣超" in k), None)
             if fore_buy_key:
-                rec.setdefault('外援買進股數', rec[fore_buy_key])
+                rec.setdefault('外資買進股數', rec[fore_buy_key])
             if fore_sell_key:
-                rec.setdefault('外援賣出股數', rec[fore_sell_key])
+                rec.setdefault('外資賣出股數', rec[fore_sell_key])
             if fore_net_key:
-                rec.setdefault('外援買賣超股數', rec[fore_net_key])
+                rec.setdefault('外資買賣超股數', rec[fore_net_key])
             records.append(rec)
         return records
         return records
