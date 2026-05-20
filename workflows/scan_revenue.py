@@ -259,7 +259,7 @@ def scan_monthly_revenue():
                 'revenue': cur_rev,
                 'yoy_pct': round(yoy_pct, 1) if yoy_pct is not None else None,
                 'mom_pct': round(mom_pct, 1) if mom_pct is not None else None,
-                'detail': f"{' + '.join(flag_parts)} | YoY:{yoy_pct:.0f}% MoM:{mom_pct:.0f}%" if yoy_pct is not None else '',
+                'detail': (f"{' + '.join(flag_parts)} | YoY:{yoy_pct:.0f}% MoM:{mom_pct:.0f}%" if yoy_pct is not None and mom_pct is not None else f"{' + '.join(flag_parts)} | YoY:{yoy_pct:.0f}%" if yoy_pct is not None else ''),
                 'flags': flag_parts,
             })
 

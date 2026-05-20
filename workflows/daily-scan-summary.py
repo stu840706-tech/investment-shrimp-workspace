@@ -109,6 +109,7 @@ def build_company_scores(scan_results):
         "上市新高": "營收創歷史新高",
         "近2年高": "營收創近兩年新高",
         "連3月遞增": "營收連續成長月數 > 3",
+    "營收下滑": "營收下滑(YoY<-10%)",
     }
     for e in results.get("月營收異常", []):
         code = str(e.get("code", "")).strip()
@@ -120,6 +121,31 @@ def build_company_scores(scan_results):
                 companies[code]["rev_tags"].append(tag)
         companies[code]["rev_yoy"] = e.get("yoy_pct")
         companies[code]["rev_mom"] = e.get("mom_pct")
+
+    # 季財報（三率/毛利/EPS）→ fin_tags
+    def _q_flag_to_fin(flag):
+        if flag == "三率齊升": return "毛/營/淨利率三率齊升"
+        if flag == "三率齊升(營收衰退-轉型信號)": return "三率齊升(轉型信號)"
+        if flag.startswith("毛利跳升"): return flag
+        if flag.startswith("EPS加速"): return flag
+        if flag.startswith("業外偏高"): return flag  # 負面訊號，暫放 fin_tags
+        return None
+
+    for e in results.get("季財報", []):
+        code = str(e.get("code", "")).strip()
+        if not code:
+            continue
+        if code not in companies:
+            companies[code] = {
+                "name": e.get("name", ""), "code": code,
+                "rev_tags": [], "fin_tags": [], "chip_pos_tags": [],
+                "chip_neg_tags": [], "ind_tags": [], "rev_neg_tags": [],
+                "rev_yoy": None, "rev_mom": None, "ind_yoy_diff": None,
+            }
+        for flag in e.get("flags", []):
+            fin_tag = _q_flag_to_fin(flag)
+            if fin_tag:
+                companies[code]["fin_tags"].append(fin_tag)
 
     # 三大法人（目前只有內部人警示 = 負面）
     for e in results.get("三大法人", []):
@@ -152,8 +178,9 @@ def build_company_scores(scan_results):
             len(d["chip_pos_tags"]) +
             len(d["ind_tags"])
         )
-        rev_neg_tags = [t for t in rev_tags if t in NEGATIVE_TAGS]
-        rev_tags = [t for t in rev_tags if t not in NEGATIVE_TAGS]
+        rev_neg_tags = [t for t in d["rev_tags"] if t in NEGATIVE_TAGS]
+        d["rev_tags"] = [t for t in d["rev_tags"] if t not in NEGATIVE_TAGS]
+        d["rev_neg_tags"] = rev_neg_tags
         d["all_neg_count"] = len(d["chip_neg_tags"]) + len(rev_neg_tags)
 
     return companies
@@ -325,7 +352,8 @@ def section_neg_top15(companies):
         return blocks
     rows = []
     for i, (code, d) in enumerate(ranked, 1):
-        tags_str = "、".join(d["chip_neg_tags"])
+        all_neg_t = d.get("chip_neg_tags", []) + d.get("rev_neg_tags", [])
+        tags_str = "、".join(all_neg_t)
         rows.append([f"{i}", f"{d['name']}/{code}", str(d["all_neg_count"]), tags_str])
     blocks.append(make_table_block(["#", "股票", "負面標籤數", "命中標籤"], rows))
     return blocks
