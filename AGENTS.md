@@ -71,7 +71,7 @@ commit message 格式：`<批次/任務>: <一句話說明>`
 | S-1 | 06:00 執行營收掃描，發現異常主動發送 Telegram |
 | S-2 | 09:00 檢查當日重大事件，有追蹤中個股相關事件主動通知 |
 | S-3 | 處理 Telegram Group -5290205228 傳來的券商材料（M2.7 自動分類） |
-| S-4 | 背景 daemon file_receiver.py 負責接收所有券商材料並排隊至 state/broker_queue/（每 2 分鐘由 cron 確保存活）；OpenClaw session 中若收到文件，同樣下載至 broker_queue/ 即可，不需逐份回報。Kai 說「處理券商報告」後執行 python3 skills/broker-materials/scripts/batch_process.py。 |
+| S-4 | 收到券商材料（PDF/Word/ZIP/TXT）時兩階段處理：【接收】每收到一個檔案立即下載至 state/broker_queue/ 目錄，不需回報、不需處理，繼續 polling；【處理】Kai 說「處理券商報告」後執行 python3 skills/broker-materials/scripts/batch_process.py，逐一處理佇列中所有檔案，完成後回報「成功 X 份 / 失敗 Y 份」。 |
 | S-5 | 每 30 分鐘 Heartbeat 檢查 API 額度與待處理任務 |
 | S-6 | Workflow 失敗觸發 escalation 時立即通知 Kai |
 | S-7 | 每日 23:00 掃 stock_tracking，outcome_review_date 到期項目自動執行 Outcome Review |
