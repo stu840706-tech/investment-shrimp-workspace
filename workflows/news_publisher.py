@@ -38,10 +38,16 @@ def abbrev_source(src):
 
 def fmt_hdr(it):
     companies = list(dict.fromkeys(it.get('companies', [])))
+    dyn = it.get('company_names', {}) or {} # LLM 動態填的公司名稱
+    tag = it.get('tag', '')
+    tag_str = ' 🟢' if tag == '利多' else (' 🔴' if tag == '利空' else '')
     if companies:
-        parts = ['{} {}'.format(c, COMPANY_NAMES[c]) if c in COMPANY_NAMES else c for c in companies[:3]]
-        return '▸ ' + ' / '.join(parts)
-    return '▸ ' + it.get('title', '')[:40]
+        parts = []
+        for c in companies[:3]:
+            name = COMPANY_NAMES.get(c) or dyn.get(c, '')
+            parts.append(f'{c} {name}' if name else c)
+        return '▸ ' + ' / '.join(parts) + tag_str
+    return '▸ ' + it.get('title', '')[:45] + tag_str
 
 def make_concl(impact, max_len=40):
     if not impact:
@@ -306,8 +312,10 @@ def main():
 
     # 去重項目分離：signal=medium 但 fact 含去重字串 → 降到 ⚪
     DEDUP_MARKER = "7天內已出現"
-    medium_clean = [it for it in medium if DEDUP_MARKER not in it.get("fact", "")]
+    INSUFF_MARKER = "資訊量不足"
+    medium_clean = [it for it in medium if DEDUP_MARKER not in it.get("fact", "") and INSUFF_MARKER not in it.get("impact", "")]
     medium_dup = [it for it in medium if DEDUP_MARKER in it.get("fact", "")]
+    medium_insuff = [it for it in medium if INSUFF_MARKER in it.get("impact", "") and DEDUP_MARKER not in it.get("fact", "")]
 
     # 格式化輸出
     print(f"\n[4] 格式化簡報...")
@@ -327,9 +335,6 @@ def main():
             lines.append(fmt_hdr(it))
             impact = fix_yr(it.get('impact', ''), CUR_YEAR)
             fact = fix_yr(it.get('fact', ''), CUR_YEAR)
-            concl = make_concl(impact)
-            if concl:
-                lines.append(f"💡 {concl}")
             if fact and fact not in ('無具體數字', ''):
                 lines.append(f"核心事實：{fact}")
             if impact:
@@ -347,9 +352,6 @@ def main():
             lines.append(fmt_hdr(it))
             impact = fix_yr(it.get('impact', ''), CUR_YEAR)
             fact = fix_yr(it.get('fact', ''), CUR_YEAR)
-            concl = make_concl(impact)
-            if concl:
-                lines.append(f"💡 {concl}")
             if fact and fact not in ('無具體數字', ''):
                 lines.append(f"核心事實：{fact}")
             if impact:
@@ -358,7 +360,7 @@ def main():
 
     pending_items = [it for it in clustered if it.get('signal') == 'pending']
     valid_low = [it for it in low if len(it.get('title', '')) >= 15]
-    compact_items = _dedup(pending_items + valid_low + medium_dup)[:9]
+    compact_items = _dedup(pending_items + valid_low + medium_dup + medium_insuff)[:9]
     if compact_items:
         lines.append(SEP)
         lines.append("⚪ 待驗證 / 低重要")
