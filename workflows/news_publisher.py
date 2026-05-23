@@ -249,12 +249,9 @@ def main():
     hour, date_str = get_hour_arg()
     from datetime import timezone, timedelta
     TZ_TAIPEI = timezone(timedelta(hours=8))
-    # Normalize date_str (YYYYMMDD) to YYYY-MM-DD for sent_state key
-    if len(date_str) == 8:
-        today_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
-    else:
-        today_str = date_str
     now = datetime.now(tz=timezone.utc).astimezone(TZ_TAIPEI)
+    # today_str 永遠用 Taipei 即時日期（date_str 只用於檔案路徑 = UTC date）
+    today_str = now.strftime("%Y-%m-%d")
     # 優先使用 pipeline 傳入的 period 參數，避免重複 +8 換算
     if len(sys.argv) >= 4:
         period = sys.argv[3]  # "AM" or "PM" from pipeline
