@@ -50,6 +50,25 @@ def notion_post(url, payload):
 def notion_patch(url, payload):
     return notion_request("PATCH", url, payload)
 
+
+def clear_page_children(page_id):
+    """清空 page 的所有 children blocks（body 不會超過 100，不分頁）"""
+    try:
+        url = f"https://api.notion.com/v1/blocks/{page_id}/children?page_size=100"
+        result = notion_request("GET", url)
+        blocks = result.get("results", [])
+        for blk in blocks:
+            bid = blk.get("id")
+            if bid:
+                try:
+                    notion_request("DELETE", f"https://api.notion.com/v1/blocks/{bid}")
+                except Exception as e:
+                    print(f" [!] 刪除 block 失敗 {bid}: {e}")
+        if blocks:
+            print(f" [+] 清空 {len(blocks)} 個 children blocks")
+    except Exception as e:
+        print(f" [!] 清空 children 失敗: {e}")
+
 # ==================== 資料載入 ====================
 
 def load_scan_results(date_str):
@@ -485,40 +504,11 @@ def main():
         companies = dict(list(companies.items())[:50])
         print(" *** 測試模式：只取前 50 間 ***")
 
-    # 刪除同一天已有的舊摘要
-    existing_id = find_existing_summary_page(date_str)
-    if existing_id:
-        print(f" [*] 發現已有摘要頁面，先刪除: {existing_id}")
-        archive_page(existing_id)
-        time.sleep(1)
+    # ── 路線 B 重構（2026-05-23）：Top N DB 單一 record，properties + body 一次寫完 ──
+    # 計算 ranked 列表（提前到 record 建立前）
+    POS_TAG_FIELDS = [("rev_tags","💰"),("fin_tags","📊"),("chip_pos_tags","🧩"),("ind_tags","🏭")]
+    NEG_TAG_FIELDS = [("chip_neg_tags","⚠️"), ("rev_neg_tags","📉")]
 
-    _topn_headers = {
-        "Authorization": f"Bearer {SECRETS['notion_key']}",
-        "Notion-Version": "2022-06-28",
-        "Content-Type": "application/json",
-    }
-    _date_iso = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
-    _topn_db = "bea3f040-7da1-4b6b-8acc-63f0b8e4f453"
-    topn_page_id = query_topn_today(_topn_headers, _topn_db, _date_iso)
-    if topn_page_id is None:
-        import requests as _rq_topn
-        _r0 = _rq_topn.post(
-            "https://api.notion.com/v1/pages",
-            headers=_topn_headers,
-            json={"parent": {"database_id": _topn_db},
-                  "properties": {"日期": {"title": [{"text": {"content": _date_iso}}]}}},
-            timeout=10
-        )
-        topn_page_id = _r0.json().get("id", "")
-        print(f"[Notion] Top N DB 新建 record: {topn_page_id[:8]}...")
-    else:
-        print(f"[Notion] Top N DB 已有 {_date_iso} record: {topn_page_id[:8]}...")
-
-    page_id = create_summary_page(date_str, companies, parent_page_id=topn_page_id)
-    notion_url = f"https://notion.so/{page_id.replace('-', '')}"
-
-    # ── 排序輔助（複用 section 函式內的邏輯）──
-    # ── 排序輔助（複用 section 函式內的邏輯）──
     def ranked_list(key, n, neg=False):
         sign = 1 if neg else -1
         def _val(d):
@@ -527,8 +517,6 @@ def main():
         items = [(c, d) for c, d in companies.items() if _val(d) > 0]
         items.sort(key=lambda x: sign * _val(x[1]))
         return items[:n]
-    POS_TAG_FIELDS = [("rev_tags","💰"),("fin_tags","📊"),("chip_pos_tags","🧩"),("ind_tags","🏭")]
-    NEG_TAG_FIELDS = [("chip_neg_tags","⚠️"), ("rev_neg_tags","📉")]
 
     def fmt_rows(items, key, neg=False):
         lines = []
@@ -538,22 +526,26 @@ def main():
             cnt = len(val) if isinstance(val, list) else val
             header = f"{i}. {d.get('name', code)}/{code}（{cnt}）"
             if isinstance(val, list) and val:
-                # 單一維度（fin_tags / rev_tags 等）：直接換行列標籤
-                tag_lines = "\n ".join(val)
-                lines.append(f"{header}\n {tag_lines}")
+                tag_lines = "\n  ".join(val)
+                lines.append(f"{header}\n  {tag_lines}")
             else:
-                # 綜合計數（all_pos_count / all_neg_count）：各維度換行
                 breakdown = []
                 for tk, emoji in tag_fields:
                     tv = d.get(tk, [])
                     if tv:
-                        tag_lines = "\n ".join(tv)
-                        breakdown.append(f" {emoji} {tag_lines}")
+                        tag_lines = "\n  ".join(tv)
+                        breakdown.append(f"  {emoji} {tag_lines}")
                 if breakdown:
                     lines.append(header + "\n" + "\n".join(breakdown))
                 else:
                     lines.append(header)
         return "\n".join(lines) if lines else "（無資料）"
+
+    def to_str(items, key, n):
+        return ", ".join(
+            f"{d.get('name', c)}/{c}"
+            for _, (c, d) in enumerate(items[:n])
+        ) or "（無資料）"
 
     pos15 = ranked_list("all_pos_count", 15)
     neg15 = ranked_list("all_neg_count", 15, neg=True)
@@ -562,9 +554,68 @@ def main():
     chip10 = ranked_list("chip_pos_tags", 10)
     ind10 = ranked_list("ind_tags", 10)
 
-    # ── Telegram 推播（各類 Top 5）──
+    # ── Upsert Top N DB record（單一 record，含完整 properties）──
+    _topn_db = "bea3f040-7da1-4b6b-8acc-63f0b8e4f453"
+    _date_iso = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
+    _topn_headers = {
+        "Authorization": f"Bearer {SECRETS['notion_key']}",
+        "Notion-Version": "2022-06-28",
+        "Content-Type": "application/json",
+    }
+    _properties_payload = {
+        "日期": {"title": [{"text": {"content": _date_iso}}]},
+        "綜合正面 Top15": {"rich_text": [{"text": {"content": to_str(pos15, "all_pos_count", 15)}}]},
+        "綜合負面 Top15": {"rich_text": [{"text": {"content": to_str(neg15, "all_neg_count", 15)}}]},
+        "三率利多 Top10": {"rich_text": [{"text": {"content": to_str(fin10, "fin_tags", 10)}}]},
+        "營收亮眼 Top10": {"rich_text": [{"text": {"content": to_str(rev10, "rev_tags", 10)}}]},
+        "產業強弱 Top10": {"rich_text": [{"text": {"content": to_str(ind10, "ind_tags", 10)}}]},
+        "籌碼利多 Top10": {"rich_text": [{"text": {"content": to_str(chip10, "chip_pos_tags", 10)}}]},
+    }
+
+    existing_id = query_topn_today(_topn_headers, _topn_db, _date_iso)
+    if existing_id:
+        print(f"[Notion] Top N DB 已有 {_date_iso} record: {existing_id[:8]}...，更新 properties + 清空 body")
+        notion_patch(
+            f"https://api.notion.com/v1/pages/{existing_id}",
+            {"properties": _properties_payload}
+        )
+        clear_page_children(existing_id)
+        page_id = existing_id
+    else:
+        _page = notion_post(
+            "https://api.notion.com/v1/pages",
+            {"parent": {"database_id": _topn_db}, "properties": _properties_payload}
+        )
+        page_id = _page.get("id", "")
+        print(f"[Notion] Top N DB 新建 record: {page_id[:8]}...")
+
+    notion_url = f"https://notion.so/{page_id.replace('-', '')}"
+    print(f" [+] Top N record: {notion_url}")
+
+    # ── 寫 body blocks（六個 Top N section）──
+    now_str = now_tw().strftime("%Y-%m-%d %H:%M")
+    blocks = []
+    blocks.append(para(f"自動產生於 {now_str} (Asia/Taipei) | 掃描日期：{_date_iso} | 總公司數：{len(companies)}"))
+    blocks.append(divider())
+    for section_fn in [
+        section_fin_top10,
+        section_rev_top10,
+        section_industry_top10,
+        section_chip_top10,
+        section_pos_top15,
+        section_neg_top15,
+    ]:
+        try:
+            blocks.extend(section_fn(companies))
+        except Exception as e:
+            blocks.append(para(f"[ERROR] {section_fn.__name__} 失敗: {e}"))
+        blocks.append(divider())
+    append_blocks(page_id, blocks)
+    print(f" [+] 共寫入 {len(blocks)} 個 blocks 到 record body")
+
+    # ── Telegram 推播（連結指向 record 本身）──
     tg_msg = (
-        f"📊 每日 Top N｜{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}\n\n"
+        f"📊 每日 Top N｜{_date_iso}\n\n"
         f"⭐ 綜合正面 Top5：\n{fmt_rows(pos15[:5], 'all_pos_count')}\n\n"
         f"⚠️ 綜合負面 Top5：\n{fmt_rows(neg15[:5], 'all_neg_count')}\n\n"
         f"📊 三率利多 Top5：\n{fmt_rows(fin10[:5], 'fin_tags')}\n\n"
@@ -580,48 +631,15 @@ def main():
             json={"chat_id": SECRETS["telegram_dm"], "text": tg_msg},
             timeout=10
         )
-        print(f"[Telegram] Top N 推播{'成功' if r.ok else '失敗: ' + r.text[:80]}")
+        print(f"[Telegram] Top N 推刊{'成功' if r.ok else '失敗: ' + r.text[:80]}")
     except Exception as e:
-        print(f"[Telegram] 推播失敗（不影響主流程）: {e}")
-
-    # ── 寫入每日 Top N DB ──
-    def to_str(items, key, n):
-        return ", ".join(
-            f"{d.get('name', c)}/{c}"
-            for _, (c, d) in enumerate(items[:n])
-        ) or "（無資料）"
-
-    try:
-        import requests as _req2
-        r2 = _req2.post(
-            "https://api.notion.com/v1/pages",
-            headers={
-                "Authorization": f"Bearer {SECRETS['notion_key']}",
-                "Notion-Version": "2022-06-28",
-                "Content-Type": "application/json",
-            },
-            json={
-                "parent": {"database_id": "bea3f040-7da1-4b6b-8acc-63f0b8e4f453"},
-                "properties": {
-                    "日期": {"title": [{"text": {"content": f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"}}]},
-                    "綜合正面 Top15": {"rich_text": [{"text": {"content": to_str(pos15, "all_pos_count", 15)}}]},
-                    "綜合負面 Top15": {"rich_text": [{"text": {"content": to_str(neg15, "all_neg_count", 15)}}]},
-                    "三率利多 Top10": {"rich_text": [{"text": {"content": to_str(fin10, "fin_tags", 10)}}]},
-                    "營收亮眼 Top10": {"rich_text": [{"text": {"content": to_str(rev10, "rev_tags", 10)}}]},
-                    "產業強弱 Top10": {"rich_text": [{"text": {"content": to_str(ind10, "ind_tags", 10)}}]},
-                    "籌碼利多 Top10": {"rich_text": [{"text": {"content": to_str(chip10, "chip_pos_tags", 10)}}]},
-                    "Notion連結": {"url": notion_url},
-                }
-            },
-            timeout=10
-        )
-        print(f"[Notion] 每日 Top N DB 寫入{'成功' if r2.ok else '失敗: ' + r2.text[:80]}")
-    except Exception as e:
-        print(f"[Notion] Top N DB 寫入失敗（不影響主流程）: {e}")
+        print(f"[Telegram] 推刊失敗（不影響主流程）: {e}")
 
     print(f"\n[✓] 完成！")
-    print(f"摘要頁面: {notion_url}")
+    print(f"Top N record: {notion_url}")
     print("=" * 60)
+
+
 
 if __name__ == "__main__":
     main()
