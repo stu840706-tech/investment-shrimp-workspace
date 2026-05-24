@@ -19,117 +19,15 @@ import time, json
 
 
 def scan_margin_short(token, anomalies_out):
-    """
-    融資融券異常掃描（FinMind TaiwanStockMarginPurchaseShortSale）
-    三種訊號：
-    1. 融資高水位：MarginPurchaseTodayBalance / MarginPurchaseLimit > 80%
-    2. 融資單日暴增：今日 MarginPurchaseBuy > 前5日均值 * 2（且 > 500 張）
-    3. 融券暴增：今日 ShortSaleSell > 前5日均值 * 2（且 > 200 張）
-    結果 append 進 anomalies_out（type: 融資高水位 / 融資暴增 / 融券暴增）
-    """
-    import urllib.request, json
-    from datetime import datetime, timedelta
-    from collections import defaultdict
-
-    print(" [FinMind] 抓取融資融券資料...")
-    today = datetime.now()
-    start_date = (today - timedelta(days=10)).strftime("%Y-%m-%d")
-
-    url = (
-        "https://api.finmindtrade.com/api/v4/data"
-        "?dataset=TaiwanStockMarginPurchaseShortSale"
-        f"&start_date={start_date}"
-        f"&token={token}"
-    )
-    try:
-        req = urllib.request.Request(url)
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-    except Exception as e:
-        print(f" -> FinMind 融資融券抓取失敗: {e}")
-        return
-
-    if data.get("status") != 200:
-        print(f" -> FinMind 回傳非 200: {data.get('status')}")
-        return
-
-    all_rows = data.get("data", [])
-    if not all_rows:
-        print(" -> 融資融券：無資料（可能休市）")
-        return
-
-    stock_rows = defaultdict(list)
-    for row in all_rows:
-        stock_rows[row["stock_id"]].append(row)
-
-    def is_stock(code):
-        return code.isdigit() and len(code) == 4
-
-    found = 0
-    for code, rows in stock_rows.items():
-        if not is_stock(code):
-            continue
-        rows_sorted = sorted(rows, key=lambda x: x["date"])
-        if len(rows_sorted) < 2:
-            continue
-
-        latest = rows_sorted[-1]
-        prev_rows = rows_sorted[:-1]
-
-        # 1. 融資高水位
-        try:
-            balance = float(latest.get("MarginPurchaseTodayBalance", 0) or 0)
-            limit = float(latest.get("MarginPurchaseLimit", 1) or 1)
-            if limit > 0 and balance / limit > 0.8:
-                pct = balance / limit * 100
-                anomalies_out.append({
-                    "code": code,
-                    "name": code,
-                    "type": "融資高水位",
-                    "detail": f"融資使用率 {pct:.1f}%（餘額{balance:.0f}/限額{limit:.0f}張）",
-                    "source": "FinMind",
-                })
-                found += 1
-                continue
-        except Exception:
-            pass
-
-        # 2. 融資單日暴增
-        try:
-            today_buy = float(latest.get("MarginPurchaseBuy", 0) or 0)
-            prev_buys = [float(r.get("MarginPurchaseBuy", 0) or 0) for r in prev_rows[-5:]]
-            avg_buy = sum(prev_buys) / len(prev_buys) if prev_buys else 0
-            if today_buy > 500 and avg_buy > 0 and today_buy > avg_buy * 2:
-                anomalies_out.append({
-                    "code": code,
-                    "name": code,
-                    "type": "融資暴增",
-                    "detail": f"融資買入{today_buy:.0f}張，前5日均值{avg_buy:.0f}張，倍率{today_buy/avg_buy:.1f}x",
-                    "source": "FinMind",
-                })
-                found += 1
-        except Exception:
-            pass
-
-        # 3. 融券暴增
-        try:
-            today_short = float(latest.get("ShortSaleSell", 0) or 0)
-            prev_shorts = [float(r.get("ShortSaleSell", 0) or 0) for r in prev_rows[-5:]]
-            avg_short = sum(prev_shorts) / len(prev_shorts) if prev_shorts else 0
-            if today_short > 200 and avg_short > 0 and today_short > avg_short * 2:
-                anomalies_out.append({
-                    "code": code,
-                    "name": code,
-                    "type": "融券暴增",
-                    "detail": f"融券賣出{today_short:.0f}張，前5日均值{avg_short:.0f}張，倍率{today_short/avg_short:.1f}x",
-                    "source": "FinMind",
-                })
-                found += 1
-        except Exception:
-            pass
-
-    print(f" -> 融資融券異常：{found} 筆")
-
+ """
+ DEPRECATED 2026-05-24: FinMind register tier 永久限制全市場 query（必回 400 "Your level is register"）。
+ 融資融券掃描改由獨立 margin scanner 處理（per-stock query + checkpoint + 凌晨獨立排程）。
+ spec: memory/runbooks/margin_scanner_design.md
+ 本函式保留 hook 但 noop，避免每日 daily-scan pipeline 噪音 log。
+ 完整 implementation 待 scripts/scan_margin.py 落地（見 design doc 第 4 節）。
+ """
+ print(" [FinMind] 融資融券：已移至獨立 margin scanner（spec: memory/runbooks/margin_scanner_design.md）")
+ return
 
 def scan_3insti_chip():
     """

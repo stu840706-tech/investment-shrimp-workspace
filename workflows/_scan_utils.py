@@ -90,10 +90,10 @@ def get_twse_3insti(date_str):
     resp = requests.get(url, params=params, headers=BROWSER_HEADERS, timeout=30)
     data = resp.json()
     if isinstance(data, dict) and 'data' in data:
-        fields = [f.strip() for f in data.get('fields', [])]
+        fields = [(f.strip() if isinstance(f, str) else f) for f in data.get('fields', [])]
         records = []
         for row in data['data']:
-            rec = dict(zip(fields, [c.strip() for c in row]))
+            rec = dict(zip(fields, [(c.strip() if isinstance(c, str) else c) for c in row]))
             # 正規化：TWSE T86 欄位名稱相容舊名稱
             if '證券代號' in rec:
                 rec.setdefault('股票代號', rec['證券代號'])
@@ -109,7 +109,6 @@ def get_twse_3insti(date_str):
             if fore_net_key:
                 rec.setdefault('外資買賣超股數', rec[fore_net_key])
             records.append(rec)
-        return records
         return records
     return []
 
