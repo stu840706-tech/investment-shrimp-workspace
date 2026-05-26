@@ -631,9 +631,9 @@ def main():
             json={"chat_id": SECRETS["telegram_dm"], "text": tg_msg},
             timeout=10
         )
-        print(f"[Telegram] Top N 推刊{'成功' if r.ok else '失敗: ' + r.text[:80]}")
+        print(f"[Telegram] Top N 推播{'成功' if r.ok else '失敗: ' + r.text[:80]}")
     except Exception as e:
-        print(f"[Telegram] 推刊失敗（不影響主流程）: {e}")
+        print(f"[Telegram] 推播失敗（不影響主流程）: {e}")
 
     print(f"\n[✓] 完成！")
     print(f"Top N record: {notion_url}")
