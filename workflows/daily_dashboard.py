@@ -453,7 +453,7 @@ def section_weekly_health(token):
   
 # ── 建立 Notion 頁面 ─────────────────────────────────────────  
   
-def build_blocks(token, secrets, date_str):  
+def build_blocks(token, secrets, date_str, scan_date_for_summary=None):  
     """組裝所有區塊，每個區塊失敗不影響其他"""  
     now_str = datetime.now(TPE).strftime("%Y-%m-%d %H:%M")  
     blocks = []  
@@ -620,7 +620,7 @@ def main():
     print(f"  今日掃描個股數：{stock_count}")  
   
     print("  組裝 Dashboard blocks...")  
-    blocks = build_blocks(token, secrets, date_str)  
+    blocks = build_blocks(token, secrets, date_str, scan_date_for_summary)  
     print(f"  共 {len(blocks)} 個 blocks")  
   
     print("  寫入 Notion...")  
