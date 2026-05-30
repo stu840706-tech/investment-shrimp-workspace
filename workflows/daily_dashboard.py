@@ -36,7 +36,8 @@ NOTION_API = "https://api.notion.com/v1"
 TPE = timezone(timedelta(hours=8))  
   
 DASHBOARD_DB_ID = "dc9ca081-55a3-4726-b2d4-da9da67fcba5"  
-DIGEST_DB_ID    = "5129cfe1-911f-453b-9b97-ea7b4df8f5e7"  
+DIGEST_DB_ID    = "5129cfe1-911f-453b-9b97-ea7b4df8f5e7"
+TOPN_DB_ID = "bea3f0407da14b6b8acc63f0b8e4f453"  
   
   
 # ── Notion helpers ────────────────────────────────────────────  
@@ -163,28 +164,25 @@ def section_scan_summary(token, date_str, scan_date_for_summary=None):
     blocks = [h2("📊 市場掃描摘要")]
     try:
         date_iso = scan_date_for_summary if scan_date_for_summary else date_str
-        title = f"📋 掃描摘要 {date_iso}"
-        result = npost(token, f"{NOTION_API}/search", {  
-            "query": title,  
-            "filter": {"value": "page", "property": "object"},  
-            "page_size": 3,  
-        })  
-        found = False  
-        for page in result.get("results", []):  
-            props = page.get("properties", {})  
-            page_title = "".join(  
-                t.get("plain_text", "")  
-                for t in props.get("title", {}).get("title", [])  
-            )  
-            if page_title == title:  
-                url = page.get("url", "")  
-                blocks.append(callout(f"今日掃描摘要已產出，包含六個 Top N 分析", "📊"))  
-                if url:  
-                    blocks.append(bookmark(url, "點此查看完整 Top N 分析"))  
-                found = True  
-                break  
-        if not found:  
-            blocks.append(para("今日掃描摘要尚未產出（daily-scan-summary 未執行或執行中）"))  
+        pages = query_db(token, TOPN_DB_ID, filter_payload={
+            "property": "日期",
+            "title": {"equals": date_iso}
+        }, page_size=5)
+        chosen = None
+        for p in pages:
+            pp = p.get("properties", {})
+            if get_text(pp.get("營收亮眼 Top10")) or get_text(pp.get("綜合正面 Top15")):
+                chosen = p
+                break
+        if chosen is None and pages:
+            chosen = pages[0]
+        if chosen:
+            url = chosen.get("url", "")
+            blocks.append(callout("今日掃描摘要已產出，包含六個 Top N 分析", "📊"))
+            if url:
+                blocks.append(bookmark(url, "點此查看完整 Top N 分析"))
+        else:
+            blocks.append(para("今日掃描摘要尚未產出（daily-scan-summary 未執行或執行中）"))
     except Exception as e:  
         blocks.append(para(f"[ERROR] 讀取掃描摘要失敗: {e}"))  
     return blocks  
@@ -610,13 +608,15 @@ def main():
         try:  
             data = json.loads(scan_file.read_text())  
             codes = set()  
-            for entries in data.get("results", {}).values():  
-                for e in entries:  
-                    if e.get("code"):  
+            for _k, entries in data.get("results", {}).items():
+                if not isinstance(entries, list):
+                    continue
+                for e in entries:
+                    if isinstance(e, dict) and e.get("code"):
                         codes.add(str(e["code"]))  
             stock_count = len(codes)  
-        except Exception:  
-            pass  
+        except Exception as ex:
+            print(f" [WARN] stock_count 計算失敗: {ex}")  
     print(f"  今日掃描個股數：{stock_count}")  
   
     print("  組裝 Dashboard blocks...")  
