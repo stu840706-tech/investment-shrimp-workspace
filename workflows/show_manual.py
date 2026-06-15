@@ -9,7 +9,7 @@ MANUAL = [
         "steps": [
             "系統自動執行，無需手動觸發",
             "追蹤清單內個股新聞優先進入 Top 10",
-            "Layer 3 純敘事（多空對決、後市怎麼走）自動跳過",
+            "Layer 3 純敘事自動跳過",
         ],
         "notes": "手動觸發：python3 workflows/news_pipeline.py",
     },
@@ -26,7 +26,7 @@ MANUAL = [
     {
         "name": "📅 法說會行事曆",
         "trigger": "自動執行（平日 09:00 台北時間）",
-        "description": "抓取追蹤清單個股的法說會、財報、月營收重要日期，提前 3 天／當天 Telegram 提醒，寫入 Notion event_calendar。",
+        "description": "抓取追蹤清單個股的法說會、財報、月營收重要日期，提前 3 天／當天 Telegram 提醒，寫入 Notion event_calendar。券商報告內若有法說會日期，也會自動寫入 event_calendar。",
         "steps": [
             "系統每日自動執行",
             "只追蹤 stock_tracking 中持有／看好／感興趣的個股",
@@ -45,7 +45,7 @@ MANUAL = [
     },
     {
         "name": "📈 個股追蹤",
-        "trigger": "對話觸發：「追蹤 台勝科，放在持有名單」或「追蹤 4755，看好，原因是…」",
+        "trigger": "對話觸發：「追蹤 台積電，放在持有名單」或「追蹤 2330，看好，原因是…」",
         "description": "將個股加入 Notion stock_tracking，記錄核心 thesis、期待催化劑、風險因素、反證條件，自動設定下次驗證日。股票代碼或名稱都接受，OpenClaw 自動查代碼。",
         "steps": [
             "對 OpenClaw 說追蹤指令（代碼或名稱皆可）",
@@ -56,21 +56,28 @@ MANUAL = [
     },
     {
         "name": "📋 券商報告批次處理",
-        "trigger": "傳多份 PDF 給 OpenClaw DM，傳完說「開始處理」",
-        "description": "M2.7 自動分類（個股／產業／晨報），萃取目標價、EPS、毛利率預測等，寫入 Notion broker_reports 或 industry_reports。",
+        "trigger": "直接 Forward 券商 PDF/ZIP 檔案給我，傳完後我自動批次處理",
+        "description": "M2.7 自動三分類（個股報告／產業報告／晨報），萃取目標價、EPS、毛利率預測等，寫入 Notion對應資料庫，並發送 Telegram 摘要通知。支援 PDF / ZIP / DOCX / DOC / TXT 格式。",
         "steps": [
-            "把券商 PDF 逐份傳給 OpenClaw DM",
-            "全部傳完後說「開始處理」",
-            "OpenClaw 批次處理，回傳每份分類結果",
+            "把券商報告（PDF 或 ZIP）直接 Forward 給我",
+            "我自動批次處理，每份回傳分類結果",
+            "全部處理完成後，回傳當日總結（分類數量與資料庫寫入狀況）",
         ],
-        "notes": "PDF 由 pdf-reader skill 自動轉文字，無需手動轉換",
+        "notes": (
+            "三分類寫入規則：\n"
+            "  • stock_report（個股報告）→ broker_reports DB\n"
+            "  • industry_report（產業報告）→ industry_reports DB\n"
+            "  • morning_brief（晨報晨訊）→ industry_reports DB（標記晨報分類）\n"
+            "  • 若偵測到法說會日期，自動寫入 event_calendar\n"
+            "  • 重複檔案自動略過，不重複寫入"
+        ),
     },
     {
         "name": "📊 個股研究報告",
-        "trigger": "對話觸發：/research 台勝科 或 /research 4755",
+        "trigger": "對話觸發：/research 台積電 或 /research 2330",
         "description": "自動抓取財務數字、籌碼面、技術面，結合法說會 memo 和年報，產出研究報告草稿，寫入 Notion research_pages。股票代碼或名稱都接受。",
         "steps": [
-            "說 /research 台勝科（或代碼 4755）",
+            "說 /research 台積電（或代碼 2330）",
             "OpenClaw 確認代碼後問「有法說會 memo 嗎？」→ 回答內容或說無",
             "OpenClaw 問「有年報 PDF 嗎？」→ 傳 PDF 或說無",
             "等待約 2-3 分鐘，回傳報告摘要",
@@ -103,10 +110,10 @@ MANUAL = [
     },
     {
         "name": "🔬 策略回測",
-        "trigger": "對話觸發：自然語言描述策略",
+        "trigger": "對話觸發：/backtest 策略名稱",
         "description": "描述策略邏輯，OpenClaw 對應內建策略或撰寫新策略，用 FinMind 歷史資料回測，計算總報酬、年化報酬、夏普比率、最大回撤、勝率。",
         "steps": [
-            "描述策略（例：「找近3個月營收持續成長且毛利率改善的台股，買進持有60天」）",
+            "說 /backtest 並描述策略（例：「找近3個月營收持續成長且毛利率改善的台股，買進持有60天」）",
             "OpenClaw 確認對應策略：momentum／revenue_growth／margin_improvement 或新寫",
             "確認後執行回測（約 5-15 分鐘）",
             "回傳績效摘要，寫入 Notion backtest_results",
@@ -117,7 +124,7 @@ MANUAL = [
 IDLE_SKILLS = [
     "eastmoney-stock", "elite-longterm-memory", "financial-analysis-agent",
     "knowledge-graph-skill", "stock-study", "trading-devbox",
-    "tushare-stock-skill", "tw-revenue-backfill", "tw-stock-info",
+    "tushare-stock-info", "tw-revenue-backfill", "tw-stock-info",
     "us-stock-analysis", "web-scraping",
 ]
 
