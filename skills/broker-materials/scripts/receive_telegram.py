@@ -620,6 +620,32 @@ def notify_telegram(message: str, secrets: dict):
 
 
 
+def send_report_to_group(file_path: Path, caption: str, secrets: dict) -> bool:
+    """Send original broker file to broker group (secrets['telegram_group']) for reconcile+archive.
+    Failures only WARN; never break the Notion write."""
+    group = secrets.get("telegram_group")
+    if not group:
+        print(" [WARN] no telegram_group in secrets, skip group send", file=sys.stderr)
+        return False
+    url = "https://api.telegram.org/bot" + secrets["telegram_bot_token"] + "/sendDocument"
+    try:
+        with open(file_path, "rb") as _fh:
+            resp = requests.post(
+                url,
+                data={"chat_id": group, "caption": str(caption)[:1024]},
+                files={"document": (file_path.name, _fh)},
+                timeout=60,
+            )
+        if resp.status_code == 200 and resp.json().get("ok"):
+            print(" [OK] file sent to broker group: " + file_path.name)
+            return True
+        print(" [WARN] group send failed: %s %s" % (resp.status_code, resp.text[:200]), file=sys.stderr)
+        return False
+    except Exception as e:
+        print(" [WARN] group send error: %s" % e, file=sys.stderr)
+        return False
+
+
 def classify_with_m27_with_retry(text: str, secrets: dict) -> dict:
     """classify_with_m27 包裝，最多重試 3 次（Timeout/ConnError/5xx）。"""
     import time as _t
@@ -723,7 +749,18 @@ def process_file(file_path: Path, secrets: dict):
         # 一行確認
         notify_telegram(f"✅ 已收晨報 {broker_name}｜股票：{code_line}\n🔗 {page_url}", secrets)
 
-    # Step 5b: 若 stock_report 有法說會日期，寫入 event_calendar
+    # Step 5c: send original file to broker group (telegram_group) for reconcile + archive
+    if category == 'stock_report':
+        _cap = (str(result.get('stock_code','')) + ' ' + str(result.get('company_name','')) + ' | '
+            + str(result.get('broker_name','')) + ' | ' + str(result.get('rating','')) + ' | TP '
+            + str(result.get('target_price','')) + '\n' + str(page_url))
+    elif category == 'industry_report':
+        _cap = (str(result.get('topic','')) + ' | ' + str(result.get('broker_name','')) + '\n' + str(page_url))
+    else:
+        _cap = (str(result.get('broker_name','')) + ' morning brief\n' + str(page_url))
+    send_report_to_group(file_path, _cap, secrets)
+
+ # Step 5b: 若 stock_report 有法說會日期，寫入 event_calendar
     if category == "stock_report":
         meeting_date = str(result.get("investor_meeting_date", "")).strip()
         stock_code = result.get("stock_code", "")
