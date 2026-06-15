@@ -342,6 +342,12 @@ def create_page_and_database(date_str, scan_results):
     print(f" [+] 使用固定資料庫: {db_id}")
     print(f" [+] 資料庫建立: {db_id}")
 
+    # 掃描日期 ISO（YYYYMMDD -> YYYY-MM-DD），寫入 Notion date 欄位用
+    scan_date_iso = ""
+    if date_str and len(str(date_str)) == 8 and str(date_str).isdigit():
+        scan_date_iso = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
+        print(" [+] 掃描日期 = " + (scan_date_iso or "(無效，留空)"))
+
     # Step 3: 收集公司（合併所有分類，同一 code 不丟棄任何來源）
     # ★ Bug fix: 改用 defaultdict 合併，不再先到先得
     companies = defaultdict(lambda: {'name': '', 'entries': defaultdict(list)})
@@ -411,6 +417,10 @@ def create_page_and_database(date_str, scan_results):
         props = {
             "股票名稱": {"title": [{"text": {"content": f"{name}/{code}"}}]},
         }
+
+        # 修復：寫入掃描日期（先前 props 從未填此欄，DB 掃描日期全空）
+        if scan_date_iso:
+            props["掃描日期"] = {"date": {"start": scan_date_iso}}
 
         if month_str:
             props["月營收"] = {"rich_text": to_rich_text(month_str)}

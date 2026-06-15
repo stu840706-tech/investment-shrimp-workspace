@@ -561,7 +561,7 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
     elif category == "industry_report":
         db_id = secrets["notion_industry_reports_db"]
         props = {
-            "產業主題": {"title": rt(fields.get("topic", "未命名產業報告"))},
+            "產業主題": {"title": [{"text": {"content": fields.get("topic", "未命名產業報告")}}]},
             "券商名稱": {"select": {"name": (str(fields.get("broker_name") or "其他"))[:100]}},
             "報告日期": {"date": {"start": report_date}},
             "核心觀點": {"rich_text": rt(fields.get("core_view", ""))},
@@ -579,14 +579,13 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
     elif category == "morning_brief":
         db_id = secrets["notion_industry_reports_db"]
         broker = str(fields.get("broker_name") or "未知")
-        rt = lambda s: {"rich_text": [{"text": {"content": s}}]}
         props = {
-            "產業主題": {"title": rt(f"晨報｜{broker}")},
+            "產業主題": {"title": [{"text": {"content": f"晨報｜{broker}"}}]},
             "券商名稱": {"select": {"name": broker[:100]}},
             "報告日期": {"date": {"start": report_date}},
-            "核心觀點": rt(fields.get("core_view", "")),
-            "關鍵數字": rt(""),
-            "原始內文_關鍵段落": rt(fields.get("core_view", "")),
+            "核心觀點": {"rich_text": rt(fields.get("core_view", ""))},
+            "關鍵數字": {"rich_text": rt("")},
+            "原始內文_關鍵段落": {"rich_text": rt(fields.get("core_view", ""))},
             "產業分類": {"multi_select": [{"name": "晨報"}]},
         }
         stocks = fields.get("beneficiary_stocks") or []
