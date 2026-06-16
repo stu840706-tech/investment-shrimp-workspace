@@ -15,6 +15,7 @@
     python3 outcome_review.py --dry-run        # 只列出，不寫
 """
 import argparse
+import ast
 import json
 import sys
 import time
@@ -127,6 +128,49 @@ def fetch_price_movement(stock_id, start_date_str, token):
     return result
 
 
+def _parse_judgment(text):
+    # 容錯解析 M2.7 輸出：吃 code fence / 單引號 / 截斷 / 純文字
+    s, e = text.find("{"), text.rfind("}")
+    obj = text[s:e + 1] if (s != -1 and e > s) else ""
+    if obj:
+        try:
+            return json.loads(obj)
+        except Exception:
+            pass
+        try:
+            v = ast.literal_eval(obj)
+            if isinstance(v, dict):
+                return v
+        except Exception:
+            pass
+    verdict = None
+    for cand in ("已驗證符合", "已驗證反證", "部分符合", "資料不足"):
+        if cand in text:
+            verdict = cand
+            break
+    if verdict:
+        return {"verdict": verdict,
+                "summary": "(M2.7 輸出非合法 JSON，僅抽出 verdict)", "lesson": ""}
+    raise ValueError("M2.7 輸出無法解析: " + repr(text[:120]))
+
+
+def _fallback_from_alpha(price_data, err):
+    # M2.7 判定失敗時，有 Alpha 就依相對表現推估，不再無腦資料不足
+    alpha = price_data.get("alpha_pct")
+    if alpha is None:
+        return {"verdict": "資料不足",
+                "summary": "價格與 LLM 皆不可用: " + str(err), "lesson": ""}
+    if alpha >= 8:
+        verdict = "已驗證符合"
+    elif alpha <= -8:
+        verdict = "已驗證反證"
+    else:
+        verdict = "部分符合"
+    return {"verdict": verdict,
+            "summary": "LLM 判定失敗，依 Alpha " + str(alpha) + "% 推估（非 thesis 語意判定）",
+            "lesson": ""}
+
+
 def llm_judge_thesis(symbol, thesis, catalyst, price_data, secrets):
     stock_ret = price_data.get("stock_return_pct")
     idx_ret = price_data.get("index_return_pct")
@@ -148,26 +192,28 @@ def llm_judge_thesis(symbol, thesis, catalyst, price_data, secrets):
     }
     payload = {
         "model": MINIMAX_MODEL,
-        "max_tokens": 512,
+        "max_tokens": 1024,
         "thinking": {"type": "disabled"},
-        "system": "你是投資 thesis 驗證分析師。直接輸出純 JSON，不加任何說明。",
+        "system": "你是投資 thesis 驗證分析師。只輸出一個純 JSON 物件，不要 markdown code fence、不要任何說明文字。verdict 僅能是那四個字串之一；summary 與 lesson 內不要出現雙引號。",
         "messages": [
             {"role": "user", "content": prompt},
-            {"role": "assistant", "content": "{"},
         ],
     }
     resp = requests.post(
         f"{MINIMAX_BASE}/messages", headers=headers, json=payload, timeout=60,
     )
     resp.raise_for_status()
-    blocks = resp.json()["content"]
-    text_blocks = [b["text"] for b in blocks if b.get("type") == "text"]
-    raw = text_blocks[0].strip() if text_blocks else ""
-    if not raw.startswith("{"):
-        raw = "{" + raw
-    if raw.startswith("```"):
-        raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
-    return json.loads(raw)
+    blocks = resp.json().get("content")
+    if not isinstance(blocks, list):
+        blocks = []
+    text = "".join(
+        b.get("text", "") for b in blocks if b.get("type") == "text"
+    ).strip()
+    if not text:
+        text = "".join(
+            (b.get("text") or b.get("thinking") or "") for b in blocks
+        ).strip()
+    return _parse_judgment(text)
 
 
 def write_outcome_log(symbol, page_id, start_date_str, thesis, catalyst,
@@ -298,7 +344,7 @@ def main():
             print(f"    verdict={judgment.get('verdict')} | {judgment.get('summary','')[:60]}")
         except Exception as e:
             print(f"    [WARN] M2.7 失敗: {e}")
-            judgment = {"verdict": "資料不足", "summary": f"判定失敗: {e}", "lesson": ""}
+            judgment = _fallback_from_alpha(price_data, e)
 
         print("  [4/4] 寫入 outcome_log...")
         payload = write_outcome_log(
