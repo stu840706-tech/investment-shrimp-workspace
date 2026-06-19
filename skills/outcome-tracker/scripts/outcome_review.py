@@ -19,7 +19,7 @@ import ast
 import json
 import sys
 import time
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 import requests
@@ -171,6 +171,16 @@ def _fallback_from_alpha(price_data, err):
             "lesson": ""}
 
 
+def _clamp_recheck_days(judgment, default=30, lo=7, hi=30):
+    # AI 建議天數 + 程式把關：太短/太長拉回範圍，沒給或亂給就用預設
+    v = judgment.get('recheck_days')
+    try:
+        v = int(v)
+    except (TypeError, ValueError):
+        return default
+
+    return max(lo, min(hi, v))
+
 def llm_judge_thesis(symbol, thesis, catalyst, price_data, secrets):
     stock_ret = price_data.get("stock_return_pct")
     idx_ret = price_data.get("index_return_pct")
@@ -182,9 +192,9 @@ def llm_judge_thesis(symbol, thesis, catalyst, price_data, secrets):
     prompt = (
         f"股票代碼：{symbol}\n核心thesis：{thesis}\n期待催化劑：{catalyst}\n"
         f"立案以來價格表現：{price_summary}\n\n"
-        "請判定此 thesis 的驗證結果，輸出純 JSON：\n"
+        "請判定此 thesis 的驗證結果，並依催化劑與進度建議幾天後再次驗收（7~180 整數，催化劑越近給越小）。輸出純 JSON：\n"
         '{"verdict":"已驗證符合"|"部分符合"|"已驗證反證"|"資料不足",'
-        '"summary":"2句話說明驗證結果","lesson":"1句話學到什麼"}'
+        '"summary":"2句話說明驗證結果","lesson":"1句話學到什麼","recheck_days":N}'
     )
     headers = {
         "Content-Type": "application/json",
@@ -259,18 +269,19 @@ def write_outcome_log(symbol, page_id, start_date_str, thesis, catalyst,
     return payload
 
 
-def update_stock_tracking(page_id, verdict, summary, secrets, dry_run):
+def update_stock_tracking(page_id, verdict, summary, recheck_days, secrets, dry_run):
     verdict_map = {
         "已驗證符合": "已驗證符合", "部分符合": "部分符合",
         "已驗證反證": "已驗證反證", "資料不足": "待驗證",
     }
     today = date.today().isoformat()
     if dry_run:
-        print(f"  [DRY-RUN] 更新 stock_tracking {page_id[:8]}... → {verdict}")
+        print(f"  [DRY-RUN] 更新 stock_tracking {page_id[:8]}... → {verdict}（下次 +{recheck_days}天）")
         return
     props = {
         "Outcome狀態": {"select": {"name": verdict_map.get(verdict, "待驗證")}},
         "最近Outcome結果": {"rich_text": rt(f"{today}: {summary[:100]}")},
+        "下次驗證日": {"date": {"start": (date.today() + timedelta(days=recheck_days)).isoformat()}},
     }
     resp = requests.patch(
         f"{NOTION_API}/pages/{page_id}",
@@ -279,7 +290,7 @@ def update_stock_tracking(page_id, verdict, summary, secrets, dry_run):
         timeout=15,
     )
     resp.raise_for_status()
-    print(f"  [OK] stock_tracking 更新: {verdict}")
+    print(f"  [OK] stock_tracking 更新: {verdict}（下次 +{recheck_days}天）")
     time.sleep(0.3)
 
 
@@ -352,9 +363,10 @@ def main():
             thesis, catalyst, price_data, judgment, secrets, args.dry_run,
         )
         results.append(payload)
+        recheck_days = _clamp_recheck_days(judgment)
         update_stock_tracking(
             page["id"], judgment.get("verdict", "資料不足"),
-            judgment.get("summary", ""), secrets, args.dry_run,
+            judgment.get("summary", ""), recheck_days, secrets, args.dry_run,
         )
         time.sleep(0.5)
 
