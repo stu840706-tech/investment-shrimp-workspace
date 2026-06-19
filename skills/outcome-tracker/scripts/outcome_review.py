@@ -334,6 +334,9 @@ def main():
             catalyst = ""
             if props.get("期待催化劑", {}).get("rich_text"):
                 catalyst = props["期待催化劑"]["rich_text"][0]["plain_text"]
+            name = ""
+            if props.get("公司名稱", {}).get("rich_text"):
+             name = props["公司名稱"]["rich_text"][0]["plain_text"]
         except (KeyError, IndexError) as e:
             print(f"  [WARN] 跳過不完整 row: {e}")
             continue
@@ -362,6 +365,7 @@ def main():
             symbol, page["id"], start_date_str,
             thesis, catalyst, price_data, judgment, secrets, args.dry_run,
         )
+        payload["name"] = name
         results.append(payload)
         recheck_days = _clamp_recheck_days(judgment)
         update_stock_tracking(
@@ -374,7 +378,7 @@ def main():
         lines = [f"🔍 Outcome Review 完成：{len(results)} 筆\n"]
         for r in results:
             icon = {"已驗證符合": "✅", "部分符合": "⚠️", "已驗證反證": "❌"}.get(r["verdict"], "❓")
-            lines.append(f"{icon} {r['symbol']} → {r['verdict']}")
+            lines.append(f"{icon} {r['symbol']} {r.get('name','')} → {r['verdict']}")
             if r.get("alpha_pct") is not None:
                 lines.append(f"   Alpha: {r['alpha_pct']}%")
         notify_telegram("\n".join(lines), secrets)
