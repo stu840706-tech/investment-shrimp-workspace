@@ -3,8 +3,15 @@ import os, sqlite3, threading, time, hashlib, hmac, base64, logging
 from flask import Flask, request, abort
 import requests
 
-LINE_TOKEN = "GAdrZOIZEd2j+edgj5TuaUEDGqJzY9paEFuDvwRDs1+fIbzZtARKbrdJVtbylAF4nan1GeeqxYaY3H1duZuXDmOCbGpey9EYQ21CnX7oIxXMehrXZwOKOJKM5oZvc1ekQRWHGD5sEEALFu0qJtNWHQdB04t89/1O/w1cDnyilFU="
-LINE_SECRET = ""
+def _load_token():
+    v = os.environ.get("LINE_TOKEN")
+    if v:
+        return v.strip()
+    with open(os.path.expanduser("~/.openclaw/line_token.txt")) as f:
+        return f.read().strip()
+
+LINE_TOKEN = _load_token()
+LINE_SECRET = os.environ.get("LINE_SECRET", "")
 INBOUND_DIR = "/tmp/broker_queue_inbound"
 DB_PATH = os.path.expanduser("~/.openclaw/line_receiver.db")
 LOG_PATH = os.path.expanduser("~/.openclaw/line_receiver.log")
@@ -12,6 +19,7 @@ PORT = 5000
 DL_TIMEOUT = 60
 MAX_ATTEMPTS = 4
 ALLOWED_EXT = (".pdf", ".docx", ".doc", ".zip", ".txt")
+MIN_TEXT_LEN = 40
 
 logging.basicConfig(filename=LOG_PATH, level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s")
@@ -33,6 +41,27 @@ def enqueue(msg_id, file_name):
         c.commit()
     finally:
         c.close()
+
+def save_text_message(msg_id, text):
+    text = (text or "").strip()
+    if len(text) < MIN_TEXT_LEN:
+        log.info("SKIP text(short) %s len=%d", msg_id, len(text))
+        return False
+    os.makedirs(INBOUND_DIR, exist_ok=True)
+    dst = os.path.join(INBOUND_DIR, "line_text_" + str(msg_id) + ".txt")
+    tmp = dst + ".part"
+    with open(tmp, "w", encoding="utf-8") as f:
+        f.write(text)
+    os.replace(tmp, dst)
+    c = db()
+    try:
+        c.execute("INSERT OR IGNORE INTO tasks(msg_id,file_name,status,created,done) "
+                  "VALUES(?,?, 'DONE', ?, ?)", (msg_id, os.path.basename(dst), time.time(), time.time()))
+        c.commit()
+    finally:
+        c.close()
+    log.info("DONE text %s len=%d", msg_id, len(text))
+    return True
 
 def safe_name(name):
     name = os.path.basename(str(name)).strip()
@@ -61,12 +90,16 @@ def line_hook():
         if ev.get("type") != "message":
             continue
         m = ev.get("message", {})
-        if m.get("type") != "file":
-            continue
+        mtype = m.get("type")
         msg_id = m.get("id")
-        fname = m.get("fileName") or (str(msg_id) + ".bin")
-        if msg_id:
+        if not msg_id:
+            continue
+        if mtype == "file":
+            fname = m.get("fileName") or (str(msg_id) + ".bin")
             enqueue(msg_id, fname); n += 1
+        elif mtype == "text":
+            if save_text_message(msg_id, m.get("text", "")):
+                n += 1
     if n:
         _wake.set()
     return "OK", 200
