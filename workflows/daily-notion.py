@@ -143,6 +143,21 @@ def calc_revenue_tags(code, scan_results, revenue_history):
                 tag, detail = flag_map[flag]
                 tags.append(tag)
                 details.append(detail)
+    if not month_str and sorted_months:
+        # Bug1 fix v2: 無論是否觸發營收異常，顯示值空白就從 revenue_history 回填（不加tag）
+        ym = sorted_months[0]
+        m0 = hist_months.get(ym) or 0
+        if isinstance(m0, (int, float)) and m0 > 0 and len(ym) >= 6:
+            month_str = f"${m0*1000:,.0f}({ym[:4]}/{ym[4:]})"
+            y, m = int(ym[:4]), int(ym[4:6])
+            prev_ym = f"{y-1}12" if m == 1 else f"{y}{m-1:02d}"
+            yoy_ym = f"{y-1}{ym[4:6]}"
+            m_prev = hist_months.get(prev_ym) or 0
+            m_yoy = hist_months.get(yoy_ym) or 0
+            if m_prev > 0 and not mom_str:
+                mom_str = f"{(m0/m_prev-1)*100:.1f}%"
+            if m_yoy > 0 and not yoy_str:
+                yoy_str = f"{(m0/m_yoy-1)*100:.1f}%"
 
     return month_str, yoy_str, mom_str, tags, details
 
@@ -166,13 +181,20 @@ def calc_financial_tags(code, financial_history, industry):
         np_  = d.get('IncomeAfterTaxes', d.get('net_profit', 0)) or 0
         eps  = d.get('EPS', d.get('eps', 0)) or 0
         non_op = d.get('TotalNonoperatingIncomeAndExpense', d.get('non_op', 0)) or 0
+        # 單位歸一: FinMind(CamelCase key)單位為元, TWSE(小寫key)為千元, 統一成千元
+        if 'Revenue' in d:
+            rev, gp, op, np_, non_op = rev/1000, gp/1000, op/1000, np_/1000, non_op/1000
+        # Bug2 fix: 只有營收、利潤科目全0的殘缺stub季度視為無效
+        if rev > 0 and gp == 0 and op == 0 and np_ == 0 and eps == 0:
+            return None
         def margin(val):
             return val / rev * 100 if rev != 0 else 0
         return {'rev': rev, 'gp': gp, 'op': op, 'np': np_, 'eps': eps,
                 'non_op': non_op, 'gm': margin(gp), 'om': margin(op), 'nm': margin(np_)}
 
-    latest_q = sorted_qs[0] if sorted_qs else None
-    prev_q_key = sorted_qs[1] if len(sorted_qs) > 1 else None
+    valid_qs = [q for q in sorted_qs if get_q(q) is not None]
+    latest_q = valid_qs[0] if valid_qs else None
+    prev_q_key = valid_qs[1] if len(valid_qs) > 1 else None
 
     # 去年同期
     yoy_q_key = None
@@ -210,8 +232,8 @@ def calc_financial_tags(code, financial_history, industry):
             details.append(f"毛利跳升: QoQ+{gm_qoq:.1f}%, 當期毛利率{cur['gm']:.1f}%")
 
     # EPS 加速
-    if cur['eps'] and cur['eps'] > 0 and len(sorted_qs) >= 5:
-        prev4_eps = [get_q(q)['eps'] for q in sorted_qs[1:5] if get_q(q) and get_q(q)['eps'] > 0]
+    if cur['eps'] and cur['eps'] > 0 and len(valid_qs) >= 5:
+        prev4_eps = [get_q(q)['eps'] for q in valid_qs[1:5] if get_q(q) and get_q(q)['eps'] > 0]
         if prev4_eps:
             avg_eps = sum(prev4_eps) / len(prev4_eps)
             if avg_eps > 0 and cur['eps'] > avg_eps * 1.2:

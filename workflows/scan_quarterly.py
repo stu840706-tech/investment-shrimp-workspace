@@ -94,12 +94,20 @@ def scan_quarterly_financials():
 
             yq = f"{roc_y}_{q}"
 
-            revenue = to_float(row.get('營業收入', 0))
-            gross_profit = to_float(row.get('營業毛利', 0))
-            operating_profit = to_float(row.get('營業利益', 0))
-            net_profit = to_float(row.get('本期淨利', row.get('稅後淨利', 0)))
-            eps = to_float(row.get('基本每股盈餘', 0))
+            def pick(prefixes):
+                for p in prefixes:
+                    for k, v in row.items():
+                        if str(k).startswith(p):
+                            return to_float(v)
+                return 0.0
+            revenue = pick(['營業收入'])
+            gross_profit = pick(['營業毛利'])
+            operating_profit = pick(['營業利益'])
+            net_profit = pick(['本期淨利', '稅後淨利'])
+            eps = pick(['基本每股盈餘'])
 
+            if revenue > 0 and gross_profit == 0 and operating_profit == 0 and net_profit == 0 and eps == 0:
+                continue  # skip stub row (revenue only, all profits zero)
             if code not in company_fin:
                 company_fin[code] = {'name': name, 'quarters': {}}
             company_fin[code]['quarters'][yq] = {
