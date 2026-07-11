@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 """batch_process.py — 處理 state/broker_queue/ 中所有券商材料
-v4: 在 v3(flock 鎖 + ledger 冪等 + 時間戳 log + 字數旗標)基礎上：
-  - ZIP 自動拆解：遇 .zip 解壓，逐份內部文件「各自」走內容指紋冪等與處理
-    （不再整包餵 M2.7，根治多份合併過長被截斷 + 重複入庫）。
+v5: 加入 process_file timeout wrapper（子進程，300秒），防止 pdfplumber hang 造成整批卡死。
+v4: flock 鎖 + ledger 冪等 + 時間戳 log + 字數旗標。
+  - ZIP 自動拆解：遇 .zip 解壓，逐份內部文件「各自」走內容指紋冪等與處理。
   - 過濾 macOS 資源 fork（._* 與 __MACOSX/）這類雜訊，不送進處理。
-  - 冪等鍵一律用「實體檔案內容 sha256」：同一份 PDF 不論來自哪個 ZIP、
-    重傳或重跑幾次，都只處理一次。
-引擎 receive_telegram.process_file / load_secrets 不變。
+  - 冪等鍵一律用「實體檔案內容 sha256」。
 """
-import sys, fcntl, io, contextlib, re, zipfile, tempfile, shutil
+import sys, fcntl, re, zipfile, tempfile, shutil
 from pathlib import Path
 from datetime import datetime
 
@@ -18,24 +16,21 @@ LOG_DIR = WORKSPACE / "state" / "broker_logs"
 LOCK_PATH = "/tmp/broker_batch.lock"
 SCRIPTS = WORKSPACE / "skills/broker-materials/scripts"
 sys.path.insert(0, str(SCRIPTS))
-from receive_telegram import load_secrets, process_file
+from receive_telegram import load_secrets
+from _process_file_timeout import run_with_timeout
 import ledger
 
-# 進得了佇列的副檔名（.zip 會被解壓，其餘直接處理）
 VALID_EXTS = {".pdf", ".docx", ".doc", ".zip", ".txt", ".md"}
-# ZIP 內部會處理的文件副檔名（不遞迴處理 zip-in-zip）
 INNER_EXTS = {".pdf", ".docx", ".doc", ".txt", ".md"}
 
 
 def _is_noise(p):
-    """macOS 打包帶進來的資源 fork / 中繼資料，不是真實報告。"""
     return p.name.startswith("._") or "__MACOSX" in p.parts
 
 
 def process_one(real_path, display_name, log, secrets):
     """處理單一實體檔案。回傳 (status, payload)：
-    ('done', char_count|None) / ('skip', None) / ('fail', error_str)
-    冪等與台帳都以檔案內容指紋為鍵。"""
+    ('done', char_count|None) / ('skip', None) / ('fail', error_str)"""
     real_path = Path(real_path)
     try:
         h = ledger.file_hash(real_path)
@@ -47,14 +42,13 @@ def process_one(real_path, display_name, log, secrets):
 
     ledger.mark_processing(h, display_name, real_path.stat().st_size)
     try:
-        buf = io.StringIO()
-        with contextlib.redirect_stdout(buf):
-            process_file(real_path, secrets)
-        out = buf.getvalue()
-        for ln in out.splitlines():
+        out, err = run_with_timeout(real_path, 600)
+        if err:
+            raise RuntimeError(err)
+        for ln in (out or "").splitlines():
             if ln.strip():
                 log("    " + ln)
-        m = re.search(r"(\d+)\s*字元", out)
+        m = re.search(r"(\d+)\s*字元", out or "")
         cc = int(m.group(1)) if m else None
         ledger.mark_done(h, cc)
         return ("done", cc)
@@ -84,7 +78,8 @@ def main():
         logf.flush()
 
     ledger.init()
-    # 清掉佇列裡的 macOS 資源 fork / 中繼雜訊（._* 與 __MACOSX/），不是真實報告
+
+    # 清掉 macOS 雜訊檔
     purged = 0
     for f in list(QUEUE_DIR.iterdir()):
         if f.is_file() and _is_noise(f):
@@ -93,6 +88,7 @@ def main():
                 purged += 1
             except OSError:
                 pass
+
     queue = sorted(
         [f for f in QUEUE_DIR.iterdir()
          if f.is_file() and not _is_noise(f) and f.suffix.lower() in VALID_EXTS],
@@ -100,7 +96,7 @@ def main():
     )
     log("=== BATCH START === log=" + str(log_path))
     if purged:
-        log("[CLEAN] 清掉 " + str(purged) + " 個 macOS 雜訊檔(._*/__MACOSX)")
+        log("[CLEAN] 清掉 " + str(purged) + " 個 macOS 雜訊檔")
     if not queue:
         log("[INFO] broker_queue 是空的，沒有檔案需要處理")
         log("=== BATCH END === success=0 failed=0 skipped=0 exit=0")
@@ -147,7 +143,7 @@ def main():
                 if p.is_file() and not _is_noise(p) and p.suffix.lower() in INNER_EXTS
             )
             if not inner:
-                log(prefix + " [ZIP] 內部沒有有效文件（可能全是雜訊/資源檔）")
+                log(prefix + " [ZIP] 內部沒有有效文件")
             else:
                 log(prefix + " [ZIP] 內含 " + str(len(inner)) + " 份有效文件")
             zip_had_fail = False
@@ -159,7 +155,6 @@ def main():
                     zip_had_fail = True
 
             shutil.rmtree(tmp, ignore_errors=True)
-            # 內部全成功/重複才刪 ZIP；有失敗則保留供重試（成功份下次冪等自動跳過）
             if not zip_had_fail:
                 try:
                     fp.unlink()
@@ -171,7 +166,6 @@ def main():
         else:
             status, payload = process_one(fp, fp.name, log, secrets)
             record(status, payload, prefix)
-            # 成功或重複都刪檔；失敗保留供重試
             if status in ("done", "skip"):
                 try:
                     fp.unlink()

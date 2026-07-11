@@ -109,19 +109,23 @@ def pdf_to_text(pdf_path: Path) -> str:
         if not texts: raise RuntimeError("ZIP 內所有檔案讀取失敗")
         return "\n\n".join(texts)
 
-    # Step 1: 嘗試 pdfplumber，若文字層內容豐富則直接使用
+    # 嘗試 pdfplumber，若文字層內容豐富則直接使用
     script_dir = PDF_READER.parent.resolve()
     sys.path.insert(0, str(script_dir))
     try:
-        from extract_pdfplumber import extract_with_pdfplumber
-        text, _ = extract_with_pdfplumber(pdf_path)
-        # 計算有意義字元（排除 page separators）
-        import re
-        cleaned = re.sub(r"--- Page \d+ ---", "", text)
-        cleaned = re.sub(r"\s+", "", cleaned)
-        meaningful_chars = len(cleaned)
-        if meaningful_chars >= 300:
-            return text  # 文字層充足，直接用
+        # run pdfplumber in a child process: hard 90s kill on hang
+        worker = Path(__file__).parent / "_pdfplumber_worker.py"
+        r = subprocess.run(
+            [sys.executable, str(worker), str(pdf_path), str(script_dir)],
+            capture_output=True, text=True, timeout=90,
+        )
+        if r.returncode == 0:
+            text = r.stdout
+            import re
+            cleaned = re.sub(r"--- Page \d+ ---", "", text)
+            cleaned = re.sub(r"\s+", "", cleaned)
+            if len(cleaned) >= 300:
+                return text
     except Exception:
         pass
     
@@ -143,6 +147,25 @@ def pdf_to_text(pdf_path: Path) -> str:
         raise RuntimeError(f"pdf-reader 失敗: {result.stderr}")
     return result.stdout
 
+
+
+def _extract_stock_codes(text, limit=8):
+    """4-digit TW-code candidates with year/number-noise filtering.
+    - reject if adjacent to digits, comma, dot, slash, dash, or
+      year/month/day markers (kills 6,852 / 4.49 / 2026年 / 10/07)
+    - reject 2020..2040 as years unless whitelisted in COMPANY_NAMES
+    """
+    pat = (r"(?<![\d,./\-])([12][0-9]{3})"
+           r"(?![\d,./\-年月日%])")
+    out = []
+    for c in dict.fromkeys(re.findall(pat, text)):
+        if c in COMPANY_NAMES:
+            out.append(c)
+        elif 2020 <= int(c) <= 2040:
+            continue
+        else:
+            out.append(c)
+    return out[:limit]
 
 def trim_for_classify(text: str) -> str:
     """取前 8000 + 後 2000 字元，避免超出 M2.7 甜蜜點。"""
@@ -171,6 +194,13 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
         "- stock_report：針對單一個股的研究報告（含評等/目標價）\n"
         "- industry_report：產業趨勢或主題報告\n"
         "- morning_brief：每日晨報（市場綜覽/多股簡評）\n\n"
+ "特別規則（Call Memo / 法說會摘要）：\n"
+ "- 若文件標題或開頭出現「Call Memo」字樣，代表這是法說會/電話會議摘要。\n"
+ "- broker_name 必須填寫實際發布機構名稱（通常標示在「Call Memo」字樣之前，如「國泰證期研究部」），\n"
+ " 絕對不可以把「Call Memo」「CALLMEMO」這幾個字本身當作 broker_name。\n"
+ "- 若原文只有單一日期（通常在「Call Memo」下方，如 20260311），請將該日期格式化為 YYYY-MM-DD，\n"
+ " 填入 investor_meeting_date，視為法說會/電話會議舉辦日期。\n"
+ "- rating/target_price 若原文沒有明確評等或目標價（Call Memo 常見），請填 未明確/0。\n\n"
         'stock_report 格式（數值欄位填數字，無資料填0）：\n'
         '{"category":"stock_report","confidence":"high/medium/low","report_date":"YYYY-MM-DD",'
         '"stock_code":"如2330.TW","company_name":"公司名","broker_name":"券商名",'
@@ -520,10 +550,32 @@ def _make_content_blocks(core_view: str, key_excerpt: str) -> list:
     return blocks
 
 
+_INVALID_BROKER_MARKERS = ["CALLMEMO", "MEMO", "展會", "觀察", "筆記"]
+
+def _sanitize_broker_name(name) -> str:
+    name = str(name or "").strip()
+    if not name:
+        return "其他"
+    upper = name.upper()
+    if any(m in upper or m in name for m in _INVALID_BROKER_MARKERS):
+        return "其他"
+    return name
+
+
 def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
     """寫入對應 Notion DB，回傳 page URL。morning_brief 不寫 Notion，回傳空字串。"""
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    _rd = str(fields.get("report_date") or ""); report_date = _rd if re.match(r"^\d{4}-\d{2}-\d{2}$", _rd) else today
+    _rd = str(fields.get("report_date") or "")
+    report_date = _rd if re.match(r"^\d{4}-\d{2}-\d{2}$", _rd) else today
+    try:
+        _delta = abs((datetime.strptime(report_date, "%Y-%m-%d")
+                      - datetime.strptime(today, "%Y-%m-%d")).days)
+    except ValueError:
+        _delta = 9999
+    if _delta > 90:
+        fields["core_view"] = ("[日期待確認:" + report_date + "] "
+                               + str(fields.get("core_view", "")))
+        report_date = today
     headers = {
         "Authorization": f"Bearer {secrets['notion_key']}",
         "Notion-Version": NOTION_VERSION,
@@ -535,7 +587,7 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
         props = {
             "股票代碼": {"title": rt(fields.get("stock_code", "未知"))},
             "公司名稱": {"rich_text": rt(fields.get("company_name", ""))},
-            "券商名稱": {"select": {"name": (str(fields.get("broker_name") or "其他"))[:100]}},
+            "券商名稱": {"select": {"name": _sanitize_broker_name(fields.get("broker_name"))[:100]}},
             "評等": {"select": {"name": str(fields.get("rating") or "未明確")}},
             "報告日期": {"date": {"start": report_date}},
             "核心觀點": {"rich_text": rt(fields.get("core_view", ""))},
@@ -562,7 +614,7 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
         db_id = secrets["notion_industry_reports_db"]
         props = {
             "產業主題": {"title": [{"text": {"content": fields.get("topic", "未命名產業報告")}}]},
-            "券商名稱": {"select": {"name": (str(fields.get("broker_name") or "其他"))[:100]}},
+            "券商名稱": {"select": {"name": _sanitize_broker_name(fields.get("broker_name"))[:100]}},
             "報告日期": {"date": {"start": report_date}},
             "核心觀點": {"rich_text": rt(fields.get("core_view", ""))},
             "關鍵數字": {"rich_text": rt(fields.get("key_numbers", ""))},
@@ -700,7 +752,7 @@ def process_file(file_path: Path, secrets: dict):
 
     # morning_brief: 注入股票代碼清單供 write_to_notion 使用
     if category == "morning_brief":
-        result["beneficiary_stocks"] = list(dict.fromkeys(re.findall(r'\b[12][0-9]{3}\b', text)))[:8]
+        result["beneficiary_stocks"] = _extract_stock_codes(text)
 
     # Step 4: 寫入 Notion
     print("[3/4] 寫入 Notion...")
@@ -733,7 +785,7 @@ def process_file(file_path: Path, secrets: dict):
         report_date = result.get('report_date', '')
         core_view = str(result.get('core_view', ''))
         # 取出股票代碼清單
-        found_codes = list(dict.fromkeys(re.findall(r'\b[12][0-9]{3}\b', text)))[:8]
+        found_codes = _extract_stock_codes(text)
         code_parts = []
         for c in found_codes:
             name = COMPANY_NAMES.get(c, '')

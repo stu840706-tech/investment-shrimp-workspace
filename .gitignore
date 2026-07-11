@@ -1,55 +1,10 @@
-# Secrets
-config/secrets.json
-config/*.secret.json
-
-# Backups
-*.bak
-*.bak-*
-
-# State files
-state/*.json
-memory/raw-*.jsonl
-memory/archive/news_raw/
-
-# Python
 __pycache__/
 *.pyc
-.venv/
-
-# Skills state
-skills/*/state/
-
-# OpenClaw internal
-.openclaw/
-.clawhub/
-
-# State text outputs (dynamic)
-state/*.txt
-
-# Memory processed streams (raw append logs)
-memory/*.jsonl
-
-# State logs
-state/*.log
-
-# Memory daily logs (L3)
-memory/[0-9]*.md
-
-# 測試與臨時輸出（不進 git）
-state/direct_output/
-state/scan_results_*.json
-*.bak*
-/tmp/
-
-# 自動備份
-*.bak*
-*.bak_*
-
-# logs
-logs/
-
-# 本地工具腳本
-batch_process_reports.sh
-
-# 本地 skill（不進版控）
-skills/user-manual/
+*.bak
+tmp_*.py
+tmp_*.json
+*.lock
+state/
+memory/archive/
+memory/fetch-errors-*.log
+knowledge/outcome_log.jsonl
