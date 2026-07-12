@@ -493,7 +493,7 @@ def build_notion_blocks(morning_summary, stock_section, industry_summary,
 
 
 def write_notion_digest(date_str, morning_summary, stock_section, industry_summary,
-                         stock_count, industry_count, secrets):
+                         stock_count, industry_count, secrets, morning_count=0):
     """寫入券商日摘，有防重複機制"""
     DIGEST_DB_ID = "5129cfe1-911f-453b-9b97-ea7b4df8f5e7"
     token = secrets['notion_key']
@@ -546,7 +546,7 @@ def write_notion_digest(date_str, morning_summary, stock_section, industry_summa
                 "掃描日期": {"date": {"start": date_str}},
                 "個股報告數": {"number": stock_count},
                 "產業報告數": {"number": industry_count},
-                "晨報份數": {"number": 0},
+                "晨報份數": {"number": morning_count},
                 "digest_mark": {"rich_text": [{"text": {"content": "digested-" + date_str}}]},
             },
             "children": blocks[:100],
@@ -589,10 +589,21 @@ def main():
 
     print("[3] 讀取晨報...")
     morning_text = load_morning_briefs(date_compact)
-    print(f" → {'有資料' if morning_text.strip() else '無資料'}")
+    morning_count = len(parse_morning_sections(morning_text)) if morning_text.strip() else 0
+    print(f" → {'有資料' if morning_text.strip() else '無資料'}（{morning_count} 份）")
 
     if not stock_reports and not industry_reports and not morning_text.strip():
-        print("[SKIP] 今日無任何新報告，跳過發送")
+        print("[SKIP] 今日無任何新報告，仍寫入 0/0/0 日摘列作為健康訊號")
+        write_notion_digest(
+            date_str,
+            "（今日無晨報）",
+            "（今日無新個股報告）",
+            "（今日無產業報告）",
+            0,
+            0,
+            secrets,
+            morning_count=0,
+        )
         return
 
     # Log what we're working with
@@ -643,6 +654,7 @@ def main():
         len(stock_reports),
         len(industry_reports),
         secrets,
+        morning_count=morning_count,
     )
     print(" → 完成")
 
