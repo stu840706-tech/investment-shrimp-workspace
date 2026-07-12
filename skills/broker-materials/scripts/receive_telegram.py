@@ -606,9 +606,21 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
             val = fields.get(py_key, 0)
             try:
                 if val and float(val) != 0:
-                    props[notion_key] = {"number": float(val)}
+                    fval = float(val)
+                    if py_key == "gross_margin_forecast" and abs(fval) > 1.5:
+                        # Notion percent field stores 0.45 for 45%
+                        fval = fval / 100.0
+                    props[notion_key] = {"number": fval}
             except (TypeError, ValueError):
                 pass
+
+        # report-type marking: sparse fields => snippet, else full report
+        _sparse = (
+            "目標價" not in props
+            and "報告當日股價" not in props
+            and str(fields.get("rating") or "未明確") in ("未明確", "未評等")
+        )
+        props["報告型態"] = {"select": {"name": "短評/快訊" if _sparse else "完整報告"}}
 
     elif category == "industry_report":
         db_id = secrets["notion_industry_reports_db"]
