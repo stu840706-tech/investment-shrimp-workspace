@@ -53,6 +53,7 @@ CRON_REQUIRED = {
     "outcome_review.py",
     "news_pipeline.py",
     "broker_digest.py",
+    "scan_margin.py",
     "weekly_health_check.py",
 }
 
@@ -63,7 +64,7 @@ LOG_CHECKS = {
     "news-morning":     ("/tmp/news_morning.log", "管線完成",    5),
     "news-evening":     ("/tmp/news_evening.log", "管線完成",    5),
     "broker-digest":    ("/tmp/broker_digest.log",         "完成",       5),
-    "fetch-calendar":   ("~/.openclaw/logs/fetch_calendar.log", "完成",   7),
+    "fetch-calendar":   ("~/.openclaw/logs/fetch_calendar.log", "[DONE]",   7),
     "outcome-review":   ("~/.openclaw/logs/outcome_review.log", "完成",   7),
 }
 
@@ -243,6 +244,7 @@ def check_orphans():
     }
 
     orphan_candidates = all_py - CRON_REQUIRED - no_cron_ok
+    orphan_candidates = {c for c in orphan_candidates if not c.startswith("_")}
 
     # 確認是否被其他 .py import
     confirmed_orphans = []
