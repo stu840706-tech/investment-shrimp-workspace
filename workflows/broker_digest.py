@@ -174,20 +174,11 @@ def fetch_industry_reports(secrets):
 
 
 def load_morning_briefs(date_compact):
-    """讀取今日晨報合併檔（同時支援今日與昨日，Kai 在交易日盤中陸續傳送，凌晨執行時取前一日檔案）。"""
+    """讀取當日晨報合併檔（只讀當日；無檔回空字串，日摘忠實反映當天實況）。"""
     today_file = STATE_DIR / f"broker_morning_{date_compact}.txt"
-    # 也嘗試讀取前一日的晨報檔（覆盤时段内 Kai 仍在傳送）
-    from datetime import datetime, timezone, timedelta
-    TZ_TPE = timezone(timedelta(hours=8))
-    d = datetime.now(TZ_TPE)
-    yday = d - timedelta(days=1)
-    yesterday_file = STATE_DIR / f"broker_morning_{yday.strftime('%Y%m%d')}.txt"
-    texts = []
     if today_file.exists():
-        texts.append(today_file.read_text(encoding="utf-8"))
-    if yesterday_file.exists() and yesterday_file != today_file:
-        texts.append(yesterday_file.read_text(encoding="utf-8"))
-    return "\n".join(texts)
+        return today_file.read_text(encoding="utf-8")
+    return ""
 
 
 # ── M2.7 摘要 ───────────────────────────────────────────────
