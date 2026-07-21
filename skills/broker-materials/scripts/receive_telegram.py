@@ -562,6 +562,287 @@ def _sanitize_broker_name(name) -> str:
     return name
 
 
+# ==== Call Memo full-text archive (added 2026-07-21) ====
+# NOTE: all Chinese literals below are \uXXXX-escaped so this whole block is
+# pure ASCII end-to-end (transfer-channel safety, see pitfalls #59/#62/#64).
+
+RE_CM_LINE = re.compile(r"^\s*[Cc][Aa][Ll][Ll]\s*[Mm][Ee][Mm][Oo]\s*$")
+RE_CM_DATE = re.compile(r"^\s*(20\d{6})\s*$")
+RE_CM_COMPANY = re.compile(r"^(.{1,20}?)\((\d{4})(?:\s*TT)?\)\s*$")
+RE_CM_BROKER = re.compile("(\u7814\u7a76\u90e8|\u8b49\u5238|\u6295\u9867|\u6295\u4fe1|Securities)")
+RE_CM_SIGNAL = re.compile("(callmemo|\u6cd5\u8aaa.{0,8}(?:\u7d00\u8981|\u6458\u8981|memo)|\u6cd5\u4eba\u8aaa\u660e\u6703.{0,8}(?:\u7d00\u8981|\u6458\u8981|memo))")
+RE_CM_ANYDATE_SLASH = re.compile(r"(?<!\d)(20\d{2})[/.\-](\d{1,2})[/.\-](\d{1,2})(?!\d)")
+RE_CM_ANYDATE_8 = re.compile(r"(?<!\d)(20\d{2})(0[1-9]|1[0-2])([0-2]\d|3[01])(?!\d)")
+RE_CM_ANYCOMPANY = re.compile("(?<![\u4e00-\u9fff])([\u4e00-\u9fff][\u4e00-\u9fffA-Za-z0-9]{0,9}?)\\s*[\uff08(](\\d{4})(?:\\s*TT)?[\uff09)]")
+RE_CM_CMCODE = re.compile("[Cc]all\\s*[Mm]emo[_\\s]*(\\d{4})\\s*([\u4e00-\u9fff]{2,10})")
+RE_CM_ANYBROKER = re.compile("([\u4e00-\u9fff]{2,8}?(?:\u8b49\u671f\u7814\u7a76\u90e8|\u7814\u7a76\u90e8|\u6295\u9867|\u8b49\u5238|\u6295\u4fe1))")
+CM_FNAME_KEYWORDS = ("callmemo", "\u6cd5\u8aaa")
+
+
+def _cm_norm(s):
+    return re.sub(r"[\s_\-]+", "", str(s or "")).lower()
+
+
+def _cm_head_lines(text, n):
+    return [l.strip() for l in text.split("\n") if l.strip()][:n]
+
+
+def _cm_extract_date(head_text):
+    m = RE_CM_ANYDATE_SLASH.search(head_text)
+    if m:
+        mo = int(m.group(2))
+        d = int(m.group(3))
+        if 1 <= mo <= 12 and 1 <= d <= 31:
+            return "%s-%02d-%02d" % (m.group(1), mo, d)
+    m = RE_CM_ANYDATE_8.search(head_text)
+    if m:
+        return m.group(1) + "-" + m.group(2) + "-" + m.group(3)
+    return ""
+
+
+def _cm_extract_company(head_text):
+    for m in RE_CM_ANYCOMPANY.finditer(head_text):
+        name = m.group(1).strip()
+        code = m.group(2)
+        if 2020 <= int(code) <= 2040 and code not in COMPANY_NAMES:
+            continue
+        return name, code
+    m = RE_CM_CMCODE.search(head_text)
+    if m:
+        return m.group(2).strip(), m.group(1)
+    return "", ""
+
+
+def _cm_extract_broker(head_text):
+    m = RE_CM_ANYBROKER.search(head_text)
+    return m.group(1) if m else ""
+
+
+def split_call_memos(text):
+    """Tier-1 deterministic split on standalone 'Call Memo' line + 8-digit date.
+    Returns list of {text, date, company, code, broker}; [] when no anchor."""
+    lines = text.split("\n")
+    anchors = []
+    for i, l in enumerate(lines):
+        if RE_CM_LINE.match(l):
+            date = None
+            for j in range(i + 1, min(i + 4, len(lines))):
+                m = RE_CM_DATE.match(lines[j])
+                if m:
+                    date = m.group(1)
+                    break
+                if lines[j].strip():
+                    break
+            if date:
+                anchors.append((i, date))
+    if not anchors:
+        return []
+    starts = []
+    for i, _d in anchors:
+        start = i
+        k = i - 1
+        steps = 0
+        while k >= 0 and steps < 4:
+            ls = lines[k].strip()
+            if ls and (RE_CM_COMPANY.match(ls) or RE_CM_BROKER.search(ls)):
+                start = k
+                k -= 1
+                steps += 1
+            elif not ls:
+                k -= 1
+                steps += 1
+            else:
+                break
+        starts.append(start)
+    segs = []
+    for n, (i, date) in enumerate(anchors):
+        s = starts[n]
+        e = starts[n + 1] if n + 1 < len(anchors) else len(lines)
+        seg_text = "\n".join(lines[s:e]).strip("\n")
+        broker = ""
+        comp = ""
+        code = ""
+        for l in lines[s:i]:
+            ls = l.strip()
+            m = RE_CM_COMPANY.match(ls)
+            if m:
+                comp, code = m.group(1).strip(), m.group(2)
+            elif RE_CM_BROKER.search(ls) and not broker:
+                broker = ls
+        iso = date[:4] + "-" + date[4:6] + "-" + date[6:]
+        segs.append({"text": seg_text, "date": iso, "company": comp,
+                     "code": code, "broker": broker})
+    return segs
+
+
+def detect_call_memos(text, file_name):
+    """Returns (segments, mode). mode: 'anchor' | 'fallback' | ''.
+    anchor   = Cathay-style standalone 'Call Memo' + 8-digit date header.
+    fallback = filename or per-line head-zone call-memo signal; whole text
+               as one segment, metadata via generic header extractors
+               (KGI/CTBC/Yuanta style headers)."""
+    segs = split_call_memos(text)
+    if segs:
+        return segs, "anchor"
+    fn = _cm_norm(file_name)
+    hit = any(k in fn for k in CM_FNAME_KEYWORDS)
+    if not hit:
+        for l in _cm_head_lines(text, 15):
+            if RE_CM_SIGNAL.search(_cm_norm(l)):
+                hit = True
+                break
+    if not hit:
+        return [], ""
+    head8 = "\n".join(_cm_head_lines(text, 8))
+    name, code = _cm_extract_company(head8)
+    return [{"text": text.strip("\n"),
+             "date": _cm_extract_date(head8),
+             "company": name,
+             "code": code,
+             "broker": _cm_extract_broker(head8)}], "fallback"
+
+
+def chunk_full_text_blocks(text, limit=1900):
+    """Split full text into Notion paragraph blocks along paragraph/newline
+    boundaries; hard-cut only when a single run exceeds the limit."""
+    paras = text.split("\n\n")
+    pieces = []
+    buf = ""
+    for p in paras:
+        cand = (buf + "\n\n" + p) if buf else p
+        if len(cand) <= limit:
+            buf = cand
+            continue
+        if buf:
+            pieces.append(buf)
+            buf = ""
+        while len(p) > limit:
+            cut = p.rfind("\n", 0, limit)
+            if cut < limit // 2:
+                cut = limit
+            pieces.append(p[:cut])
+            p = p[cut:].lstrip("\n")
+        buf = p
+    if buf:
+        pieces.append(buf)
+    return [{"object": "block", "type": "paragraph",
+             "paragraph": {"rich_text": [{"text": {"content": pc}}]}}
+            for pc in pieces if pc.strip()]
+
+
+def archive_call_memos(text, file_name, m27, secrets, source="\u7ba1\u7dda", audit=None):
+    """Additive full-text archive into the dedicated call-memo Notion DB.
+    Dedupe key: md5 of segment text (content-md5 property). Per-segment
+    failures only WARN; returns number of pages created."""
+    import hashlib
+    import time as _t
+    db_id = secrets.get("notion_callmemo_db")
+    if not db_id:
+        print("  [MEMO] notion_callmemo_db not in secrets, skip archive")
+        return 0
+    segs, mode = detect_call_memos(text, file_name)
+    if not segs:
+        return 0
+    m27 = m27 or {}
+    headers = {
+        "Authorization": "Bearer " + secrets["notion_key"],
+        "Notion-Version": NOTION_VERSION,
+        "Content-Type": "application/json",
+    }
+    today = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
+    created = 0
+    lines_ok = []
+    for seg in segs:
+        rec = {"file": str(file_name), "mode": mode}
+        try:
+            seg_text = seg["text"]
+            md5 = hashlib.md5(seg_text.encode("utf-8")).hexdigest()
+            rec.update({"md5": md5, "chars": len(seg_text)})
+            q = requests.post(
+                NOTION_API + "/databases/" + db_id + "/query", headers=headers,
+                json={"filter": {"property": "\u5167\u6587MD5",
+                                 "rich_text": {"equals": md5}},
+                      "page_size": 1},
+                timeout=15)
+            q.raise_for_status()
+            if q.json().get("results"):
+                print("  [MEMO][SKIP] duplicate md5=" + md5[:8] + " " + str(file_name))
+                rec["action"] = "skip_dup"
+                if audit is not None:
+                    audit.append(rec)
+                continue
+            date = seg["date"]
+            if not re.match(r"^\d{4}-\d{2}-\d{2}$", date or ""):
+                date = ""
+            if not date:
+                for k in ("investor_meeting_date", "report_date"):
+                    v = str(m27.get(k) or "").strip()
+                    if re.match(r"^\d{4}-\d{2}-\d{2}$", v):
+                        date = v
+                        break
+            if not date:
+                date = today
+            code = seg["code"] or re.sub(r"\D", "", str(m27.get("stock_code") or ""))[:4]
+            name = seg["company"] or str(m27.get("company_name") or "").strip()
+            broker = _sanitize_broker_name(seg["broker"] or m27.get("broker_name"))
+            if name or code:
+                title = name + "(" + code + ") " + date + " \u6cd5\u8aaa\u6703Memo"
+            else:
+                title = str(file_name) + " " + date + " \u6cd5\u8aaa\u6703Memo"
+            props = {
+                "\u6a19\u984c": {"title": [{"text": {"content": title[:100]}}]},
+                "\u516c\u53f8\u4ee3\u78bc": {"rich_text": rt(code + ".TW" if code else "")},
+                "\u516c\u53f8\u540d\u7a31": {"rich_text": rt(name)},
+                "\u6cd5\u8aaa\u6703\u65e5\u671f": {"date": {"start": date}},
+                "\u4f86\u6e90\u5238\u5546": {"select": {"name": broker[:100]}},
+                "\u539f\u59cb\u6a94\u540d": {"rich_text": rt(str(file_name))},
+                "\u5168\u6587\u5b57\u6578": {"number": len(seg_text)},
+                "\u5167\u6587MD5": {"rich_text": rt(md5)},
+                "\u4f86\u6e90": {"select": {"name": source}},
+            }
+            blocks = [{"object": "block", "type": "heading_2", "heading_2": {
+                "rich_text": [{"text": {"content": "\U0001f4de \u6cd5\u8aaa\u6703\u5168\u6587"}}]}}]
+            blocks += chunk_full_text_blocks(seg_text)
+            first = blocks[:95]
+            rest = blocks[95:]
+            resp = requests.post(NOTION_API + "/pages", headers=headers,
+                                 json={"parent": {"database_id": db_id},
+                                       "properties": props, "children": first},
+                                 timeout=30)
+            resp.raise_for_status()
+            page = resp.json()
+            page_id = page.get("id", "")
+            while rest:
+                batch = rest[:95]
+                rest = rest[95:]
+                _t.sleep(0.4)
+                ar = requests.patch(NOTION_API + "/blocks/" + page_id + "/children",
+                                    headers=headers, json={"children": batch},
+                                    timeout=30)
+                ar.raise_for_status()
+            created += 1
+            rec.update({"action": "created", "date": date, "code": code,
+                        "url": page.get("url", "")})
+            if audit is not None:
+                audit.append(rec)
+            lines_ok.append((code or name or "?") + " " + date)
+            print("  [MEMO][OK] " + title[:60] + " chars=" + str(len(seg_text)))
+        except Exception as e:
+            print("  [WARN] memo segment archive failed: " + str(e))
+            rec.update({"action": "error", "error": str(e)[:200]})
+            if audit is not None:
+                audit.append(rec)
+    if created and source == "\u7ba1\u7dda":
+        try:
+            notify_telegram("\U0001f4de \u6cd5\u8aaa\u6703Memo\u5df2\u5b8c\u6574\u6b78\u6a94 " + str(created) + " \u7bc7\uff5c"
+                            + str(file_name) + "\n" + "\u3001".join(lines_ok[:6]),
+                            secrets)
+        except Exception:
+            pass
+    return created
+
+
+
 def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
     """寫入對應 Notion DB，回傳 page URL。morning_brief 不寫 Notion，回傳空字串。"""
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -768,6 +1049,14 @@ def process_file(file_path: Path, secrets: dict):
 
     # Step 4: 寫入 Notion
     print("[3/4] 寫入 Notion...")
+    # Step 3b: Call Memo full-text archive (additive, before main write)
+    try:
+        _n_memo = archive_call_memos(text, file_path.name, result, secrets)
+        if _n_memo:
+            print("  [MEMO] archived " + str(_n_memo) + " segment(s)")
+    except Exception as _me:
+        print("  [WARN] call memo archive failed: " + str(_me))
+
     page_url = write_to_notion(category, result, secrets)
 
     # Step 5: Telegram 回報
