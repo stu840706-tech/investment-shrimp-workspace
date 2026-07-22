@@ -568,11 +568,12 @@ def _sanitize_broker_name(name) -> str:
 
 RE_CM_LINE = re.compile(r"^\s*[Cc][Aa][Ll][Ll]\s*[Mm][Ee][Mm][Oo]\s*$")
 RE_CM_DATE = re.compile(r"^\s*(20\d{6})\s*$")
-RE_CM_COMPANY = re.compile(r"^(.{1,20}?)\((\d{4})(?:\s*TT)?\)\s*$")
+RE_CM_COMPANY = re.compile("^(.{1,20}?)[\uff08(](\\d{4})(?:\\s*TT)?[\uff09)]\\s*$")
 RE_CM_BROKER = re.compile("(\u7814\u7a76\u90e8|\u8b49\u5238|\u6295\u9867|\u6295\u4fe1|Securities)")
-RE_CM_SIGNAL = re.compile("(callmemo|\u6cd5\u8aaa.{0,8}(?:\u7d00\u8981|\u6458\u8981|memo)|\u6cd5\u4eba\u8aaa\u660e\u6703.{0,8}(?:\u7d00\u8981|\u6458\u8981|memo))")
+RE_CM_SIGNAL = re.compile("(callmemo|(?:\u6cd5\u8aaa|\u6cd5\u4eba\u8aaa\u660e\u6703|\u6cd5\u4eba\u5ea7\u8ac7\u6703).{0,8}(?:\u7d00\u8981|\u6458\u8981|memo))")
 RE_CM_ANYDATE_SLASH = re.compile(r"(?<!\d)(20\d{2})[/.\-](\d{1,2})[/.\-](\d{1,2})(?!\d)")
 RE_CM_ANYDATE_8 = re.compile(r"(?<!\d)(20\d{2})(0[1-9]|1[0-2])([0-2]\d|3[01])(?!\d)")
+RE_CM_DATE6 = re.compile(r"(?<!\d)(2[4-9])(0[1-9]|1[0-2])([0-2]\d|3[01])(?!\d)")
 RE_CM_ANYCOMPANY = re.compile("(?<![\u4e00-\u9fff])([\u4e00-\u9fff][\u4e00-\u9fffA-Za-z0-9]{0,9}?)\\s*[\uff08(](\\d{4})(?:\\s*TT)?[\uff09)]")
 RE_CM_CMCODE = re.compile("[Cc]all\\s*[Mm]emo[_\\s]*(\\d{4})\\s*([\u4e00-\u9fff]{2,10})")
 RE_CM_ANYBROKER = re.compile("([\u4e00-\u9fff]{2,8}?(?:\u8b49\u671f\u7814\u7a76\u90e8|\u7814\u7a76\u90e8|\u6295\u9867|\u8b49\u5238|\u6295\u4fe1))")
@@ -597,6 +598,9 @@ def _cm_extract_date(head_text):
     m = RE_CM_ANYDATE_8.search(head_text)
     if m:
         return m.group(1) + "-" + m.group(2) + "-" + m.group(3)
+    m = RE_CM_DATE6.search(head_text)
+    if m:
+        return "20" + m.group(1) + "-" + m.group(2) + "-" + m.group(3)
     return ""
 
 
@@ -616,6 +620,28 @@ def _cm_extract_company(head_text):
 def _cm_extract_broker(head_text):
     m = RE_CM_ANYBROKER.search(head_text)
     return m.group(1) if m else ""
+
+
+CM_EN_BROKERS = (("kgi", "\u51f1\u57fa\u6295\u9867"),
+                 ("yuanta", "\u5143\u5927\u6295\u9867"),
+                 ("cathay", "\u570b\u6cf0\u8b49\u671f\u7814\u7a76\u90e8"),
+                 ("ctbc", "\u4e2d\u4fe1\u6295\u9867"),
+                 ("fubon", "\u5bcc\u90a6\u6295\u9867"),
+                 ("sinopac", "\u6c38\u8c50\u91d1\u8b49\u5238"))
+CM_CATHAY_MARK = "\u50c5\u4f9b\u672c\u516c\u53f8\u5167\u90e8\u540c\u4ec1\u53c3\u8003\u4f7f\u7528\uff0c\u975e\u7d93\u672c\u516c\u53f8\u4e8b\u5148\u66f8\u9762\u540c\u610f"
+
+
+def _cm_broker_fallback(seg):
+    if seg["broker"]:
+        return seg
+    head = _cm_norm("\n".join(_cm_head_lines(seg["text"], 8)))
+    for en, zh in CM_EN_BROKERS:
+        if en in head:
+            seg["broker"] = zh
+            return seg
+    if CM_CATHAY_MARK in seg["text"]:
+        seg["broker"] = "\u570b\u6cf0\u8b49\u671f\u7814\u7a76\u90e8"
+    return seg
 
 
 def split_call_memos(text):
@@ -683,7 +709,7 @@ def detect_call_memos(text, file_name):
                (KGI/CTBC/Yuanta style headers)."""
     segs = split_call_memos(text)
     if segs:
-        return segs, "anchor"
+        return [_cm_broker_fallback(s) for s in segs], "anchor"
     fn = _cm_norm(file_name)
     hit = any(k in fn for k in CM_FNAME_KEYWORDS)
     if not hit:
@@ -695,11 +721,11 @@ def detect_call_memos(text, file_name):
         return [], ""
     head8 = "\n".join(_cm_head_lines(text, 8))
     name, code = _cm_extract_company(head8)
-    return [{"text": text.strip("\n"),
+    return [_cm_broker_fallback({"text": text.strip("\n"),
              "date": _cm_extract_date(head8),
              "company": name,
              "code": code,
-             "broker": _cm_extract_broker(head8)}], "fallback"
+             "broker": _cm_extract_broker(head8)})], "fallback"
 
 
 def chunk_full_text_blocks(text, limit=1900):
