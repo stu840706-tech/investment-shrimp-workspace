@@ -574,9 +574,11 @@ RE_CM_SIGNAL = re.compile("(callmemo|(?:\u6cd5\u8aaa|\u6cd5\u4eba\u8aaa\u660e\u6
 RE_CM_ANYDATE_SLASH = re.compile(r"(?<!\d)(20\d{2})[/.\-](\d{1,2})[/.\-](\d{1,2})(?!\d)")
 RE_CM_ANYDATE_8 = re.compile(r"(?<!\d)(20\d{2})(0[1-9]|1[0-2])([0-2]\d|3[01])(?!\d)")
 RE_CM_DATE6 = re.compile(r"(?<!\d)(2[4-9])(0[1-9]|1[0-2])([0-2]\d|3[01])(?!\d)")
-RE_CM_ANYCOMPANY = re.compile("(?<![\u4e00-\u9fff])([\u4e00-\u9fff][\u4e00-\u9fffA-Za-z0-9]{0,9}?)\\s*[\uff08(](\\d{4})(?:\\s*TT)?[\uff09)]")
+RE_CM_ANYCOMPANY = re.compile("(?<![\u4e00-\u9fff])([\u4e00-\u9fff][\u4e00-\u9fffA-Za-z0-9]{0,9}?)[ \\t]*[\uff08(](\\d{4})(?:\\s*TT)?[\uff09)]")
 RE_CM_CMCODE = re.compile("[Cc]all\\s*[Mm]emo[_\\s]*(\\d{4})\\s*([\u4e00-\u9fff]{2,10})")
 RE_CM_ANYBROKER = re.compile("([\u4e00-\u9fff]{2,8}?(?:\u8b49\u671f\u7814\u7a76\u90e8|\u7814\u7a76\u90e8|\u6295\u9867|\u8b49\u5238|\u6295\u4fe1))")
+RE_CM_MEMOLINE = re.compile(r"^\s*[Mm][Ee][Mm][Oo]\s*$")
+RE_CM_CODEFIRST = re.compile("[\uff08(](\\d{4})[\uff09)][ \\t]*([\u4e00-\u9fff][\u4e00-\u9fffA-Za-z0-9\\-]{1,11})")
 CM_FNAME_KEYWORDS = ("callmemo", "\u6cd5\u8aaa")
 
 
@@ -608,6 +610,12 @@ def _cm_extract_company(head_text):
     for m in RE_CM_ANYCOMPANY.finditer(head_text):
         name = m.group(1).strip()
         code = m.group(2)
+        if 2020 <= int(code) <= 2040 and code not in COMPANY_NAMES:
+            continue
+        return name, code
+    for m in RE_CM_CODEFIRST.finditer(head_text):
+        code = m.group(1)
+        name = m.group(2).strip()
         if 2020 <= int(code) <= 2040 and code not in COMPANY_NAMES:
             continue
         return name, code
@@ -715,6 +723,11 @@ def detect_call_memos(text, file_name):
     if not hit:
         for l in _cm_head_lines(text, 15):
             if RE_CM_SIGNAL.search(_cm_norm(l)):
+                hit = True
+                break
+    if not hit:
+        for l in text.split("\n")[:6]:
+            if RE_CM_MEMOLINE.match(l):
                 hit = True
                 break
     if not hit:
