@@ -579,6 +579,8 @@ RE_CM_CMCODE = re.compile("[Cc]all\\s*[Mm]emo[_\\s]*(\\d{4})\\s*([\u4e00-\u9fff]
 RE_CM_ANYBROKER = re.compile("([\u4e00-\u9fff]{2,8}?(?:\u8b49\u671f\u7814\u7a76\u90e8|\u7814\u7a76\u90e8|\u6295\u9867|\u8b49\u5238|\u6295\u4fe1))")
 RE_CM_MEMOLINE = re.compile(r"^\s*[Mm][Ee][Mm][Oo]\s*$")
 RE_CM_CODEFIRST = re.compile("[\uff08(](\\d{4})[\uff09)][ \\t]*([\u4e00-\u9fff][\u4e00-\u9fffA-Za-z0-9\\-]{1,11})")
+RE_CM_UNDERSCORE = re.compile("_([\u4e00-\u9fff][\u4e00-\u9fffA-Za-z0-9\\-]{0,9})\\s+(\\d{4})_")
+RE_CM_CODE_TT_NAME = re.compile("[Cc]all\\s*[Mm]emo_\\s*(\\d{4})\\s*TT\\s*([\u4e00-\u9fff][\u4e00-\u9fffA-Za-z0-9\\-]{0,9})")
 CM_FNAME_KEYWORDS = ("callmemo", "\u6cd5\u8aaa")
 
 
@@ -619,6 +621,12 @@ def _cm_extract_company(head_text):
         if 2020 <= int(code) <= 2040 and code not in COMPANY_NAMES:
             continue
         return name, code
+    m = RE_CM_CODE_TT_NAME.search(head_text)
+    if m:
+        return m.group(2).strip(), m.group(1)
+    m = RE_CM_UNDERSCORE.search(head_text)
+    if m:
+        return m.group(1).strip(), m.group(2)
     m = RE_CM_CMCODE.search(head_text)
     if m:
         return m.group(2).strip(), m.group(1)
