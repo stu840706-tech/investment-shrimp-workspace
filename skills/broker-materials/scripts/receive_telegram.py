@@ -69,7 +69,7 @@ def pdf_to_text(pdf_path: Path) -> str:
         return pdf_path.read_text(encoding="utf-8", errors="replace")
     
     # Word 檔（.docx / .doc）
-    if pdf_path.suffix.lower() in (".docx", ".doc"):
+    if pdf_path.suffix.lower() == ".docx":
         try:
             from docx import Document
             doc = Document(str(pdf_path))
@@ -85,6 +85,27 @@ def pdf_to_text(pdf_path: Path) -> str:
             raise RuntimeError("需安裝 python-docx: pip install python-docx --break-system-packages")
         except Exception as e:
             raise RuntimeError(f"Word 讀取失敗: {e}")
+
+    # 舊版 Word 檔（.doc, binary format）使用 antiword
+    if pdf_path.suffix.lower() == ".doc":
+        import subprocess, tempfile, shutil
+        try:
+            result = subprocess.run(
+                ["antiword", str(pdf_path.resolve())],
+                capture_output=True, timeout=60
+            )
+            text = result.stdout.decode("big5", errors="replace").strip()
+            if not text:
+                text = result.stdout.decode("utf-8", errors="replace").strip()
+            if not text:
+                raise RuntimeError("antiword 輸出為空")
+            return text
+        except FileNotFoundError:
+            raise RuntimeError("antiword 未安裝，無法讀取 .doc 檔")
+        except subprocess.TimeoutExpired:
+            raise RuntimeError("antiword 執行逾時")
+        except Exception as e:
+            raise RuntimeError(f"antiword 讀取失敗: {e}")
 
     # ZIP 壓縮檔
     if pdf_path.suffix.lower() == ".zip":
@@ -224,7 +245,7 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
     }
     payload = {
         "model": MINIMAX_MODEL,
-        "max_tokens": 6000,
+        "max_tokens": 12000,
         "thinking": {"type": "disabled"},
         "system": system_prompt,
         "messages": [
@@ -235,7 +256,7 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
     resp.raise_for_status()
     blocks = resp.json()["content"]
 
-    # Layer 0: collect text blocks (filter empty, prefer longest)
+    # Layer 0: collect text blocks (filter thinking, prefer longest)
     candidates = [b["text"] for b in blocks if b.get("type") == "text" and b.get("text", "").strip()]
     text_blocks = sorted(candidates, key=len, reverse=True) if candidates else []
 
@@ -256,11 +277,25 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
             return json.loads(raw)
         except json.JSONDecodeError as e:
             if e.msg in ("Unterminated string starting at", "Expecting value",
-                         "Unterminated object", "Invalid control character"):
+                         "Unterminated object", "Invalid control character",
+                         "Extra data"):
                 result = _try_complete_json(raw)
                 if result:
                     print("  [FALLBACK] truncated JSON 修復成功")
                     return result
+
+    # Layer 1b: JSON 陣列（M2.7 有時回傳多檔報告的陣列）
+    if raw.startswith("["):
+        try:
+            arr = json.loads(raw)
+            if isinstance(arr, list) and arr:
+                # 取第一個有效物件
+                for item in arr:
+                    if isinstance(item, dict) and item.get("category"):
+                        print(f"  [FALLBACK] JSON 陣列，取第 {arr.index(item)+1} 個元素")
+                        return item
+        except json.JSONDecodeError:
+            pass
 
     # Layer 2: 修補（找到第一個 {，並嘗試解析）
     original_raw = raw
@@ -276,7 +311,8 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
             return json.loads(raw)
         except json.JSONDecodeError as e:
             if e.msg in ("Unterminated string starting at", "Expecting value",
-                         "Unterminated object", "Invalid control character"):
+                         "Unterminated object", "Invalid control character",
+                         "Extra data"):
                 result = _try_complete_json(raw)
                 if result:
                     print("  [FALLBACK] truncated JSON 修復成功 (L2)")
@@ -304,8 +340,8 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
 
 
 def _try_complete_json(raw: str) -> dict | None:
-    """嘗試修復被截斷的 JSON。"""
-    import json
+    """嘗試修復被截斷的 JSON。支援常見截斷模式。"""
+    import json, re
 
     # Method 1: 直接解析
     try:
@@ -337,6 +373,45 @@ def _try_complete_json(raw: str) -> dict | None:
                     return result
             except:
                 pass
+
+    # Method 4: 截斷發生在 field-name 或 field-value 中間
+    # 例如 {"stock_code":"3105.TW","co" → "co" 是 "company_name" 被截斷
+    # 從 raw 萃取 category，據此推斷剩餘欄位並補全
+    try:
+        m_cat = re.search(r'"category"\s*:\s*"([^"]+)"', raw)
+        if not m_cat:
+            return None
+        cat = m_cat.group(1)
+
+        # 各 category 的剩餘欄位定義
+        if cat == "stock_report":
+            str_f = ["company_name","broker_name","rating","core_view","investor_meeting_date"]
+            num_f = ["target_price","current_price","revenue_forecast_this_year",
+                     "revenue_forecast_next_year","eps_forecast_this_year","eps_forecast_next_year",
+                     "gross_margin_forecast","pe_valuation","key_excerpt"]
+        elif cat == "industry_report":
+            str_f = ["topic","broker_name","core_view","key_excerpt","beneficiary_stocks","risk_stocks"]
+            num_f = []
+        elif cat == "morning_brief":
+            str_f = ["broker_name","core_view"]
+            num_f = []
+        else:
+            return None
+
+        # 找倒數第一個 ',"' 位置（完整欄位的結尾 separator）
+        comma_idx = raw.rfind('","')
+        if comma_idx < 10:
+            return None
+        base = raw[:comma_idx + 2]  # 包含 ',"'
+
+        parts = [f'"{f}":""' for f in str_f] + [f'"{f}":0' for f in num_f]
+        suffix = ','.join(parts) + '}'
+        result = json.loads(base + suffix)
+        if result.get("category"):
+            print(f"  [FALLBACK] truncated JSON 修復成功 (M4 category={cat})")
+            return result
+    except Exception:
+        pass
 
     return None
 
