@@ -88,7 +88,7 @@ def pdf_to_text(pdf_path: Path) -> str:
 
     # 舊版 Word 檔（.doc, binary format）使用 antiword
     if pdf_path.suffix.lower() == ".doc":
-        import subprocess, tempfile, shutil
+        import tempfile, shutil
         try:
             result = subprocess.run(
                 ["antiword", str(pdf_path.resolve())],
@@ -1041,7 +1041,7 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
         for fkey, nkey in [("beneficiary_stocks", "受惠標的"), ("risk_stocks", "受害標的")]:
             stocks = fields.get(fkey) or []
             if stocks:
-                props[nkey] = {"multi_select": [{"name": str(s)[:100]} for s in stocks[:10]]}
+                props[nkey] = {"rich_text": rt(",".join(str(s)[:100] for s in stocks[:10]))}
 
     elif category == "morning_brief":
         db_id = secrets["notion_industry_reports_db"]
@@ -1057,7 +1057,7 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
         }
         stocks = fields.get("beneficiary_stocks") or []
         if stocks:
-            props["受惠標的"] = {"multi_select": [{"name": str(s)[:100]} for s in stocks[:10]]}
+            props["受惠標的"] = {"rich_text": rt(",".join(str(s)[:100] for s in stocks[:10]))}
         else:
             return ""
         # fall through to write
