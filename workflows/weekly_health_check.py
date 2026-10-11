@@ -77,15 +77,18 @@ DB_CHECKS = {
 
 # ── 工具函數 ─────────────────────────────────────────────────────────────────
 
-def notion_request(method, path, body=None):
+def notion_request(method, path, body=None, timeout=15):
+    """Notion API 呼叫。任何失敗（HTTP 錯誤、timeout、連線中斷）一律回傳 {"error": ...}，不丟例外（Issue-36）"""
     url = f"{NOTION_API}/{path}"
     data = json.dumps(body).encode() if body else None
     req = urllib.request.Request(url, data=data, headers=NOTION_HEADERS, method=method)
     try:
-        with urllib.request.urlopen(req, timeout=15) as r:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
             return json.loads(r.read())
     except urllib.error.HTTPError as e:
         return {"error": str(e), "body": e.read().decode()}
+    except Exception as e:
+        return {"error": f"{type(e).__name__}: {e}"}
 
 def send_telegram(msg):
     if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
@@ -148,7 +151,7 @@ def check_logs():
             full_path = Path(os.path.expanduser(log_path))
 
         if not full_path.exists():
-            results[task] = {"status": "MISSING", "detail": "log 檔不存在"}
+            results[task] = {"status": "MISSING", "detail": "log 檔不存在", "ok": False}
             continue
 
         mtime = datetime.fromtimestamp(full_path.stat().st_mtime, tz=TZ_TAIPEI)
@@ -163,7 +166,7 @@ def check_logs():
                     last_success = line[:80]
                     break
         except Exception as e:
-            results[task] = {"status": "READ_ERROR", "detail": str(e)}
+            results[task] = {"status": "READ_ERROR", "detail": str(e), "ok": False}
             continue
 
         ok = last_success is not None and days_ago <= check_days
@@ -195,7 +198,10 @@ def get_db_count(db_id):
             body2["start_cursor"] = cursor
         resp = notion_request("POST", f"databases/{db_id}/query", body2)
         if "error" in resp:
-            return None, str(resp.get("error"))
+            print(f"    [retry] {db_id[:8]} 第 {count // 100 + 1} 頁失敗：{resp.get('error')}，45 秒 timeout 重試一次")
+            resp = notion_request("POST", f"databases/{db_id}/query", body2, timeout=45)
+        if "error" in resp:
+            return None, f"{resp.get('error')}（重試 1 次仍失敗，中斷前已數 {count} 筆）"
         count += len(resp.get("results", []))
         if not resp.get("has_more"):
             break
@@ -207,7 +213,8 @@ def check_notion_dbs():
     for name, (db_id, min_weekly, max_weekly) in DB_CHECKS.items():
         count, err = get_db_count(db_id)
         if err:
-            results[name] = {"status": "ERROR", "detail": err}
+            results[name] = {"status": "ERROR", "detail": err,
+                             "warnings": [f"查詢失敗：{err}"], "ok": False}
             continue
 
         warnings = []
@@ -407,6 +414,10 @@ def build_telegram_msg(report):
             lines.append(f"📄 {notion_url}")
     else:
         lines.append("🎉 系統一切正常，本週無需處理")
+
+    if not report.get("notion_url"):
+        lines.append("")
+        lines.append("⚠️ Notion 健診記錄寫入失敗，本週只有這則 Telegram（請查 /tmp/weekly_health_check.log）")
 
     return "\n".join(lines)
 
@@ -617,6 +628,9 @@ def write_notion_report(report):
             "children": blocks[:100],
         })
         page_id = resp.get("id", "")
+        if not page_id:
+            print(f" [週稽查] Notion 新建失敗：{resp.get('error')} {str(resp.get('body', ''))[:200]}")
+            return ""
         for i in range(100, len(blocks), 100):
             notion_request("PATCH", f"blocks/{page_id}/children",
                           {"children": blocks[i:i+100]})
@@ -674,5 +688,16 @@ def main():
     print(f"{'='*60}")
     print("週健診完成")
 
+def _tg_escape(s):
+    return str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        # Issue-36：健診本身崩潰也要出聲，不可靜默
+        import traceback
+        traceback.print_exc()
+        send_telegram(f"❌ <b>投資蝦週健診 {WEEK_STR} 崩潰</b>\n{_tg_escape(type(e).__name__ + ': ' + str(e)[:300])}\n請查 /tmp/weekly_health_check.log")
+        sys.exit(1)

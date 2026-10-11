@@ -28,7 +28,7 @@ def archive_old_scan_results():
     archived = 0
     for f in STATE_DIR.glob("scan_results_*.json"):
         ymd = f.stem.split("_")[-1]
-        if ymd < cutoff:
+        if ymd <= cutoff:  # Issue-35: 含 cutoff 當日，否則週五檔要到隔週一才歸檔、週日健診必報 15 天
             archive_dir.mkdir(parents=True, exist_ok=True)
             f.rename(archive_dir / f.name)
             archived += 1
