@@ -33,21 +33,37 @@ SOURCE_ABBREV = {
     'Investing.com': 'Invest', 'Investing': 'Invest',
 }
 
+_NAMES = None
+
+
+def _nm(c, dyn=None):
+    global _NAMES
+    if _NAMES is None:
+        try:
+            import os as _os
+            _p = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), '..', 'state', 'tw_stock_names.json')
+            _NAMES = json.load(open(_p, encoding='utf-8'))
+        except Exception:
+            _NAMES = {}
+    return _NAMES.get(c) or COMPANY_NAMES.get(c) or (dyn or {}).get(c, '')
+
+
 def abbrev_source(src):
     return SOURCE_ABBREV.get(src, src[:10])
 
 def fmt_hdr(it):
     companies = list(dict.fromkeys(it.get('companies', [])))
-    dyn = it.get('company_names', {}) or {} # LLM 動態填的公司名稱
+    dyn = it.get('company_names', {}) or {}
     tag = it.get('tag', '')
-    tag_str = ' 🟢' if tag == '利多' else (' 🔴' if tag == '利空' else '')
+    tag_str = ' \U0001f7e2' if tag == '\u5229\u591a' else (' \U0001f534' if tag == '\u5229\u7a7a' else '')
+    title = it.get('title', '')
     if companies:
         parts = []
         for c in companies[:3]:
-            name = COMPANY_NAMES.get(c) or dyn.get(c, '')
-            parts.append(f'{c} {name}' if name else c)
-        return '▸ ' + ' / '.join(parts) + tag_str
-    return '▸ ' + it.get('title', '')[:45] + tag_str
+            name = _nm(c, dyn)
+            parts.append(name + '(' + c + ')' if name else c)
+        return '\u25b8 ' + '\uff0f'.join(parts) + '\uff5c' + title[:30] + tag_str
+    return '\u25b8 ' + title[:45] + tag_str
 
 def make_concl(impact, max_len=40):
     if not impact:
@@ -365,8 +381,8 @@ def main():
             companies = list(dict.fromkeys(it.get('companies', [])))
             if companies:
                 c = companies[0]
-                name = it.get('company_names', {}).get(c, '') or COMPANY_NAMES.get(c, '')
-                label = f"{c} {name}" if name else c
+                name = _nm(c, it.get('company_names', {}) or {})
+                label = name + '(' + c + ')' if name else c
             else:
                 label = it.get('title', '')[:45]
             fact = it.get('fact', '')

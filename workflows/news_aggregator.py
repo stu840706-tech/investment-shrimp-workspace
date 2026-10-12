@@ -34,6 +34,9 @@ def get_hour_arg():
     """Returns (hour, date_str)"""
     hour = sys.argv[1].zfill(2) if len(sys.argv) >= 2 else datetime.now().strftime("%H")
     date_str = sys.argv[2] if len(sys.argv) >= 3 else datetime.now().strftime("%Y%m%d")
+    # Fallback: if date_str looks like strftime pattern (%% not expanded by cron engine), use today
+    if '%' in date_str or not date_str.isdigit():
+        date_str = datetime.now().strftime("%Y%m%d")
     return hour, date_str
 
 def check_raw_files(hour, date_str):
@@ -331,6 +334,67 @@ def call_llm_batch(items, retries=2):
 # 規則分類（用於 LLM 失敗或非 top  items）
 # ============================================================
 
+_NAMES = None
+
+
+def _names():
+    global _NAMES
+    if _NAMES is None:
+        try:
+            _NAMES = json.loads((MEMORY_DIR.parent / 'state' / 'tw_stock_names.json').read_text(encoding='utf-8'))
+        except Exception:
+            _NAMES = {}
+    return _NAMES
+
+
+def _name_keys(n):
+    n = str(n).replace('*', '').strip()
+    keys = {n}
+    for suf in ('-KY', '-DR', '\u6295\u63a7', '\u63a7\u80a1'):
+        if n.endswith(suf):
+            keys.add(n[:-len(suf)])
+    for k in list(keys):
+        if len(k) >= 3:
+            keys.add(k[:-1])
+    return [k for k in keys if len(k) >= 2]
+
+
+def _validate_codes(codes, text):
+    table = _names()
+    out = []
+    for c in codes:
+        c = str(c)
+        if c in out:
+            continue
+        yearlike = 2019 <= int(c) <= 2035
+        literal = c in text and not yearlike
+        if table:
+            if c not in table:
+                continue
+            if literal or any(k in text for k in _name_keys(table[c])):
+                out.append(c)
+        elif literal:
+            out.append(c)
+    return out[:5]
+
+
+def _lr_companies(lr, text=''):
+    raw = lr.get('companies') or lr.get('company_codes') or lr.get('company_names') or []
+    if isinstance(raw, (str, int)):
+        raw = re.split('[,\u3001\\s]+', str(raw))
+    cand = []
+    for c in raw:
+        s = str(c).strip()
+        m = re.fullmatch('(\\d{4})(?:[.-](?:TWO|TW|TT))?', s) or re.search('[\uff08(](\\d{4})(?:\\s*TT)?[)\uff09]', s)
+        if m:
+            cand.append(m.group(1))
+    return _validate_codes(cand, text)
+
+
+def _lr_cluster(lr):
+    return str(lr.get('cluster_id') or lr.get('event_fingerprint') or lr.get('fingerprint') or '')
+
+
 def rule_classify(item):
     """規則分類：用於 LLM 失敗或非預選項目"""
     text = (item.get('title', '') + ' ' + (item.get('body_snippet', '') or '')).lower()
@@ -339,6 +403,7 @@ def rule_classify(item):
     has_pos = any(kw in text for kw in ['營收','EPS','目標價','評等','買進','擴產','訂單','量產','新高'])
     has_neg = any(kw in text for kw in ['裁員','停工','火災','違約','假帳','掏空','下市','破產'])
     companies = re.findall(r'\b[12][0-9]{3}\b', item.get('title', '') + (item.get('body_snippet', '') or ''))[:5]
+    companies = _validate_codes(companies, item.get('title', '') + ' ' + (item.get('body_snippet', '') or ''))
 
     sig = "low"
     if has_neg:
@@ -463,6 +528,7 @@ def merge_by_company(result):
         cluster_seen[cid] = len(deduped)
         deduped.append(it)
     
+    return deduped
     # Step 2: 再按公司代碼去重（同一公司只留一則，fact 最完整的）
     company_groups = {}
     for it in deduped:
@@ -652,8 +718,8 @@ def main():
                         "fact": (lr.get('fact', '') or '無具體數字')[:120],
                         "impact": (lr.get('impact', '') or ''),
                         "signal": lr.get('signal', 'low'),
-                        "companies": [c for c in (lr.get('companies', []) or []) if re.match(r'^\d{4}$', str(c))],
-                        "cluster_id": lr.get('cluster_id', ''),
+                        "companies": _lr_companies(lr, item.get('title', '') + ' ' + (item.get('body_snippet', '') or '')),
+                        "cluster_id": _lr_cluster(lr),
                         "body_snippet": item.get('body_snippet', ''),
                         "paywall": item.get('paywall', False),
                     })
