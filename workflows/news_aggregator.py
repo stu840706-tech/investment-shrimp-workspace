@@ -191,6 +191,10 @@ def dedup_title(items):
     return result
 
 
+CRYPTO_A_MARK = '盤中速報'
+CRYPTO_B_MARK = '美元'
+
+
 def garbage_filter(items):
     """Step 2.5: 過濾垃圾標題"""
     import re
@@ -219,6 +223,9 @@ def garbage_filter(items):
         if any(kw in title for kw in ['閃兵', '藝人', '起訴', '代言', 'MV', '緋聞', '整形', '八卦', '紅毯', '時尚']):
             dropped += 1
             continue
+        if CRYPTO_A_MARK in title and CRYPTO_B_MARK in title:
+            dropped += 1
+            continue
         kept.append(it)
     
     if dropped:
@@ -234,6 +241,8 @@ LLM_PROMPT = """【強制規定】所有輸出欄位（fact、impact、company_n
 
 【輸出格式】只輸出 JSON array，不要任何說明文字或 markdown：
 [{...}]
+
+【欄位名稱（必須完全一致）】每個物件只能使用這些 key：id（數字）、signal（high/medium/low）、tag（利多/利空/中性 擇一，字串）、fact、impact、companies（台股四位數代碼字串陣列，無則 []）、company_names（公司中文名陣列）、cluster_id（事件指紋）。
 
 【tag 欄位規則】
 利多：目標價上修、EPS 上修、重大訂單、擴產、財報優於預期、評等調升
@@ -296,7 +305,7 @@ def call_llm_batch(items, retries=2):
     for attempt in range(retries):
         try:
             payload = {
-                "model": "MiniMax-M2.7",
+                "model": "MiniMax-M3",
                 "max_tokens": 3072,
                 "thinking": {"type": "disabled"},
                 "messages": [{"role": "user", "content": prompt}]
