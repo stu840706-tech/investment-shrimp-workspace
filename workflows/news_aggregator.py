@@ -226,6 +226,9 @@ def garbage_filter(items):
         if CRYPTO_A_MARK in title and CRYPTO_B_MARK in title:
             dropped += 1
             continue
+        if title.startswith(FX_MARK):
+            dropped += 1
+            continue
         kept.append(it)
     
     if dropped:
@@ -280,7 +283,7 @@ high 必須同時滿足：
 【禁止用語（impact 欄位）】
 ❌「顯示市場信心增強」/「帶動族群上漲」/「反映需求持續強勁」/「短期股價可能持續有撐」/「多頭格局延續」/「外资/法人看好」/「需進一步確認」
 
-【公司代碼】用 regex \d{4} 從 title 或 body 中找，只填四位數數字
+【公司代碼】companies 填新聞主角的台股四位數代碼（字串陣列）；原文沒寫代碼時可依公司名判斷，不確定就不要填，系統會再用公司名稱總表核對。
 
 【事件指紋】格式「公司_核心數字_事件類型」
 
@@ -402,6 +405,65 @@ def _lr_companies(lr, text=''):
 
 def _lr_cluster(lr):
     return str(lr.get('cluster_id') or lr.get('event_fingerprint') or lr.get('fingerprint') or '')
+
+
+REV_A = '營收'
+REV_KEEP = ('新高', '創高', 'EPS', '目標價', '獲利', '毛利', '法說', '上修', '下修', '違約', '併購', '財測')
+YOY_RE = re.compile('年增(?:率)?(?:達|逾|約|高達)? *([0-9]+(?:[.][0-9]+)?) *[%％]')
+FX_MARK = '外匯速報'
+SIG_RANK = {'high': 3, 'medium': 2, 'pending': 1, 'low': 0}
+
+
+def _rev_tighten(it):
+    if it.get('signal') != 'high':
+        return
+    txt = it.get('title', '') + ' ' + it.get('fact', '')
+    if REV_A not in txt or any(k in txt for k in REV_KEEP):
+        return
+    m = YOY_RE.search(txt)
+    if m is None or float(m.group(1)) < 30:
+        it['signal'] = 'medium'
+
+
+def _num_tokens(it):
+    s = (it.get('title', '') + ' ' + it.get('fact', '')).replace(',', '')
+    comps = set(it.get('companies') or [])
+    out = set()
+    for m in re.findall('[0-9]+(?:[.][0-9]+)?', s):
+        n = m.split('.')[0]
+        if len(n) >= 4 and not (2019 <= int(n) <= 2035) and n not in comps:
+            out.add(n)
+    return out
+
+
+def _tkey(it):
+    return it.get('title', '')[:25].lower().strip()
+
+
+def _merge_same_event(items):
+    kept = []
+    for it in items:
+        comps = set(it.get('companies') or [])
+        live = it.get('signal') != 'skip'
+        nums = _num_tokens(it) if comps and live else set()
+        tkey = _tkey(it) if live else ''
+        dup = None
+        for k in kept:
+            if k.get('signal') == 'skip':
+                continue
+            if (tkey and _tkey(k) == tkey) or (nums and set(k.get('companies') or []) == comps and nums & _num_tokens(k)):
+                dup = k
+                break
+        if dup is None:
+            kept.append(it)
+            continue
+        srcs = list(dict.fromkeys((dup.get('sources_list') or [dup.get('source', '')]) + (it.get('sources_list') or [it.get('source', '')])))
+        dup['sources_list'] = srcs
+        dup['source_count'] = len(srcs)
+        dup.setdefault('merged_titles', []).append(it.get('title', ''))
+        if SIG_RANK.get(it.get('signal'), -1) > SIG_RANK.get(dup.get('signal'), -1):
+            dup['signal'] = it.get('signal')
+    return kept
 
 
 def rule_classify(item):
@@ -640,6 +702,9 @@ def apply_signal_rules(clustered):
             if any(kw in title for kw in PRICE_ONLY_KW) and not any(kw in title for kw in CATALYST_KW):
                 it['signal'] = 'pending'
 
+    for it in clustered:
+        _rev_tighten(it)
+    clustered = _merge_same_event(clustered)
     return clustered
 
 # ============================================================
@@ -780,6 +845,8 @@ def main():
         key = it.get('title', '')[:25].lower().strip()
         if key and it.get('signal') != 'skip':
             fp[key] = now_str
+        for mt in it.get('merged_titles', []):
+            fp[mt[:25].lower().strip()] = now_str
 
     cutoff = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
     to_del = [k for k, v in fp.items() if v < cutoff]

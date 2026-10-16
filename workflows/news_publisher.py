@@ -382,11 +382,11 @@ def main():
             if companies:
                 c = companies[0]
                 name = _nm(c, it.get('company_names', {}) or {})
-                label = name + '(' + c + ')' if name else c
+                label = (name + '(' + c + ')' if name else c) + '\uff5c' + it.get('title', '')[:28]
             else:
                 label = it.get('title', '')[:45]
             fact = it.get('fact', '')
-            if fact and fact not in ('無具體數字', '有具體數字', ''):
+            if fact and fact not in ('無具體數字', '有具體數字', '') and not fact.startswith('\u539f\u6587\u50c5\u6a19\u984c'):
                 lines.append(f"• {label}｜{fact[:45]}")
             else:
                 lines.append(f"• {label}")
