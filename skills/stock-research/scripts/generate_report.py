@@ -127,6 +127,7 @@ def build_prompt(stock_id, data, memo):
 - 季報 EPS 單位：元/股
 - 若某項資料不足，在該章節標註「資料待補」
 - 只輸出 JSON，不要其他文字
+- key 名必須與上方輸出格式完全一致（title／rating／target_price／section_1～section_7），不得新增、改名或合併章節
 
 報告模板：
 {template_snippet}
@@ -136,7 +137,7 @@ def build_prompt(stock_id, data, memo):
 def call_minimax(prompt):
     """呼叫 M2.7 產生報告（thinking=off）"""
     payload = {
-        "model": "MiniMax-M2.7",
+        "model": "MiniMax-M3",
         "max_tokens": 8000,
         "thinking": {"type": "disabled"},
         "messages": [
@@ -159,13 +160,20 @@ def call_minimax(prompt):
 
     text_blocks = [b for b in resp.get("content", []) if b.get("type") == "text"]
     if not text_blocks:
-        raise RuntimeError("M2.7 無 text block 回應")
-    raw = "{" + text_blocks[0]["text"].strip()
-    if "```" in raw:
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    return json.loads(raw.strip())
+        raise RuntimeError("LLM 無 text block 回應")
+    raw = "".join(b.get("text", "") for b in text_blocks)
+    raw = raw.replace("```json", "").replace("```", "").strip()
+    if not raw.startswith("{"):
+        raw = "{" + raw
+    i, k = raw.find("{"), raw.rfind("}")
+    if k <= i:
+        raise RuntimeError("LLM 回應無 JSON 物件: " + repr(raw[:120]))
+    report = json.loads(raw[i:k + 1])
+    expected = ("title", "rating", "target_price") + tuple(f"section_{n}" for n in range(1, 8))
+    missing = [key for key in expected if key not in report]
+    if missing:
+        print(f"[generate_report] ⚠️ LLM 回傳缺 key: {missing}")
+    return report
 
 def main(stock_id, memo=""):
     print(f"[generate_report] 產生 {stock_id} 研究報告...")

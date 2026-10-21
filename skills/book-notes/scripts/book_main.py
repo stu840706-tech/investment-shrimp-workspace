@@ -79,6 +79,41 @@ def split_text(text, chunk_size=CHUNK_SIZE):
         else:
             result.append(buffer)
     return result
+REQUIRED_KEYS = ("概念名稱", "觀點說明", "舉例", "如何使用", "適用情境", "重要度")
+
+def _parse_concepts(raw):
+    """容錯解析：剝圍欄 → 取首 [ 至末 ] → 攤平 [[...]] → 逐筆檢查 dict 與 key。"""
+    s = raw.replace("```json", "").replace("```", "")
+    i, k = s.find("["), s.rfind("]")
+    if i < 0 or k <= i:
+        raise ValueError("LLM 回應無 JSON array: " + repr(s[:120]))
+    frag = s[i:k + 1]
+    j = s.find("[{")
+    alt = s[j:k + 1] if 0 <= j < k else frag
+    data = None
+    for cand in (frag, frag[1:].strip(), alt):
+        try:
+            data = json.loads(cand)
+            break
+        except Exception:
+            continue
+    if data is None:
+        raise ValueError("LLM 回應 JSON 解析失敗: " + repr(frag[:120]))
+    while isinstance(data, list) and len(data) == 1 and isinstance(data[0], list):
+        data = data[0]
+    if not isinstance(data, list):
+        raise ValueError("LLM 回應不是 list")
+    out = []
+    for c in data:
+        if not isinstance(c, dict) or not c.get("概念名稱"):
+            print(f" [warn] 跳過不合格概念: {str(c)[:80]}")
+            continue
+        missing = [key for key in REQUIRED_KEYS if key not in c]
+        if missing:
+            print(f" [warn] 概念缺 key {missing}: {c.get('概念名稱')}")
+        out.append(c)
+    return out
+
 def extract_concepts(chunk, book_title, chunk_idx, total_chunks, dry_run=False):
     if dry_run:
         print(f"  [DRY-RUN] 跳過 LLM 萃取（模擬 3 個概念）")
@@ -109,12 +144,13 @@ def extract_concepts(chunk, book_title, chunk_idx, total_chunks, dry_run=False):
 - 重要度：核心（改變思維框架）/ 重要（實用工具）/ 參考（背景知識）
 - 不得捏造書中沒有的內容
 - 只輸出 JSON array，不要其他文字
+- 每個物件的 key 名必須與上方範例完全一致（概念名稱／觀點說明／舉例／如何使用／適用情境／重要度），不得新增、改名或翻譯
 
 書籍內容：
 {chunk}
 """
     payload = {
-        "model": "MiniMax-M2.7",
+        "model": "MiniMax-M3",
         "max_tokens": 3000,
         "thinking": {"type": "disabled"},
         "messages": [{"role": "user", "content": prompt}, {"role": "assistant", "content": "["}],
@@ -134,18 +170,13 @@ def extract_concepts(chunk, book_title, chunk_idx, total_chunks, dry_run=False):
 
         text_blocks = [b for b in resp.get("content", []) if b.get("type") == "text"]
     if not text_blocks:
-        print(f" [warn] M2.7 無 text block，content: {resp.get('content')}")
+        print(f" [warn] LLM 無 text block，content: {resp.get('content')}")
         return []
-    raw_text = text_blocks[0].get("text", "")
+    raw_text = "".join(b.get("text", "") for b in text_blocks)
     if not raw_text or not raw_text.strip():
-        print(f" [warn] M2.7 text block 為空")
+        print(f" [warn] LLM text block 為空")
         return []
-    raw = "[" + raw_text.strip()
-    if "```" in raw:
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    return json.loads(raw.strip())
+    return _parse_concepts("[" + raw_text.strip())
 
 def create_book_notes_page(title, author, category):
     query = notion_post(

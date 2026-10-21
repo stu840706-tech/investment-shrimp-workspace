@@ -78,6 +78,18 @@ def archive_file(src: Path, dry_run: bool):
     return True
 
 
+def _clean_distilled(text):
+    """剝掉圍欄與前言，長度／格式 sanity gate；不合格回 None（呼叫端不會覆寫 MEMORY.md）。"""
+    lines = text.strip().splitlines()
+    lines = [ln for ln in lines if not ln.strip().startswith("```")]
+    while lines and not lines[0].lstrip().startswith("#"):
+        lines.pop(0)
+    cleaned = "\n".join(lines).strip()
+    if len(cleaned) < 1000 or len(cleaned) > 12000:
+        print(f"[WARN] 蒸餾結果長度 {len(cleaned)} 不在 1000~12000，放棄覆寫")
+        return None
+    return cleaned + "\n"
+
 def auto_distill_memory(content_text):
     try:
         sys.path.insert(0, str(WORKSPACE / "workflows"))
@@ -96,7 +108,7 @@ def auto_distill_memory(content_text):
 {content_text[:20000]}
 """
     payload = {
-        "model": "MiniMax-M2.7",
+        "model": "MiniMax-M3",
         "max_tokens": 3000,
         "thinking": {"type": "disabled"},
         "messages": [{"role": "user", "content": prompt}],
@@ -115,9 +127,9 @@ def auto_distill_memory(content_text):
         resp = json.loads(r.read().decode())
     text_blocks = [b for b in resp.get("content", []) if b.get("type") == "text"]
     if not text_blocks:
-        print("[WARN] M2.7 無 text block 回應")
+        print("[WARN] LLM 無 text block 回應")
         return None
-    return text_blocks[0]["text"].strip()
+    return _clean_distilled("".join(b.get("text", "") for b in text_blocks))
 
 def check_memory_size():
     """檢查 MEMORY.md 字元數,> 12000 印警告。回傳實際字元數(沒有 MEMORY.md 時回傳 0)。"""

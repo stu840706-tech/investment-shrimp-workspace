@@ -72,8 +72,8 @@ def extract_key_points(text, stock_id):
 只輸出 JSON，不要其他文字。全程使用繁體中文，嚴禁輸出簡體中文。"""
 
     payload = {
-        "model": "MiniMax-M2.7",
-        "max_tokens": 1000,
+        "model": "MiniMax-M3",
+        "max_tokens": 2500,
         "thinking": {"type": "disabled"},
         "messages": [{"role": "user", "content": prompt}],
     }
@@ -92,13 +92,13 @@ def extract_key_points(text, stock_id):
 
     text_blocks = [b for b in resp.get("content", []) if b.get("type") == "text"]
     if not text_blocks:
-        raise RuntimeError("M2.7 無 text block 回應")
-    raw = text_blocks[0]["text"].strip()
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    return json.loads(raw.strip())
+        raise RuntimeError("LLM 無 text block 回應")
+    raw = "".join(b.get("text", "") for b in text_blocks)
+    raw = raw.replace("```json", "").replace("```", "")
+    i, k = raw.find("{"), raw.rfind("}")
+    if i < 0 or k <= i:
+        raise RuntimeError("LLM 回應無 JSON 物件: " + repr(raw[:120]))
+    return json.loads(raw[i:k + 1])
 
 def main(stock_id, pdf_path=None):
     print(f"[fetch_annual_report] 處理 {stock_id} 年報...")

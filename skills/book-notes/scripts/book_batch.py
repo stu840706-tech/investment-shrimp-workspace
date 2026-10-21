@@ -48,7 +48,7 @@ def detect_category(text_sample, title, author):
 請只回覆以下其中一個類別，不要其他文字：
 價值投資 / 技術分析 / 總體經濟 / 行為財務 / 企業分析 / 投資心理 / 其他"""
     payload = {
-        "model": "MiniMax-M2.7",
+        "model": "MiniMax-M3",
         "max_tokens": 100,
         "thinking": {"type": "disabled"},
         "messages": [{"role": "user", "content": prompt}],
@@ -65,9 +65,12 @@ def detect_category(text_sample, title, author):
                 resp = json.loads(r.read().decode())
                 blocks = [b for b in resp.get("content", []) if b.get("type") == "text"]
                 if blocks:
-                    cat = blocks[0].get("text", "").strip()
-                    valid = {"價值投資","技術分析","總體經濟","行為財務","企業分析","投資心理","其他"}
-                    return cat if cat in valid else "其他"
+                    cat = "".join(b.get("text", "") for b in blocks).strip()
+                    valid = ("價值投資","技術分析","總體經濟","行為財務","企業分析","投資心理","其他")
+                    for v in valid:
+                        if v in cat:
+                            return v
+                    return "其他"
         except Exception as e:
             print(f" [detect_category] 第{attempt+1}次失敗: {e}")
             if attempt < 2:
