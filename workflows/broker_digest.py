@@ -185,7 +185,7 @@ def load_morning_briefs(date_compact):
 
 def call_m27(prompt, secrets, max_tokens=2000):
     payload = {
-        "model": "MiniMax-M2.7",
+        "model": "MiniMax-M3",
         "max_tokens": max_tokens,
         "thinking": {"type": "disabled"},
         "messages": [{"role": "user", "content": prompt}],
@@ -203,7 +203,7 @@ def call_m27(prompt, secrets, max_tokens=2000):
         with urllib.request.urlopen(req, timeout=120) as r:
             resp = json.loads(r.read())
             blocks = [b for b in resp.get("content", []) if b.get("type") == "text"]
-            return blocks[0]["text"].strip() if blocks else ""
+            return "".join(b.get("text", "") for b in blocks).strip()
     except Exception as e:
         print(f"[M2.7 失敗] {e}")
         return ""
