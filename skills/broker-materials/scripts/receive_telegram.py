@@ -48,7 +48,7 @@ CLASSIFY_TEXT_HEAD = 8000
 CLASSIFY_TEXT_TAIL = 2000
 
 MINIMAX_BASE = "https://api.minimax.io/anthropic/v1"
-MINIMAX_MODEL = "MiniMax-M2.7"
+MINIMAX_MODEL = "MiniMax-M3"  # 2026-10-22 M2.7 -> M3（rt_m3 patch）
 NOTION_API = "https://api.notion.com/v1"
 NOTION_VERSION = "2022-06-28"
 
@@ -214,7 +214,13 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
         "分類規則：\n"
         "- stock_report：針對單一個股的研究報告（含評等/目標價）\n"
         "- industry_report：產業趨勢或主題報告\n"
-        "- morning_brief：每日晨報（市場綜覽/多股簡評）\n\n"
+        "- morning_brief：每日晨報（市場綜覽/多股簡評）\n"
+        "- not_report：不是券商／投顧／期貨研究報告、晨報或法說會摘要的文件"
+        "（例如程式碼、部署或操作指令、聊天紀錄、表單、空白或亂碼）。"
+        "格式：{\"category\":\"not_report\",\"confidence\":\"high/medium/low\",\"reason\":\"一句話說明\"}\n\n"
+        "輸出語言：所有文字欄位一律使用繁體中文（原文是簡體也要轉成繁體）。\n"
+        "broker_name：填發布機構的簡稱即可（如「元大投顧」「凱基投顧」「國泰期貨」「Morgan Stanley」），"
+        "不要加「股份有限公司」「研究部」等字樣；不要用網址當券商名。\n\n"
  "特別規則（Call Memo / 法說會摘要）：\n"
  "- 若文件標題或開頭出現「Call Memo」字樣，代表這是法說會/電話會議摘要。\n"
  "- broker_name 必須填寫實際發布機構名稱（通常標示在「Call Memo」字樣之前，如「國泰證期研究部」），\n"
@@ -225,7 +231,7 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
         'stock_report 格式（數值欄位填數字，無資料填0）：\n'
         '{"category":"stock_report","confidence":"high/medium/low","report_date":"YYYY-MM-DD",'
         '"stock_code":"如2330.TW","company_name":"公司名","broker_name":"券商名",'
-        '"rating":"買進/加碼/中立/減碼/賣出/未明確","target_price":0,"current_price":0,'
+        '"rating":"強力買進/買進/逢低買進/增加持股/區間操作/中立/減碼/賣出/未明確 擇一（英文評等請對應：Buy=買進、Overweight=增加持股、Trading Buy=區間操作、Hold/Neutral=中立）","target_price":0,"current_price":0,'
         '"core_view":"核心觀點","revenue_forecast_this_year":0,"revenue_forecast_next_year":0,'
         '"eps_forecast_this_year":0,"eps_forecast_next_year":0,"gross_margin_forecast":0,'
         '"pe_valuation":0,"key_excerpt":"關鍵段落200字內","investor_meeting_date":"YYYY-MM-DD或空字串"}\n\n'
@@ -270,6 +276,11 @@ def classify_with_m27(text: str, secrets: dict) -> dict:
     raw = text_blocks[0].strip().lstrip("\n")  # 移除前導換行
     if raw.startswith("```"):
         raw = raw.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+    elif "```" in raw:
+        # M3 偶爾先寫一句前言再接 ```json 圍欄
+        _seg = raw.split("```", 1)[1]
+        _seg = _seg.split("\n", 1)[1] if "\n" in _seg else _seg
+        raw = _seg.rsplit("```", 1)[0].strip()
 
     # Layer 1: 直接 JSON（可能截斷）
     if raw.startswith("{"):
@@ -630,11 +641,141 @@ _INVALID_BROKER_MARKERS = ["CALLMEMO", "MEMO", "展會", "觀察", "筆記"]
 def _sanitize_broker_name(name) -> str:
     name = str(name or "").strip()
     if not name:
-        return "其他"
+        return "未明確"
     upper = name.upper()
-    if any(m in upper or m in name for m in _INVALID_BROKER_MARKERS):
+    if name != "定錨產業筆記" and any(m in upper or m in name for m in _INVALID_BROKER_MARKERS):
         return "其他"
-    return name
+    return _canon_broker(name)
+
+
+# ==== 券商名稱／評等正規化（2026-10-22 rt_m3）====
+# 目的：「券商名稱」「評等」是 Notion select，寫什麼就新增什麼選項（個股 DB 已 253／86 種）。
+# 已知券商一律收斂成固定寫法；認不出來的照原樣（去掉公司字尾）寫入並印 WARN，不會擋寫入。
+
+_S2T = str.maketrans("证东吴国广发华联万开丰顾问资产业电达际汇兴长财经闻观点报门银泽荣宁凯统远优风鑫", "證東吳國廣發華聯萬開豐顧問資產業電達際匯興長財經聞觀點報門銀澤榮寧凱統遠優風鑫")
+
+_BROKER_JUNK = {"未知", "未明確", "未明确", "未標示", "未標明", "未標示券商名", "未明確標示", "不詳", "無", "none",
+                "null", "其他", "研究部", "投顧", "投顧觀點", "券商晨報", "美系券商", "美系大行", "期貨商",
+                "股市與策略組", "市與策略組", "投顧股市與策略組", "投顧 股市與策略組", "綜合整理", "台股研究團隊",
+                "n/a", "0", "否", "research", "securities", "investment", "consulting", "brokerage", "news",
+                "(hong", "kong)", "fortune", "grand", "本中心", "市場資料", "亞系券商", "澳系券商", "買方研究",
+                "投顧研究部", "投顧報告"}
+_BROKER_KNOWN_RAW = {"工商時報", "經濟日報", "CMoney", "定錨產業筆記", "萬寶週刊", "商業周刊", "MIC", "Morningstar",
+                     "財經M平方", "先探投資週刊", "外電綜合", "Aletheia Capital"}
+_BROKER_KEEP_RAW = ("國泰海通", "國泰君安", "海通")
+
+# (關鍵字小寫, 標準名)；依序比對，第一個命中者為準
+_BROKER_FOREIGN = [
+    ("morgan stanley", "Morgan Stanley"), ("摩根士丹利", "Morgan Stanley"), ("大摩", "Morgan Stanley"),
+    ("goldman", "Goldman Sachs"), ("高盛", "Goldman Sachs"),
+    ("j.p. morgan", "J.P. Morgan"), ("jp morgan", "J.P. Morgan"), ("jpmorgan", "J.P. Morgan"), ("摩根大通", "J.P. Morgan"),
+    ("daiwa", "Daiwa"), ("大和", "Daiwa"), ("nomura", "Nomura"), ("野村", "Nomura"),
+    ("bofa", "BofA Securities"), ("bank of america", "BofA Securities"), ("美銀", "BofA Securities"),
+    ("citi", "Citi"), ("花旗", "Citi"), ("ubs", "UBS"), ("瑞銀", "UBS"), ("hsbc", "HSBC"), ("滙豐", "HSBC"),
+    ("bernstein", "Bernstein"), ("macquarie", "Macquarie"), ("麥格理", "Macquarie"), ("clsa", "CLSA"),
+    ("jefferies", "Jefferies"), ("barclays", "Barclays"), ("mizuho", "Mizuho"), ("deutsche", "Deutsche Bank"),
+    ("gf securities", "廣發證券"), ("廣發", "廣發證券"),
+    ("kgi", "凱基投顧"), ("sinopac", "永豐投顧"), ("fubon research", "富邦投顧"), ("e.sun", "玉山投顧"),
+    ("mega investment", "兆豐投顧"), ("grand fortune", "福邦投顧"), ("capital.com.tw", "群益投顧"),
+    ("cim capital", "群益投顧"), ("merrill", "BofA Securities"), ("yuanta", "元大投顧"),
+    ("president capital", "統一投顧"),
+]
+_BROKER_FOREIGN_EXACT = {"gs": "Goldman Sachs", "cim": "群益投顧", "capital": "群益投顧", "gf": "廣發證券",
+                         "fubon": "富邦投顧", "cathay": "國泰期貨"}
+
+# (別名, 品牌, 沒寫類型時的預設類型)；長的別名放前面
+_BROKER_TW = [
+    ("第一金", "第一金", "投顧"), ("合作金庫", "合庫", "投顧"), ("合庫", "合庫", "投顧"),
+    ("中國信託", "中信", "投顧"), ("中信", "中信", "投顧"), ("華南永昌", "華南", "投顧"), ("華南", "華南", "投顧"),
+    ("群益金鼎", "群益", "投顧"), ("群益", "群益", "投顧"), ("兆豐", "兆豐", "投顧"), ("永豐", "永豐", "投顧"),
+    ("元大", "元大", "投顧"), ("元富", "元富", "投顧"), ("凱基", "凱基", "投顧"), ("富邦", "富邦", "投顧"),
+    ("福邦", "福邦", "投顧"), ("國票", "國票", "投顧"), ("國泰", "國泰", "期貨"), ("統一", "統一", "投顧"),
+    ("玉山", "玉山", "投顧"), ("王山", "玉山", "投顧"), ("台新", "台新", "投顧"), ("康和", "康和", "投顧"),
+    ("宏遠", "宏遠", "投顧"), ("美好", "美好", "投顧"), ("德信", "德信", "投顧"), ("日盛", "日盛", "投顧"),
+]
+_BROKER_NOT_RESEARCH = ("銀行", "金控", "金融集團")
+_BROKER_SUFFIXES = ("股份有限公司", "有限公司", "研究所", "研究部", "研究處")
+
+
+def _canon_broker(name) -> str:
+    s = str(name or "").strip().translate(_S2T)
+    if not s or s.lower() in _BROKER_JUNK or s in _BROKER_JUNK or "金管投顧新字" in s:
+        return "未明確"
+    if s.startswith("未") and any(w in s for w in ("明確", "知", "提供", "揭露", "標", "詳")):
+        return "未明確"
+    if s in _BROKER_KNOWN_RAW:
+        return s
+    low = s.lower()
+    if low in _BROKER_FOREIGN_EXACT:
+        return _BROKER_FOREIGN_EXACT[low]
+    for key, canon in _BROKER_FOREIGN:
+        if key in low:
+            return canon
+    if not any(w in s for w in _BROKER_NOT_RESEARCH) and not any(w in s for w in _BROKER_KEEP_RAW):
+        for alias, brand, default_type in _BROKER_TW:
+            if alias in s:
+                if "投信" in s:
+                    return brand + "投信"
+                if any(w in s for w in ("期貨", "證期", "期研究", "期顧問")):
+                    return brand + "期貨"
+                if any(w in s for w in ("投顧", "投資顧問", "證券", "研究", "顧問")):
+                    return brand + "投顧"
+                return brand + default_type
+    out = s
+    for suf in _BROKER_SUFFIXES:
+        if out.endswith(suf) and len(out) > len(suf) + 1:
+            out = out[: -len(suf)]
+    out = out.strip() or "未明確"
+    print("  [WARN] 券商名稱不在對照表，照原樣寫入: " + out)
+    return out
+
+
+# (關鍵字, 標準評等)；取原文中「最早出現」的關鍵字，同位置取最長者
+_RATING_KEYS = [
+    ("強力買進", "強力買進"), ("強烈買進", "強力買進"), ("強力買入", "強力買進"), ("strong buy", "強力買進"),
+    ("conviction buy", "強力買進"),
+    ("逢低買進", "逢低買進"), ("逢低布局", "逢低買進"),
+    ("區間操作", "區間操作"), ("trading buy", "區間操作"), ("區間", "區間操作"),
+    ("增加持股", "增加持股"), ("加碼", "增加持股"), ("增持", "增加持股"), ("overweight", "增加持股"),
+    ("買進", "買進"), ("買入", "買進"), ("推薦", "買進"), ("優於大市", "買進"), ("優於大盤", "買進"),
+    ("outperform", "買進"), ("首選", "買進"), ("看好", "買進"), ("正向", "買進"), ("buy", "買進"),
+    ("區間持有", "中立"), ("持有", "中立"), ("中立", "中立"), ("中性", "中立"), ("neutral", "中立"),
+    ("equal-weight", "中立"), ("equal weight", "中立"), ("market perform", "中立"), ("hold", "中立"),
+    ("減碼", "減碼"), ("降低持股", "減碼"), ("underweight", "減碼"),
+    ("賣出", "賣出"), ("underperform", "賣出"), ("sell", "賣出"),
+    ("未明確", "未明確"), ("未評等", "未明確"), ("未對", "未明確"), ("not rated", "未明確"),
+    ("not covered", "未明確"),
+]
+_RATING_ASCII_SHORT = {"ow": "增加持股", "uw": "減碼", "nr": "未明確", "o/f": "買進"}
+
+
+def _canon_rating(rating) -> str:
+    raw = str(rating or "").strip()
+    s = raw.translate(_S2T).replace("买", "買").replace("进", "進").replace("强", "強").replace("荐", "薦").replace("于", "於").replace("确", "確")
+    if not s:
+        return "未明確"
+    low = s.lower()
+    if low in _RATING_ASCII_SHORT:
+        return _RATING_ASCII_SHORT[low]
+    best = None
+    for key, canon in _RATING_KEYS:
+        if key.isascii():
+            m = re.search(r"(?<![a-z])" + re.escape(key) + r"(?![a-z])", low)
+            pos = m.start() if m else -1
+        else:
+            pos = low.find(key)
+        if pos < 0:
+            continue
+        cand = (pos, -len(key), canon)
+        if best is None or cand < best:
+            best = cand
+    if best is None:
+        m = re.match(r"^(ow|uw|nr)(?![a-z])", low)
+        if m:
+            return _RATING_ASCII_SHORT[m.group(1)]
+        print("  [WARN] 評等無法對應，改寫未明確: " + raw[:40])
+        return "未明確"
+    return best[2]
 
 
 # ==== Call Memo full-text archive (added 2026-07-21) ====
@@ -991,7 +1132,7 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
             "股票代碼": {"title": rt(fields.get("stock_code", "未知"))},
             "公司名稱": {"rich_text": rt(fields.get("company_name", ""))},
             "券商名稱": {"select": {"name": _sanitize_broker_name(fields.get("broker_name"))[:100]}},
-            "評等": {"select": {"name": str(fields.get("rating") or "未明確")}},
+            "評等": {"select": {"name": _canon_rating(fields.get("rating"))}},
             "報告日期": {"date": {"start": report_date}},
             "核心觀點": {"rich_text": rt(fields.get("core_view", ""))},
             "原始內文": {"rich_text": rt(fields.get("key_excerpt", ""))},
@@ -1021,7 +1162,7 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
         _sparse = (
             "目標價" not in props
             and "報告當日股價" not in props
-            and str(fields.get("rating") or "未明確") in ("未明確", "未評等")
+            and _canon_rating(fields.get("rating")) == "未明確"
         )
         props["報告型態"] = {"select": {"name": "短評/快訊" if _sparse else "完整報告"}}
 
@@ -1045,7 +1186,7 @@ def write_to_notion(category: str, fields: dict, secrets: dict) -> str:
 
     elif category == "morning_brief":
         db_id = secrets["notion_industry_reports_db"]
-        broker = str(fields.get("broker_name") or "未知")
+        broker = _sanitize_broker_name(fields.get("broker_name"))
         props = {
             "產業主題": {"title": [{"text": {"content": f"晨報｜{broker}"}}]},
             "券商名稱": {"select": {"name": broker[:100]}},
@@ -1127,11 +1268,35 @@ def classify_with_m27_with_retry(text: str, secrets: dict) -> dict:
             else:
                 raise
         except requests.exceptions.HTTPError as _e:
+            try:
+                _body = _e.response.text or ""
+            except Exception:
+                _body = ""
+            if "sensitive" in _body or "1026" in _body:
+                # MiniMax 內容審查拒絕：重試不會變，直接失敗（檔案留在佇列、批次結束通知會列出）
+                raise RuntimeError("MiniMax 內容審查拒絕(1026)，不重試: " + _body[:120])
             if _e.response.status_code >= 500 and _i < _attempts - 1:
                 print(f" [RETRY] M2.7 伺服器錯誤 ({_e.response.status_code})，{_delay}s 後重試...")
                 _t.sleep(_delay)
             else:
                 raise
+
+_RE_PAGE_MARK = re.compile(r"--- Page \d+ ---")
+
+
+def _check_extracted(text, file_path):
+    """擷取結果去掉頁碼標記與空白後太短 → 擷取失敗，不送分類（避免 M3 判 not_report 而刪掉真報告）。"""
+    n = len(re.sub(r"\s+", "", _RE_PAGE_MARK.sub("", text or "")))
+    need = 1 if Path(file_path).suffix.lower() in (".txt", ".md") else 50
+    if n < need:
+        raise RuntimeError("文字擷取失敗：去掉頁碼與空白後只剩 %d 字，未送分類（檔案保留待查）" % n)
+    return n
+
+
+def build_classify_input(file_path, text):
+    """分類時附上檔名：LINE／Telegram 檔名常含發布券商（如「國票早報」），幫模型判斷 broker_name。"""
+    return "[檔名] " + Path(file_path).name + "（檔名常含發布券商，可作為 broker_name 判斷依據之一）\n\n" + text
+
 
 def process_file(file_path: Path, secrets: dict):
     line = f"[START] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {file_path.name}"; print(line); _write_log(line)
@@ -1140,15 +1305,23 @@ def process_file(file_path: Path, secrets: dict):
     print("[1/4] pdf-reader 轉文字...")
     text = pdf_to_text(file_path)
     print(f"  → {len(text)} 字元")
+    _check_extracted(text, file_path)
 
-    # Step 2: M2.7 分類 + 萃取
-    print("[2/4] M2.7 分類中...")
-    result = classify_with_m27_with_retry(text, secrets)
+    # Step 2: 分類 + 萃取（MINIMAX_MODEL）
+    print("[2/4] " + MINIMAX_MODEL + " 分類中...")
+    result = classify_with_m27_with_retry(build_classify_input(file_path, text), secrets)
     category = result.get("category", "unknown")
     confidence = result.get("confidence", "low")
     print(f"  → category={category}, confidence={confidence}")
 
     # Step 3: confidence / category 分流
+    if category == "not_report":
+        msg = (f"⏭ 非券商報告，已略過（不寫 Notion）\n檔案: {file_path.name}\n"
+               f"原因: {str(result.get('reason', ''))[:200]}")
+        notify_telegram(msg, secrets)
+        print("[SKIP] not_report，已通知 Kai")
+        return
+
     if category not in VALID_CATEGORIES:
         msg = (f"⚠️ 無法分類\n檔案: {file_path.name}\n"
                f"M2.7 回傳: {json.dumps(result, ensure_ascii=False)[:300]}")
