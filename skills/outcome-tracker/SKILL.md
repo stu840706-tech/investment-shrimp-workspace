@@ -1,87 +1,76 @@
 ---
 name: outcome-tracker
-description: S-7 每日 23:00 掃 stock_tracking 的 outcome_review_date 到期項目,啟動 outcome review 並寫入 outcome_log。
+description: 持股證偽檢查器（v2，2026-10-24）。平日 23:00 由 crontab 自動執行：每天比對 📈 個股追蹤「反證條件」第一行的數字條件；只有出現新月營收、新季報或驗證日到期時，才用 MiniMax-M3 判定 thesis。
 ---
 
-# outcome-tracker — Thesis Outcome 驗證
+# outcome-tracker — 持股證偽檢查（v2）
 
-## 何時使用
+## 不要做的事（agent 必讀）
 
-- **自動觸發**(預設):S-7 cron 每日 23:00 掃 `stock_tracking`,`outcome_review_date <= today` 的 row
-- **手動觸發**:Kai 指定 review 某檔(覆蓋排程)
-
-## 目的
-
-立案 ≠ 結案。Kai 的研究品質要靠事後驗證提升。Outcome Tracking 做的是:
-
-1. 90 天後(預設)回頭看當初 thesis
-2. 實際價格/營收/事件是否符合預期
-3. 判定 `thesis_verified` / `thesis_failed` / `inconclusive`
-4. 寫入 `outcome_log` db + `knowledge/outcome_log.jsonl` 供跨時間分析
-5. 更新 stock_tracking 狀態(`已立案` → `已退出`)
-
-## 資料模型(outcome_log db)
-
-| 欄位 | 類型 | 說明 |
-|------|------|------|
-| 個股代號 | title | |
-| 立案日期 | date | |
-| Review 日期 | date | |
-| 立案理由(快照) | rich_text | |
-| 實際走勢摘要 | rich_text | |
-| 判定 | select | `thesis_verified` / `thesis_failed` / `inconclusive` |
-| 教訓 | rich_text | 給下次立案參考 |
-| 價格變化 % | number | 立案日 → review 日 |
-| 大盤同期 % | number | 加權指數同期,比對 alpha |
+- **不要手動執行正式模式**（不帶 `dry`）：它會寫 Notion、改狀態檔、發 Telegram。crontab 每個平日 23:00（台北）會自動跑，不需要人工補跑。
+- 測試只能用 `dry`。
+- **舊參數已不支援**：`--symbol 2330.TW` 會被忽略，結果變成「全部持股正式跑一次」。代碼一律寫 4–6 位數字，不加 `.TW`。
+- 不要修改 📈 個股追蹤 DB 的內容：由 Claude 依 Investment Context 維護。
 
 ## 執行
 
 ```bash
-# cron 自動跑
+# crontab（UTC）：0 15 * * 1-5  → 台北平日 23:00
 python3 skills/outcome-tracker/scripts/outcome_review.py
 
-# 手動指定
-python3 skills/outcome-tracker/scripts/outcome_review.py --symbol 2330.TW
+# 只讀試跑：照常抓資料、呼叫模型，但不寫 Notion、不寫狀態檔、不發 Telegram
+python3 skills/outcome-tracker/scripts/outcome_review.py dry
 
-# dry-run(只列出到期項目,不寫 Notion)
-python3 skills/outcome-tracker/scripts/outcome_review.py --dry-run
+# 只讀試跑單一檔
+python3 skills/outcome-tracker/scripts/outcome_review.py dry 8103
 ```
 
-## 內部流程
+輸出最後一行：`RESULT=OK`（正式）／`RESULT=DRY_DONE`（試跑）／`RESULT=CRASH`（崩潰，正式模式會發 Telegram）。
 
-```
-1. 查 stock_tracking where outcome_review_date <= today and 狀態 != 已退出
-2. 對每一筆:
-   a. FinMind 抓立案日 → 今天的價格走勢 + 大盤同期
-   b. 讀立案理由
-   c. 呼叫 M2.7 (thinking=off) 判定 verified / failed / inconclusive
-   d. 寫 outcome_log db + jsonl
-   e. 更新 stock_tracking 狀態 → 已退出
-3. Telegram 通知 Kai 今日 review 結果
-```
+## 兩層檢查
 
-## 驗證(B5 Step 4)
+1. **數字條件（每天，程式比對，不經模型）**：讀「反證條件」第一行的【數字條件】，用 FinMind 最新已公布資料比對。新一期資料觸發 → 立刻發 🔴 Telegram；同一期只報一次。
+2. **thesis 判定（MiniMax-M3，只在有新資料時跑）**：出現新月營收、新季報，或「下次驗證日」到期時，才把 thesis、反證條件、近 6 個月營收 YoY、近 4 季毛利率／EPS、近 45 天券商報告交給模型。股價只當背景，**不當證據**；數字條件已觸發時，程式不允許判「已驗證符合」。
 
-1. 手動建一個假 row:`outcome_review_date = 昨天`
-2. 跑 `outcome_review.py`(非 dry-run)
-3. 確認 outcome_log db 有新 row
-4. 確認原 stock_tracking 狀態變 `已退出`
-5. 確認 `knowledge/outcome_log.jsonl` 有 append 一筆
+「下次驗證日」一律設為下一個月營收公布日（下個 11 日），不由模型決定。
 
-## 骨架狀態
+## 數字條件語法
 
-當前為骨架,B5 實測後補:
+寫在「反證條件」第一行，以【數字條件】開頭，項目用 `｜` 分隔：
 
-- [ ] FinMind 價格抓取 + 大盤同期計算
-- [ ] M2.7 判定 prompt(thinking=off)
-- [ ] 寫 outcome_log db + jsonl 雙寫
-- [ ] stock_tracking 狀態更新
-- [ ] Telegram 通知格式
+| 寫法 | 意思 |
+|---|---|
+| `營收YoY<15` | 最新一個月營收 YoY（%）低於 15 |
+| `營收YoY連續2月<20` | 最近 2 個月 YoY 都低於 20 |
+| `毛利率<36` | 最新一季**單季**毛利率（%）低於 36 |
+| `EPS<2.1` | 最新一季**單季** EPS 低於 2.1 |
 
-## 陷阱
+範例：`【數字條件】毛利率<36｜營收YoY<15`。寫法認不得的項目會列在 Telegram 的 ⚠️，不會被靜默忽略。
 
-- **價格要還原權值**(除權息):FinMind 有 adjust=True 參數
-- **大盤基準**:預設加權指數(TAIEX),長期考慮改櫃買指數對小型股
-- **review 日遇週末**:自動延到下個交易日;價格資料用最近交易日收盤
-- **thesis 的模糊性**:M2.7 判定要降溫度,保守派:寧可 `inconclusive` 也不硬套結論
-- **outcome_log jsonl 是 append-only**:不改舊紀錄,錯了補新的一筆 with reason
+## 資料來源
+
+- 月營收：FinMind `TaiwanStockMonthRevenue`（YoY 由程式用去年同月自算）。
+- 季報：FinMind `TaiwanStockFinancialStatements`，`Revenue`／`GrossProfit`／`EPS` 是**單季值**（不是累計）。2026-10-24 已用月營收加總對帳確認。
+- 券商報告：Notion 📋 券商個股報告，近 45 天、最多 5 筆。
+
+## 寫入位置
+
+- Notion outcome_log：`review_id`（代碼_日期）、股票代碼、review_date、驗證狀態。
+- `knowledge/outcome_log.jsonl`：append-only，不改舊紀錄；含 verdict、summary、已成立反證、下一步要看的、數字觸發、模型名。
+- 📈 個股追蹤：Outcome狀態、最近Outcome結果、下次驗證日。
+- `knowledge/outcome_state.json`：每檔已處理的月營收期別、季報期別、已通報的觸發。刪掉它等於所有持股重新建立基準。
+
+## 首次檢查與重複
+
+- 某檔**第一次**被檢查時，既有資料的觸發只列為「ℹ️ 基準」，不發 🔴（避免拿舊季報誤報）。
+- 同一個條件在同一期資料只通報一次。
+
+## 失敗處理
+
+- FinMind 抓取失敗、模型失敗、Notion 寫入失敗：列在 Telegram 的 ⚠️，該檔狀態不改、期別不前進，隔天自動重試。
+- 不再用股價 Alpha 推估結論。
+
+## 回滾
+
+- 舊版備份：`scripts/outcome_review.py.bak_orv2_20261024`（md5 a283724c）。
+- git：v2 為 commit `5b896d6`。
