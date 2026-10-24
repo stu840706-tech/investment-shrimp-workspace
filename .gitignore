@@ -8,3 +8,6 @@ state/
 memory/archive/
 memory/fetch-errors-*.log
 knowledge/outcome_log.jsonl
+# secrets never go to git (repo is public)
+config/secrets.json
+.env

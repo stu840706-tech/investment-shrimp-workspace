@@ -32,3 +32,6 @@
 # 週稽查（台灣時間週日 09:00，UTC 週日 01:00）
 0 1 * * 0 cd ~/.openclaw/workspace && python3 workflows/weekly_health_check.py >> /tmp/weekly_health_check.log 2>&1
 0 19 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 scripts/scan_margin.py >> /home/ubuntu/.openclaw/logs/scan_margin.log 2>&1
+
+# A2 vm_snapshot: daily 07:35 Taipei (23:35 UTC) -> Notion VM snapshot DB
+35 23 * * * cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 scripts/vm_snapshot.py run >> /tmp/vm_snapshot.log 2>&1
