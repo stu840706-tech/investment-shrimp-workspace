@@ -35,3 +35,7 @@
 
 # A2 vm_snapshot: daily 07:35 Taipei (23:35 UTC) -> Notion VM snapshot DB
 35 23 * * * cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 scripts/vm_snapshot.py run >> /tmp/vm_snapshot.log 2>&1
+
+# B1 signal_ledger: weekdays 23:50 Taipei run, day 1 08:20 Taipei monthly summary
+50 15 * * 1-5 cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 scripts/signal_ledger.py run >> /home/ubuntu/.openclaw/logs/signal_ledger.log 2>&1
+20 0 1 * * cd /home/ubuntu/.openclaw/workspace && /usr/bin/python3 scripts/signal_ledger.py summary >> /home/ubuntu/.openclaw/logs/signal_ledger.log 2>&1
