@@ -11,3 +11,6 @@ knowledge/outcome_log.jsonl
 # secrets never go to git (repo is public)
 config/secrets.json
 .env
+# runtime files that change every day (not code); kept on disk, not in git
+memory/active-context.md
+memory/news-fingerprints.md
