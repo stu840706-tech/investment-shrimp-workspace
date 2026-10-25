@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
-"""outcome_review.py v2（2026-10-24）— 持股證偽檢查器
+"""outcome_review.py v3（2026-10-25）— 持股證偽檢查器＋升級條件
 
 兩層：
-  A. 數字條件（每天，程式比對，不經模型）：讀 📈 個股追蹤「反證條件」第一行【數字條件】，
-     用 FinMind 最新已公布的月營收 YoY／單季毛利率比對；新一期資料觸發 → 立刻 Telegram 🔴（同一期只報一次）。
+  A. 數字條件（每天，程式比對，不經模型）：
+     - 【數字條件】（反證條件第一行，項目用 ｜ 分隔，任一成立就發 🔴）
+     - 【升級條件】（下次驗證內容裡含【升級條件】的那一行，項目用 ｜ 分隔，全部成立才發 🟢；
+       「→」後面寫成立時的動作，例如部位上限）
+     只有「新一期資料」觸發才通報；舊資料觸發（首次檢查、或條件剛新增／改寫）只列為 ℹ️ 基準。
   B. thesis 判斷（M3，只在有新資料時跑）：新月營收或新季報出現、或「下次驗證日」到期 →
-     把 thesis、反證條件、營收／毛利率數字、近期券商報告交給模型判定；股價只當背景、不當證據。
+     把 thesis、反證條件、升級條件進度、營收／季報數字、近期券商報告交給模型判定；股價只當背景、不當證據。
      下次驗證日一律設成「下一個月營收公布日」（下個 11 日），不再用模型給的天數。
 
-數字條件語法（反證條件第一行，項目用 ｜ 分隔）：
-  營收YoY<15        最新一個月營收 YoY（%）低於 15
-  營收YoY連續2月<20  最近 2 個月 YoY 都低於 20
-  毛利率<36         最新一季單季毛利率（%）低於 36
-  EPS<2.1           最新一季單季 EPS 低於 2.1
+條件語法（比較符號 < <= > >= 都可以；金額單位一律是億元）：
+  營收YoY<15           最新一個月營收 YoY（%）
+  營收YoY連續2月<20     最近 2 個月 YoY 都符合
+  月營收>=3.9億         最新一個月營收（億元）
+  毛利率<36            最新一季單季毛利率（%）
+  營益率<15            最新一季單季營業利益率（%）
+  EPS>=2.1             最新一季單季 EPS（元）
+  營業費用<=2.0億       最新一季單季營業費用（億元）
 
 用法：
   python3 outcome_review.py            # 正式：寫 Notion、狀態檔、發 Telegram
@@ -72,28 +78,59 @@ def plain(prop):
     return "".join(x.get("plain_text", "") for x in arr).strip()
 
 
-# ---------------- 數字條件 ----------------
-_RE_COND = re.compile(r"^(營收YoY|毛利率|EPS)(?:連續(\d+)月)?\s*<\s*(-?\d+(?:\.\d+)?)$")
+# ---------------- 條件語法 ----------------
+METRICS_M = ("營收YoY", "月營收")                      # 月資料
+METRICS_Q = ("毛利率", "營益率", "EPS", "營業費用")       # 季資料（單季值）
+_Q_KEY = {"毛利率": "gm", "營益率": "om", "EPS": "eps", "營業費用": "opex"}
+_Q_UNIT = {"gm": "%", "om": "%", "eps": " 元", "opex": " 億"}
+_RE_ITEM = re.compile(r"^(營收YoY|月營收|毛利率|營益率|EPS|營業費用)(?:連續(\d+)月)?(<=|>=|<|>)(-?\d+(?:\.\d+)?)(億)?$")
+_OPS = {"<": lambda a, b: a < b, "<=": lambda a, b: a <= b,
+        ">": lambda a, b: a > b, ">=": lambda a, b: a >= b}
+_NORM = (("＜", "<"), ("＞", ">"), ("≦", "<="), ("≧", ">="), ("≤", "<="), ("≥", ">="),
+         ("=<", "<="), ("=>", ">="))
+
+
+def parse_items(body):
+    """「｜」分隔的條件 → (items, bad)。items=[{"metric","months","op","val","raw"}]"""
+    items, bad = [], []
+    for part in re.split(r"[｜|]", body or ""):
+        raw = part.strip()
+        p = raw.replace(" ", "").replace("　", "")
+        for a, b in _NORM:
+            p = p.replace(a, b)
+        p = p.rstrip("%％元")
+        if not p:
+            continue
+        m = _RE_ITEM.match(p)
+        if not m or (m.group(2) and m.group(1) not in METRICS_M):
+            bad.append(raw)
+            continue
+        items.append({"metric": m.group(1), "months": int(m.group(2) or 1), "op": m.group(3),
+                      "val": float(m.group(4)), "raw": raw})
+    return items, bad
 
 
 def parse_conditions(text):
-    """回傳 (conds, bad)。conds=[{"metric","months","lt","raw"}]；bad=認不得的片段"""
+    """反證條件第一行【數字條件】→ (conds, bad)"""
     first = (text or "").strip().split("\n", 1)[0]
     if "【數字條件】" not in first:
         return [], []
-    body = first.split("【數字條件】", 1)[1]
-    conds, bad = [], []
-    for part in re.split(r"[｜|]", body):
-        p = part.strip().replace(" ", "").replace("＜", "<")
-        if not p:
+    return parse_items(first.split("【數字條件】", 1)[1])
+
+
+def parse_upgrade(text):
+    """下次驗證內容裡含【升級條件】的那一行 → (items, action, line, bad)"""
+    for line in (text or "").split("\n"):
+        if "【升級條件】" not in line:
             continue
-        m = _RE_COND.match(p)
-        if not m:
-            bad.append(part.strip())
-            continue
-        conds.append({"metric": m.group(1), "months": int(m.group(2) or 1),
-                      "lt": float(m.group(3)), "raw": part.strip()})
-    return conds, bad
+        body, action = line.split("【升級條件】", 1)[1], ""
+        for arrow in ("→", "->"):
+            if arrow in body:
+                body, action = body.split(arrow, 1)
+                break
+        items, bad = parse_items(body)
+        return items, action.strip(), line.strip(), bad
+    return [], "", "", []
 
 
 def finmind(dataset, stock_id, start, token):
@@ -123,8 +160,15 @@ def revenue_series(stock_id, token, today):
     return out
 
 
+def _num(v):
+    try:
+        return float(v) if v is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
 def quarter_series(stock_id, token, today):
-    """回傳 [(quarter_end 'YYYY-MM-DD', gm%或None, eps或None)]，舊→新"""
+    """回傳 [{"d","gm","om","eps","opex"}]，舊→新；gm／om 為 %，opex 為億元，都是單季值"""
     start = date(today.year - 2, 1, 1).isoformat()
     rows = finmind("TaiwanStockFinancialStatements", stock_id, start, token)
     q = {}
@@ -133,46 +177,77 @@ def quarter_series(stock_id, token, today):
     out = []
     for d in sorted(k for k in q if k):
         v = q[d]
-        gm = None
-        try:
-            if v.get("Revenue") and v.get("GrossProfit") is not None and float(v["Revenue"]) != 0:
-                gm = round(float(v["GrossProfit"]) / float(v["Revenue"]) * 100, 2)
-        except (TypeError, ValueError):
-            gm = None
-        eps = v.get("EPS")
-        try:
-            eps = float(eps) if eps is not None else None
-        except (TypeError, ValueError):
-            eps = None
-        out.append((d, gm, eps))
+        rev, gp, oi, ox = _num(v.get("Revenue")), _num(v.get("GrossProfit")), \
+            _num(v.get("OperatingIncome")), _num(v.get("OperatingExpenses"))
+        gm = round(gp / rev * 100, 2) if rev and gp is not None else None
+        om = round(oi / rev * 100, 2) if rev and oi is not None else None
+        opex = round(ox / 1e8, 4) if ox is not None else None
+        out.append({"d": d, "gm": gm, "om": om, "eps": _num(v.get("EPS")), "opex": opex})
     return out
 
 
+def eval_item(it, rev, qtr):
+    """回傳 (ok, period, detail)；ok=None 表示資料不足"""
+    op = _OPS[it["op"]]
+    if it["metric"] in METRICS_M:
+        if it["metric"] == "營收YoY":
+            vals = [(p, y) for p, _, y in rev if y is not None]
+            fmt = lambda p, v: "%s YoY %.1f%%" % (p, v)
+        else:
+            vals = [(p, r / 1e8) for p, r, _ in rev if r is not None]
+            fmt = lambda p, v: "%s 營收 %.2f 億" % (p, v)
+        if len(vals) < it["months"]:
+            return None, None, it["raw"] + "：月營收資料不足"
+        last = vals[-it["months"]:]
+        ok = all(op(v, it["val"]) for _, v in last)
+        return ok, last[-1][0], "、".join(fmt(p, v) for p, v in last)
+    key = _Q_KEY[it["metric"]]
+    vals = [x for x in qtr if x.get(key) is not None]
+    if not vals:
+        return None, None, it["raw"] + "：季報資料不足"
+    d, v = vals[-1]["d"], vals[-1][key]
+    return op(v, it["val"]), d, "%s 單季%s %.2f%s" % (d, it["metric"], v, _Q_UNIT[key])
+
+
 def check_conditions(conds, rev, qtr):
-    """回傳 (hits, notes)。hits=[{"raw","detail","period","metric"}]"""
+    """證偽：任一成立就算觸發。回傳 (hits, notes)；hits=[{"raw","detail","period","metric"}]"""
     hits, notes = [], []
     for c in conds:
-        if c["metric"] == "營收YoY":
-            vals = [r for r in rev if r[2] is not None]
-            if len(vals) < c["months"]:
-                notes.append(c["raw"] + "：月營收資料不足")
-                continue
-            last = vals[-c["months"]:]
-            if all(r[2] < c["lt"] for r in last):
-                hits.append({"raw": c["raw"], "metric": "rev", "period": last[-1][0],
-                             "detail": "、".join("%s YoY %.1f%%" % (r[0], r[2]) for r in last)})
-        else:
-            idx = 1 if c["metric"] == "毛利率" else 2
-            vals = [q for q in qtr if q[idx] is not None]
-            if not vals:
-                notes.append(c["raw"] + "：季報資料不足")
-                continue
-            d, v = vals[-1][0], vals[-1][idx]
-            if v < c["lt"]:
-                unit = "%" if idx == 1 else " 元"
-                hits.append({"raw": c["raw"], "metric": "qtr", "period": d,
-                             "detail": "%s 單季%s %.2f%s" % (d, c["metric"], v, unit)})
+        ok, period, detail = eval_item(c, rev, qtr)
+        if ok is None:
+            notes.append(detail)
+        elif ok:
+            hits.append({"raw": c["raw"], "metric": "rev" if c["metric"] in METRICS_M else "qtr",
+                         "period": period, "detail": detail})
     return hits, notes
+
+
+def check_upgrade(items, rev, qtr):
+    """升級：全部成立才算過；季資料必須都是最新一季。回傳 {"met","parts","periods","n_ok","n"}"""
+    latest_q = qtr[-1]["d"] if qtr else None
+    parts, periods = [], []
+    for it in items:
+        ok, period, detail = eval_item(it, rev, qtr)
+        if ok is not None and it["metric"] in METRICS_Q and period != latest_q:
+            ok, detail = None, detail + "（最新一季 %s 沒有這一項）" % latest_q
+        parts.append({"raw": it["raw"], "ok": ok, "detail": detail,
+                      "kind": "rev" if it["metric"] in METRICS_M else "qtr", "period": period})
+        if period:
+            periods.append(period)
+    n_ok = sum(1 for p in parts if p["ok"])
+    return {"met": bool(items) and n_ok == len(items), "parts": parts,
+            "periods": sorted(set(periods)), "n_ok": n_ok, "n": len(items)}
+
+
+def is_new_data(kind, period, st):
+    """這期資料是否比上次已處理的期別新（舊資料觸發只算基準，不發通知）"""
+    done = st.get("rev_period") if kind == "rev" else st.get("q_period")
+    return bool(period) and period > (done or "")
+
+
+def up_text(up):
+    return "｜".join(("✓ " if p["ok"] else ("✗ " if p["ok"] is False else "？ ")) + p["detail"]
+                    for p in up["parts"])
 
 
 def next_review_date(today):
@@ -264,16 +339,24 @@ def _parse_judgment(text):
     raise ValueError("模型輸出無法解析: " + repr(text[:120]))
 
 
-def llm_judge(code, name, thesis, falsify, catalyst, rev, qtr, hits, reports, price_txt, secrets):
+def _fmt(v, pat):
+    return (pat % v) if v is not None else "無"
+
+
+def llm_judge(code, name, thesis, falsify, catalyst, rev, qtr, hits, reports, price_txt, secrets,
+              up_line="", up=None):
     rev_txt = "；".join("%s %s" % (p, ("YoY %.1f%%" % y) if y is not None else "YoY 無") for p, _, y in rev[-6:]) or "無"
-    q_txt = "；".join("%s 毛利率 %s EPS %s" % (d, ("%.1f%%" % g) if g is not None else "無", e if e is not None else "無")
-                     for d, g, e in qtr[-4:]) or "無"
+    q_txt = "；".join("%s 毛利率 %s 營益率 %s EPS %s 營業費用 %s" % (
+        q["d"], _fmt(q["gm"], "%.1f%%"), _fmt(q["om"], "%.1f%%"), _fmt(q["eps"], "%s"), _fmt(q["opex"], "%.2f 億"))
+        for q in qtr[-4:]) or "無"
     hit_txt = "；".join(h["detail"] + "（條件 " + h["raw"] + "）" for h in hits) or "無"
+    up_txt = ("%s（目前 %d/%d：%s）" % (up_line, up["n_ok"], up["n"], up_text(up))) if (up_line and up) else "無"
     rep_txt = "\n".join("- " + x for x in reports) or "（近 45 天無）"
     prompt = (
         "股票：" + code + " " + name + "\n"
         "核心thesis：" + thesis + "\n"
         "反證條件：" + falsify + "\n"
+        "升級條件：" + up_txt + "\n"
         "期待催化劑：" + catalyst + "\n"
         "近 6 個月營收：" + rev_txt + "\n"
         "近 4 季：" + q_txt + "\n"
@@ -308,7 +391,7 @@ def llm_judge(code, name, thesis, falsify, catalyst, rev, qtr, hits, reports, pr
 
 
 # ---------------- 寫入 ----------------
-def write_outcome_log(code, page_id, j, hits, secrets, today):
+def write_outcome_log(code, page_id, j, hits, secrets, today, up=None):
     review_id = code + "_" + today.isoformat()
     vmap = {"已驗證符合": "已驗證符合", "部分符合": "部分符合", "已驗證反證": "已驗證反證", "資料不足": "部分符合"}
     props = {"review_id": {"title": rt(review_id)}, "股票代碼": {"rich_text": rt(code)},
@@ -317,13 +400,16 @@ def write_outcome_log(code, page_id, j, hits, secrets, today):
     r = requests.post(NOTION_API + "/pages", headers=notion_headers(secrets), timeout=15,
                       json={"parent": {"database_id": secrets["notion_outcome_log_db"]}, "properties": props})
     r.raise_for_status()
+    rec = {"review_id": review_id, "symbol": code, "stock_tracking_page_id": page_id,
+           "review_date": today.isoformat(), "verdict": j["verdict"],
+           "summary": j.get("summary", ""), "falsified": j.get("falsified", []),
+           "watch": j.get("watch", ""), "numeric_hits": hits, "model": MINIMAX_MODEL}
+    if up:
+        rec["upgrade"] = {"met": up["met"], "n_ok": up["n_ok"], "n": up["n"],
+                          "parts": [[p["raw"], p["ok"], p["detail"]] for p in up["parts"]]}
     OUTCOME_JSONL.parent.mkdir(parents=True, exist_ok=True)
     with OUTCOME_JSONL.open("a", encoding="utf-8") as f:
-        f.write(json.dumps({"review_id": review_id, "symbol": code, "stock_tracking_page_id": page_id,
-                            "review_date": today.isoformat(), "verdict": j["verdict"],
-                            "summary": j.get("summary", ""), "falsified": j.get("falsified", []),
-                            "watch": j.get("watch", ""), "numeric_hits": hits, "model": MINIMAX_MODEL},
-                           ensure_ascii=False) + "\n")
+        f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
 def update_tracking(page_id, j, today, secrets):
@@ -356,7 +442,7 @@ def main(argv):
     today = date.today()
     secrets = load_secrets()
     token = secrets["finmind_token"]
-    print("[START] outcome_review v2 %s dry=%s model=%s" % (today.isoformat(), dry, MINIMAX_MODEL))
+    print("[START] outcome_review v3 %s dry=%s model=%s" % (today.isoformat(), dry, MINIMAX_MODEL))
     state = {}
     if STATE_FILE.exists():
         try:
@@ -366,6 +452,7 @@ def main(argv):
     rows = tracked_rows(secrets, symbol)
     print("[1/3] 追蹤中 %d 檔" % len(rows))
     alerts, reviews, problems, baseline = [], [], [], []
+    up_alerts, up_base, up_progress = [], [], []
     for page in rows:
         pr = page["properties"]
         code = plain(pr.get("股票代碼")).replace(".TW", "").replace(".TWO", "")
@@ -382,6 +469,10 @@ def main(argv):
         for b in bad:
             warn("認不得的數字條件: " + b)
             problems.append("%s 數字條件寫法認不得：%s" % (code, b))
+        up_items, up_action, up_line, up_bad = parse_upgrade(plain(pr.get("下次驗證內容")))
+        for b in up_bad:
+            warn("認不得的升級條件: " + b)
+            problems.append("%s 升級條件寫法認不得：%s" % (code, b))
         try:
             rev = revenue_series(code, token, today)
             time.sleep(0.5)
@@ -393,10 +484,10 @@ def main(argv):
             problems.append("%s 營收／季報抓取失敗" % code)
             continue
         rev_p = rev[-1][0] if rev else None
-        q_p = qtr[-1][0] if qtr else None
+        q_p = qtr[-1]["d"] if qtr else None
         print("  [2/3] 最新月營收 %s %s｜最新季報 %s 毛利率 %s" % (
             rev_p, ("YoY %.1f%%" % rev[-1][2]) if rev and rev[-1][2] is not None else "—",
-            q_p, ("%.1f%%" % qtr[-1][1]) if qtr and qtr[-1][1] is not None else "—"))
+            q_p, ("%.1f%%" % qtr[-1]["gm"]) if qtr and qtr[-1]["gm"] is not None else "—"))
         first_time = code not in state
         st = state.get(code, {})
         hits, notes = check_conditions(conds, rev, qtr)
@@ -405,21 +496,36 @@ def main(argv):
         for h in hits:
             key = h["raw"] + "@" + h["period"]
             fresh = key not in st.get("alerted", [])
-            print("    [HIT] %s → %s%s" % (h["raw"], h["detail"], "" if fresh else "（已通報過）"))
+            base = first_time or not is_new_data(h["metric"], h["period"], st)
+            print("    [HIT] %s → %s%s" % (h["raw"], h["detail"],
+                                         "（已通報過）" if not fresh else ("（舊資料，列為基準）" if base else "")))
             if fresh:
-                # 第一次看到這檔：既有資料只列為基準、不發 🔴（避免拿舊季報誤報）
-                (baseline if first_time else alerts).append((code, name, h))
+                # 舊資料（首次檢查、條件剛新增或改寫）只列為基準、不發 🔴
+                (baseline if base else alerts).append((code, name, h))
                 st.setdefault("alerted", []).append(key)
+        up = None
+        if up_items:
+            up = check_upgrade(up_items, rev, qtr)
+            print("    [UP] %d/%d %s" % (up["n_ok"], up["n"], up_text(up)))
+            if up["met"]:
+                ukey = up_line + "@" + "+".join(up["periods"])
+                if ukey not in st.get("up_alerted", []):
+                    base = first_time or not any(is_new_data(p["kind"], p["period"], st) for p in up["parts"])
+                    print("    [UP] 全部成立%s" % ("（舊資料，列為基準）" if base else " → 🟢"))
+                    (up_base if base else up_alerts).append((code, name, up, up_action))
+                    st.setdefault("up_alerted", []).append(ukey)
         new_rev = rev_p is not None and rev_p != st.get("rev_period")
         new_q = q_p is not None and q_p != st.get("q_period")
         due = bool(due_s) and due_s <= today.isoformat()
+        if up and not up["met"] and (new_rev or new_q or due):
+            up_progress.append((code, name, up))
         if new_rev or new_q or due:
             why = "、".join(w for w, f in (("新月營收 " + str(rev_p), new_rev), ("新季報 " + str(q_p), new_q), ("驗證日到期", due)) if f)
             print("  [3/3] 模型判定（%s）..." % why)
             reports = recent_broker_reports(secrets, code, today)
             try:
                 j = llm_judge(code, name, thesis, falsify, catalyst, rev, qtr, hits, reports,
-                              price_context(code, start, token), secrets)
+                              price_context(code, start, token), secrets, up_line, up)
             except Exception as e:
                 STATS["llm_fail"] += 1
                 warn("模型判定失敗: " + repr(e)[:160])
@@ -430,7 +536,7 @@ def main(argv):
                 reviews.append((code, name, j, why))
                 if not dry:
                     try:
-                        write_outcome_log(code, page["id"], j, hits, secrets, today)
+                        write_outcome_log(code, page["id"], j, hits, secrets, today, up)
                         update_tracking(page["id"], j, today, secrets)
                     except Exception as e:
                         warn("Notion 寫入失敗: " + repr(e)[:120])
@@ -441,8 +547,9 @@ def main(argv):
         state[code] = st
         time.sleep(0.5)
 
-    print("\n[SUMMARY] 數字觸發 %d｜基準（首次）%d｜模型判定 %d｜問題 %d｜WARN %d｜模型失敗 %d｜資料失敗 %d" % (
-        len(alerts), len(baseline), len(reviews), len(problems), STATS["warn"], STATS["llm_fail"], STATS["data_fail"]))
+    print("\n[SUMMARY] 數字觸發 %d｜升級成立 %d｜基準 %d｜模型判定 %d｜問題 %d｜WARN %d｜模型失敗 %d｜資料失敗 %d" % (
+        len(alerts), len(up_alerts), len(baseline) + len(up_base), len(reviews), len(problems),
+        STATS["warn"], STATS["llm_fail"], STATS["data_fail"]))
     if dry:
         print("[DRY] 不寫狀態檔、不寫 Notion、不發 Telegram")
         print("RESULT=DRY_DONE")
@@ -455,7 +562,15 @@ def main(argv):
             lines.append("%s %s：%s（條件 %s）" % (esc(code), esc(name), esc(h["detail"]), esc(h["raw"])))
         lines.append("→ 照出場計畫處理；thesis 判定見下一則或 📈 個股追蹤")
         notify("\n".join(lines), secrets)
-    if reviews or problems or baseline:
+    if up_alerts:
+        lines = ["🟢 <b>升級條件成立</b>"]
+        for code, name, up, action in up_alerts:
+            lines.append("%s %s：%s" % (esc(code), esc(name), esc("｜".join(p["detail"] for p in up["parts"]))))
+            if action:
+                lines.append("→ " + esc(action))
+        lines.append("（依事前劇本；下單前照門禁檢查）")
+        notify("\n".join(lines), secrets)
+    if reviews or problems or baseline or up_base or up_progress:
         icon = {"已驗證符合": "✅", "部分符合": "⚠️", "已驗證反證": "❌", "資料不足": "❓"}
         lines = ["🔍 <b>持股 thesis 檢查</b>（%s）" % MINIMAX_MODEL]
         for code, name, j, why in reviews:
@@ -463,8 +578,12 @@ def main(argv):
             lines.append("   " + esc(str(j.get("summary", ""))[:160]))
             if j.get("falsified"):
                 lines.append("   已成立反證：" + esc("；".join(map(str, j["falsified"]))[:160]))
+        for code, name, up in up_progress:
+            lines.append("🎯 %s %s 升級條件 %d/%d：%s" % (esc(code), esc(name), up["n_ok"], up["n"], esc(up_text(up))))
         for code, name, h in baseline:
-            lines.append("ℹ️ 基準（首次檢查、既有資料）%s %s：%s（條件 %s）" % (esc(code), esc(name), esc(h["detail"]), esc(h["raw"])))
+            lines.append("ℹ️ 基準（舊資料）%s %s：%s（條件 %s）" % (esc(code), esc(name), esc(h["detail"]), esc(h["raw"])))
+        for code, name, up, action in up_base:
+            lines.append("ℹ️ 基準（舊資料已符合升級條件）%s %s：%s" % (esc(code), esc(name), esc(up_text(up))))
         for p in problems:
             lines.append("⚠️ " + esc(p))
         notify("\n".join(lines), secrets)
