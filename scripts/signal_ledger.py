@@ -35,7 +35,7 @@ from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-VERSION = "1.0"
+VERSION = "1.1"
 HOME = Path.home()
 WS = HOME / ".openclaw" / "workspace"
 SECRETS_FILE = WS / "config" / "secrets.json"
@@ -50,7 +50,7 @@ BACKFILL_LOG = LOG_DIR / "signal_ledger_backfill.log"
 NOTION_API = "https://api.notion.com/v1"
 NOTION_VERSION = "2022-06-28"
 TPE = timezone(timedelta(hours=8))
-PASS_SHA256 = "140d70f118bb1221ce9253859dc658845c1d51920860bc2fbe2031aefa99cba8"
+PASS_SHA256 = "0ec2a5ed96ba258166575ec84f7d1f674cabd75ef5fe58ae9b4685307ab8ae0c"
 PY = "/usr/bin/python3" if Path("/usr/bin/python3").exists() else sys.executable
 
 TOPN_DB = "bea3f040-7da1-4b6b-8acc-63f0b8e4f453"
@@ -73,6 +73,7 @@ RUN_MAX_CALLS = 300
 BACKFILL_MAX_CALLS = 2000
 BACKFILL_INTERVAL = 10.0   # seconds between FinMind calls in backfill (leaves quota for other jobs)
 STALE_DAYS = 20            # a stock close older than this before the target day counts as missing
+JUMP_MAX = 0.105           # a one-day move beyond the 10% price limit = ex-rights, split or capital reduction
 CREATED_GAP_MAX = 90       # broker rows whose report date is >90 days before creation are excluded
 
 CRON_TAG_RUN = "scripts/signal_ledger.py run"
@@ -501,28 +502,23 @@ class Prices:
             return None, None, "missing"
         return None, None, "pending"
 
-    def adj_return(self, code, t_from, t_to):
-        """Cumulative return over (t_from, t_to] from daily spread (ex-dividend days use the reference price)."""
+    def max_jump(self, code, t_from, t_to):
+        """(change, date) of the largest one-day close-to-close move on days in (t_from, t_to].
+
+        TWSE prints the change on ex-rights days as "X0.00" (no comparison), so FinMind's spread is 0 there and
+        cannot be used to adjust; raw closes beyond the 10% limit are the reliable tell of a corporate action."""
         f, t = d2s(t_from), d2s(t_to)
-        acc = 1.0
-        n = 0
+        worst, wd, prev = 0.0, None, None
         for d in self.dates(code):
-            if d <= f:
-                continue
             if d > t:
                 break
-            c, sp = self.rows[code][d]
-            if sp is None:
-                return None
-            base = c - sp
-            if base <= 0:
-                return None
-            r = sp / base
-            if abs(r) > 0.1051:
-                return None
-            acc *= 1.0 + r
-            n += 1
-        return acc - 1.0 if n else None
+            c = self.rows[code][d][0]
+            if d > f and prev:
+                ch = c / prev - 1.0
+                if abs(ch) > abs(worst):
+                    worst, wd = ch, d
+            prev = c
+        return worst, wd
 
 
 def weekdays_between(a, b):
@@ -975,6 +971,11 @@ def merge_same_day(cands):
             out[k]["detail"] = dict(c["detail"])
             continue
         o = out[k]
+        if c["stype"] == "S2":       # same day, wider window: keep the one with the most brokers, not a list of all
+            if len(c["detail"].get("brokers", [])) > len(o["detail"].get("brokers", [])):
+                out[k] = dict(c)
+                out[k]["detail"] = dict(c["detail"])
+            continue
         if c["source"] and c["source"] not in o["source"]:
             o["source"] = (o["source"] + "\uff5c" + c["source"])[:1500]
         if not o["name"] and c["name"]:
@@ -1062,6 +1063,7 @@ def evaluate(sig, cal, prices):
         upd.update({"t0n": d2s(t0n), "p0n": p0n, "b0n": prices.rows[BENCH].get(d2s(t0n), (None,))[0]})
     excl = ""
     note = []
+    upd["a30"] = None          # v1.1: the spread-based dividend adjustment was wrong on ex-rights days; column retired
     det = json.loads(sig["detail"] or "{}")
     if p0 and det.get("tp_new") and not det.get("rating_up"):
         r_new = det["tp_new"] / p0
@@ -1086,12 +1088,11 @@ def evaluate(sig, cal, prices):
                 excl = excl or "\u7591\u4f3c\u5206\u5272\u6216\u6e1b\u8cc7\uff1a\u80a1\u50f9\u6bd4 %.2f \u500d" % ratio
             e = (ph / p0 - 1.0) - (bh / b0 - 1.0)
         upd.update({"t%d" % h: d2s(th), "p%d" % h: ph, "b%d" % h: bh, "e%d" % h: e})
+        if e is not None:
+            jump, jd = prices.max_jump(code, t0, th)
+            if abs(jump) > JUMP_MAX:
+                excl = excl or "\u7591\u4f3c\u9664\u6b0a\u3001\u5206\u5272\u6216\u6e1b\u8cc7\uff1a%s \u55ae\u65e5 %+.0f%%\uff0c\u8d85\u904e\u6f32\u8dcc\u5e45\u9650\u5236" % (jd, jump * 100)
         if h == 30 and e is not None:
-            ra = prices.adj_return(code, t0, th)
-            rb = prices.adj_return(BENCH, t0, th)
-            upd["a30"] = (ra - rb) if (ra is not None and rb is not None) else None
-            if ra is not None and abs((ph / p0 - 1.0) - ra) > 0.15:
-                excl = excl or "\u7591\u4f3c\u5206\u5272\u6216\u6e1b\u8cc7\uff1a\u9084\u539f\u8207\u672a\u9084\u539f\u5dee %.0f \u500b\u767e\u5206\u9ede" % (abs((ph / p0 - 1.0) - ra) * 100)
             p0n, b0n = upd.get("p0n"), upd.get("b0n")
             if p0n and b0n and upd.get("t0n") and upd["t0n"] <= d2s(th):
                 upd["r30n"] = (ph / p0n - 1.0) - (bh / b0n - 1.0)
@@ -1230,9 +1231,30 @@ def missing_rate(sigs, known):
     return (len(miss) / len(elig) if elig else 0.0), len(miss), len(elig)
 
 
+def migrate_v11(con, stats):
+    """One-time v1.1 fix: retire the 30-day dividend-adjusted column, reopen rows that its 15-point rule excluded
+    and every finished row (re-checked with the one-day jump rule over all horizons), and recompute the whole
+    window once so older S2 rows get the shorter source text. Returns True on that run."""
+    if meta_get(con, "v11") == "done":
+        return False
+    con.execute("UPDATE signals SET a30=NULL")
+    cur = con.execute("UPDATE signals SET status=?, note='' WHERE status=? AND note LIKE ?",
+                      (ST_TRACK, ST_EXCL, "\u7591\u4f3c\u5206\u5272\u6216\u6e1b\u8cc7\uff1a\u9084\u539f\u8207\u672a\u9084\u539f\u5dee%"))
+    n_excl = cur.rowcount
+    # v1.0 only looked for corporate actions inside the 30-day window: re-check finished rows once
+    cur = con.execute("UPDATE signals SET status=? WHERE status=?", (ST_TRACK, ST_DONE))
+    stats["v11_reopened"] = n_excl + cur.rowcount
+    meta_set(con, "v11", "done")
+    con.commit()
+    print("v1.1 migration: retired 30-day adjusted column, reopened %d excluded and %d finished rows"
+          % (n_excl, cur.rowcount))
+    return True
+
+
 def pipeline(con, mode, start, today, max_calls, interval=None, notion_sync=True):
     """mode: backfill or run. Returns stats dict."""
     stats = Counter()
+    full_once = migrate_v11(con, stats)
     prices = Prices(con)
     fetcher = Fetcher(prices, max_calls, today, interval)
     # 1) benchmark calendar
@@ -1243,7 +1265,7 @@ def pipeline(con, mode, start, today, max_calls, interval=None, notion_sync=True
     if cal.known is None or cal.known < start:
         raise SourceError("0050 prices unavailable: " + "; ".join(fetcher.errors[-3:]))
     # 2) candidates in the window
-    win_start = start if mode == "backfill" else max(start, today - timedelta(days=RUN_WINDOW_DAYS))
+    win_start = start if (mode == "backfill" or full_once) else max(start, today - timedelta(days=RUN_WINDOW_DAYS))
     cands, ok_types, src_errs = build_candidates(win_start, today, cal, stats)
     existing = {s["sid"]: s for s in all_signals(con)}
     seeds = {}
@@ -1429,7 +1451,6 @@ def month_stats(sigs, first, last, cumulative=False):
             if h == 30:
                 r["win30"] = sum(1 for s in vals if s["e30"] > 0)
                 r["ref30"] = avg([s["r30n"] for s in vals if s.get("r30n") is not None])
-                r["adj30"] = avg([s["a30"] for s in vals if s.get("a30") is not None])
         res[k] = r
     return res
 
@@ -1442,17 +1463,15 @@ def cell_avg(r, h):
 
 
 def table_rows(stats, reg_label):
-    head = ["\u985e", reg_label, "7 \u5929\u5e73\u5747\u8d85\u984d\uff08n\uff09", "30 \u5929\uff08n\uff09", "60 \u5929\uff08n\uff09", "30 \u5929\u8dd1\u8d0f",
-            "30 \u5929\u9694\u65e5\u8d77\u7b97\uff08\u53c3\u8003\uff09", "30 \u5929\u9084\u539f\u6b0a\u606f\uff08\u53c3\u8003\uff09"]
+    head = ["\u985e", reg_label, "7 \u5929\u5e73\u5747\u8d85\u984d\uff08n\uff09", "30 \u5929\uff08n\uff09", "60 \u5929\uff08n\uff09", "30 \u5929\u8dd1\u8d0f", "30 \u5929\u9694\u65e5\u8d77\u7b97\uff08\u53c3\u8003\uff09"]
     rows = [head]
     for k in ROW_KEYS:
         r = stats[k]
         if r["n30"] < 3 and r["n7"] < 3:
-            rows.append([ROW_LABEL[k], str(r["registered"]), "\u5019\u9078\u60f3\u6cd5\uff08\u6a23\u672c <3\uff09", "", "", "", "", ""])
+            rows.append([ROW_LABEL[k], str(r["registered"]), "\u5019\u9078\u60f3\u6cd5\uff08\u6a23\u672c <3\uff09", "", "", "", ""])
             continue
         rows.append([ROW_LABEL[k], str(r["registered"]), cell_avg(r, 7), cell_avg(r, 30), cell_avg(r, 60),
-                     ("%d\uff0f%d" % (r["win30"], r["n30"])) if r["n30"] else "\u2014",
-                     fmt_pct(r["ref30"]), fmt_pct(r["adj30"])])
+                     ("%d\uff0f%d" % (r["win30"], r["n30"])) if r["n30"] else "\u2014", fmt_pct(r["ref30"])])
     return rows
 
 
@@ -1519,7 +1538,9 @@ def write_month_page(ym, sigs, st, start):
         {"object": "block", "type": "callout", "callout": {
             "rich_text": rt("\u53e3\u5f91\uff08Kai 10-24\uff09\uff1a\u767b\u8a18\u65e5\u6536\u76e4\u8d77\u7b97\uff0c7\uff0f30\uff0f60 \u500b\u81ea\u7136\u65e5\u5f8c\u5c0d 0050 \u7684\u8d85\u984d\uff08\u4f11\u5e02\u53d6\u524d\u4e00\u4ea4\u6613\u65e5\uff09\uff1b"
                             "\u540c\u4e00\u6a94\u540c\u4e00\u985e 14 \u5929\u5167\u53ea\u7b97\u7b2c\u4e00\u6b21\u3002\u672c\u6708\u6b04\uff1d\u5230\u671f\u65e5\u843d\u5728 %s \u7684\u8a0a\u865f\uff1b\u8cc7\u6599\u5230 %s\uff1b\u7522\u751f\u65bc %s \u53f0\u5317\u3002"
-                            "\u53c3\u8003\u6b04\uff1a\u9694\u65e5\u6536\u76e4\u8d77\u7b97\u3001\u4f9d\u6f32\u8dcc\u50f9\u5dee\u9084\u539f\u6b0a\u606f\uff0c\u53ea\u7576\u53c3\u8003\u3002" % (ym, st.get("known", "?"), gen)),
+                            "\u53c3\u8003\u6b04\uff1a\u9694\u65e5\u6536\u76e4\u8d77\u7b97\uff0c\u53ea\u7576\u53c3\u8003\uff08\u9084\u539f\u6b0a\u606f\u6b04 10-26 \u8d77\u505c\u7528\uff1a\u8b49\u4ea4\u6240\u5728\u9664\u6b0a\u606f\u65e5\u7684\u6f32\u8dcc\u50f9\u5dee\u8a18 X0.00\uff0c"
+                            "FinMind \u8ddf\u8457\u8a18 0\uff0c\u7121\u6cd5\u9084\u539f\uff1b\u55ae\u65e5\u6f32\u8dcc\u8d85\u904e 10.5%% \u7684\u9664\u6b0a\u3001\u5206\u5272\u3001\u6e1b\u8cc7\u6539\u70ba\u6574\u7b46\u6392\u9664\uff09\u3002"
+                            % (ym, st.get("known", "?"), gen)),
             "icon": {"type": "emoji", "emoji": "\U0001f9fe"}, "color": "gray_background"}},
         blk("heading_2", "\u672c\u6708\u5230\u671f\uff08%s\uff09" % ym),
         blk_table(table_rows(cur, "\u672c\u6708\u767b\u8a18")),
@@ -1897,10 +1918,11 @@ def cmd_commit(code):
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     msgf = STATE_DIR / "signal_ledger_commit_msg.txt"
     msgf.write_text(
-        "B1 signal_ledger: signal look-back ledger vs 0050 (7/30/60 days) to Notion\n\n"
-        "- scripts/signal_ledger.py: check / dry / status / backfill / run / summary / install / commit\n"
-        "- S1 Top N, S2 broker consensus, S3 high news, S4 target/rating upgrades; 14-day dedup\n"
-        "- cron/crontab.txt: run weekdays 15:50 UTC (23:50 Taipei), summary 00:20 UTC on day 1\n\n"
+        "B1 signal_ledger v1.1: retire spread-based dividend adjustment, flag >10.5% one-day moves\n\n"
+        "- TWSE prints ex-rights days as X0.00 and FinMind stores 0, so the 30-day adjusted column and its\n"
+        "  15-point exclusion rule were wrong; rows it excluded are reopened once and re-evaluated\n"
+        "- corporate actions (ex-rights, split, capital reduction) = a one-day move beyond the 10% limit\n"
+        "- S2 rows keep only the widest broker list in the source text\n\n"
         "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n"
         "Claude-Session: https://claude.ai/code/session_01NhgrUyKz6bWjHLLn7NJwEj\n",
         encoding="utf-8")
