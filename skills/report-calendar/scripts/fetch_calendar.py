@@ -90,7 +90,9 @@ def fetch_month_revenue_dates(stock_id, token, start_date, end_date):
         FINMIND_API,
         params={"dataset": "TaiwanStockMonthRevenue",
                 "data_id": stock_id,
-                "start_date": start_date,
+                # look back 120 days: revenue published after today does not exist yet, so start_date=today
+                # always came back empty and no 月營收 event was ever written (found 2026-10-26)
+                "start_date": (datetime.strptime(start_date, "%Y-%m-%d") - timedelta(days=120)).strftime("%Y-%m-%d"),
                 "token": token},
         timeout=15,
     )

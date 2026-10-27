@@ -32,7 +32,7 @@ from datetime import date, datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 
-VERSION = "1.0"
+VERSION = "1.1"
 HOME = Path.home()
 WS = HOME / ".openclaw" / "workspace"
 SECRETS_FILE = WS / "config" / "secrets.json"
@@ -44,7 +44,7 @@ RUN_LOG = LOG_DIR / "conf_calendar.log"
 NOTION_API = "https://api.notion.com/v1"
 NOTION_VERSION = "2022-06-28"
 TPE = timezone(timedelta(hours=8))
-PASS_SHA256 = "0eef3ac441c6bb6effbc314f0d5c69905669bf7d82918d7486fe0937a9a3e185"
+PASS_SHA256 = "6deb28659fee95de2fa93c040a145a56fd3a70f9a4e678af5d08ec39195979e7"
 PY = "/usr/bin/python3" if Path("/usr/bin/python3").exists() else sys.executable
 
 EVENT_DB_DEFAULT = "34e226f5-a398-81ea-8a99-ecd61b9e8795"     # calendar DB (event_calendar)
@@ -282,7 +282,7 @@ def parse_conferences(html):
             else:
                 raise MopsError("row has %d cells, header %d: %s" % (len(r), len(names), r[:3]))
         d = dict(zip(names, r))
-        out.append({"code": d.get(H_CODE, "").strip(), "name": d.get(H_NAME, "").strip(),
+        out.append({"code": d.get(H_CODE, "").strip(), "name": d.get(H_NAME, "").strip().rstrip("*").strip(),
                     "date_raw": d.get(H_DATE, ""), "time": d.get(H_TIME, ""), "place": d.get(H_PLACE, ""),
                     "summary": d.get(H_SUMMARY, ""), "file_zh": d.get(H_FILES + "/" + H_ZH, ""),
                     "file_en": d.get(H_FILES + "/" + H_EN, ""), "web": d.get(web, "") if web else "",

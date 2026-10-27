@@ -28,7 +28,7 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-VERSION = "1.0"
+VERSION = "1.1"
 HOME = Path.home()
 WS = HOME / ".openclaw" / "workspace"
 SECRETS_FILE = WS / "config" / "secrets.json"
@@ -39,7 +39,7 @@ SNAP_DB = "37d778d4-2fef-4d9e-b3cf-c88ad1e200fa"
 NOTION_API = "https://api.notion.com/v1"
 NOTION_VERSION = "2022-06-28"
 TPE = timezone(timedelta(hours=8))
-PASS_SHA256 = "1ec986e490d20d90b52f628699d44d6487d142780fd8d266f62fdfb0f1dc8555"
+PASS_SHA256 = "32db2631f45612ce36e8a25915917b83983e39473b5dd7d80f87c19efa76d1f5"
 PY = "/usr/bin/python3" if Path("/usr/bin/python3").exists() else sys.executable
 CRON_TAG = "scripts/vm_snapshot.py run"
 CRON_COMMENT = "# A2 vm_snapshot: daily 07:35 Taipei (23:35 UTC) -> Notion VM snapshot DB"
@@ -240,8 +240,11 @@ def inspect_log(path, max_age_h, now):
     recent = tail[start:] if start is not None else tail[-60:]
     results = [ln.strip() for ln in tail if "RESULT=" in ln]
     last_result = results[-1] if results else ""
+    sums = [ln.strip() for ln in recent if "[SUMMARY]" in ln]
+    last_summary = sums[-1] if sums else ""
     errs = sum(1 for ln in recent if ("Traceback" in ln or "[ERROR]" in ln or "FATAL" in ln))
-    up = last_result.upper()
+    # judge only the first word after RESULT= (#106: "notion_fail=0" in the counters is not a failure)
+    up = last_result.split("RESULT=", 1)[1].split()[0].upper() if "RESULT=" in last_result and last_result.split("RESULT=", 1)[1].split() else ""
     if max_age_h and age_h > max_age_h:
         status = "STALE"
     elif last_result and any(k in up for k in ("CRASH", "FAIL", "ABORT", "ERROR")):
@@ -254,7 +257,7 @@ def inspect_log(path, max_age_h, now):
         status = "OK"
     mt = datetime.fromtimestamp(st.st_mtime, TPE).strftime("%m-%d %H:%M")
     return {"status": status, "age_h": round(age_h, 1), "mtime_tpe": mt, "size": st.st_size,
-            "last_result": mask(last_result)[:160], "errors": errs,
+            "last_result": mask(last_result)[:160], "summary": mask(last_summary)[:200], "errors": errs,
             "last_lines": [mask(x)[:160] for x in lines[-2:]]}
 
 
@@ -290,7 +293,12 @@ def collect_schedulers(now):
 
 def collect_logs(jobs, now):
     rows = []
+    seen = set()
     for j in jobs:
+        if j["log"]:
+            if j["log"] in seen:
+                continue
+            seen.add(j["log"])
         info = inspect_log(j["log"], j["max_age_h"], now) if j["log"] else {"status": "NOLOG"}
         info.update({"name": j["name"], "sched": j.get("sched", "-"), "log": j["log"]})
         rows.append(info)
@@ -549,6 +557,8 @@ def lines_jobs(s):
             continue
         out.append("%-6s %-22s %s age=%sh %s" % (r["status"], r["name"][:22], r.get("mtime_tpe"),
                                                   r.get("age_h"), r.get("last_result") or "-"))
+        if r.get("summary"):
+            out.append("       SUMMARY " + r["summary"])
     return out
 
 

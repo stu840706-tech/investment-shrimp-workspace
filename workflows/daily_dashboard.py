@@ -93,6 +93,28 @@ def query_db(token, db_id, filter_payload=None, page_size=50):
         return []  
   
   
+def query_db_all(token, db_id, filter_payload=None, max_pages=20):  
+    """query_db with pagination (100 per page, up to max_pages pages)"""  
+    if not db_id:  
+        return []  
+    payload = {"page_size": 100}  
+    if filter_payload:  
+        payload["filter"] = filter_payload  
+    out = []  
+    try:  
+        for _ in range(max_pages):  
+            r = npost(token, f"{NOTION_API}/databases/{db_id}/query", payload)  
+            out.extend(r.get("results", []))  
+            if not r.get("has_more") or not r.get("next_cursor"):  
+                break  
+            payload["start_cursor"] = r["next_cursor"]  
+        else:  
+            print(f"  [WARN] query_db_all {db_id}: stopped at {max_pages} pages")  
+    except NotionError as e:  
+        print(f"  [WARN] query_db_all {db_id}: {e}")  
+    return out  
+  
+  
 def get_text(prop):  
     if not prop:  
         return ""  
@@ -305,7 +327,11 @@ def section_events(token, secrets):
         today_str = today.isoformat()  
         end_str = end.isoformat()  
   
-        events = query_db(token, db_id, page_size=50)  
+        # v-events2: filter by date (actual date in window, or title month = this/next month) and page through  
+        months = sorted({today_str[:7], end_str[:7]})  
+        flt = {"or": [{"property": "實際日期", "date": {"on_or_after": today_str}}]  
+               + [{"property": "預計日期", "title": {"starts_with": m}} for m in months]}  
+        events = query_db_all(token, db_id, filter_payload=flt)  
         upcoming = []  
         for e in events:  
             props = e.get("properties", {})  
